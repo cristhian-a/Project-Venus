@@ -15,7 +15,7 @@ public class Renderer {
         this.panel = panel;
     }
 
-    public void open() {
+    public void openWindow() {
         window = new JFrame("Project Venus");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

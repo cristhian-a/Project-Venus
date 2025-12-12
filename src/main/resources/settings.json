@@ -1,0 +1,14 @@
+{
+  "controls": {
+    "up": 87,
+    "down": 83,
+    "left": 65,
+    "right": 68,
+    "debugMode1": 112
+  },
+  "video": {
+    "width": 1024,
+    "height": 768,
+    "scale": 4
+  }
+}

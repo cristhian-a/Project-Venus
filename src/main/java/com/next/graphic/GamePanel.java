@@ -1,6 +1,8 @@
 package com.next.graphic;
 
 import com.next.Game;
+import com.next.io.InputReader;
+import com.next.system.Settings.VideoSettings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,28 +12,22 @@ import java.awt.event.ComponentListener;
 public class GamePanel extends JPanel implements ComponentListener {
 
     private final Game game;
+    private final InputReader input;
+    private final VideoSettings videoSettings;
 
-    private final int SCALE = 4;
-    private final int MAX_SCREEN_COL = 16;
-    private final int MAX_SCREEN_ROW = 12;
-    private final int ORIGINAL_TILE_SIZE = 16;  // 16x16
-
-    private final int TILE_SIZE;
-    private final int WIDTH;
-    private final int HEIGHT;
-
-    public GamePanel(Game game) {
+    public GamePanel(Game game, InputReader input, VideoSettings videoSettings) {
         this.game = game;
+        this.input = input;
+        this.videoSettings = videoSettings;
+
+        addKeyListener(input);
         addComponentListener(this);
 
-        TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE;
-        WIDTH = TILE_SIZE * MAX_SCREEN_COL;
-        HEIGHT = TILE_SIZE * MAX_SCREEN_ROW;
-
-        this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        this.setBackground(Color.BLACK);
-        this.setDoubleBuffered(true);
-        this.setFocusable(true);
+        setPreferredSize(new Dimension(videoSettings.width, videoSettings.height));
+        setBackground(Color.BLACK);
+        setDoubleBuffered(true);
+        setFocusable(true);
+        requestFocus();
     }
 
     @Override
@@ -42,10 +38,8 @@ public class GamePanel extends JPanel implements ComponentListener {
 
     @Override
     public void componentResized(ComponentEvent e) {
-        int newWidth = getWidth();
-        int newHeight = getHeight();
-
-        IO.println("Width: " + newWidth + "; Height: " + newHeight);
+        videoSettings.width = getWidth();
+        videoSettings.height = getHeight();
     }
 
     @Override

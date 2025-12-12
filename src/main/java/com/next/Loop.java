@@ -1,25 +1,28 @@
 package com.next;
 
 import com.next.graphic.Renderer;
+import com.next.io.InputReader;
 
 public class Loop implements Runnable {
 
     private final Game game;
     private final Renderer renderer;
+    private final InputReader input;
 
     private Thread mainThread;
     private boolean running;
 
-    public Loop(Game game, Renderer renderer) {
+    public Loop(Game game, Renderer renderer, InputReader input) {
         this.game = game;
         this.renderer = renderer;
+        this.input = input;
     }
 
     public void start() {
         running = true;
         mainThread = new Thread(this, "Main Thread");
 
-        renderer.open();
+        renderer.openWindow();
         mainThread.start();
     }
 
@@ -34,15 +37,36 @@ public class Loop implements Runnable {
 
     @Override
     public void run() {
-        long lastTime = System.nanoTime();
+        final double fixedDelta = 1.0 / 60.0;
+        double accumulator = 0.0;
+        double lastTime = System.nanoTime();
+
+        // Debug info *(frame rate)*
+        int frames = 0;
+        double timer = System.currentTimeMillis();
 
         while (running) {
-            long now = System.nanoTime();
-            double delta = (now - lastTime) / 1000000000.0;
+            double now = System.nanoTime();
+            double delta = (now - lastTime) / 1e9;
             lastTime = now;
+            accumulator += delta;
 
-            game.update(delta);
+            while (accumulator >= fixedDelta) {
+                input.poll();
+                game.update(fixedDelta);
+
+                accumulator -= fixedDelta;
+                frames++;   // Debug info *(frame rate)*
+            }
+
             renderer.render();
+
+            // Debug info *(frame rate)*
+            if (System.currentTimeMillis() - timer >= 1000) {
+                IO.println("FPS: " + frames);
+                frames = 0;
+                timer = System.currentTimeMillis();
+            }
         }
     }
 }
