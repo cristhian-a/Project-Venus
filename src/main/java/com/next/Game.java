@@ -1,29 +1,30 @@
 package com.next;
 
 import com.next.io.InputReader;
+import com.next.system.Input;
 import com.next.system.Settings;
 
 import java.awt.*;
 
 public class Game {
 
-    private final InputReader input;
+    private final Input input;
     private final Settings settings;
 
-    public Game(InputReader input, Settings settings) {
+    public Game(Input input, Settings settings) {
         this.input = input;
         this.settings = settings;
     }
 
     public void update(double delta) {
         // TODO: all the stuff goes here man
-        if (input.isPressed(settings.controls.up))
+        if (input.isDown(Input.Action.UP))
             IO.println("Up");
-        if (input.isPressed(settings.controls.down))
+        if (input.isReleased(Input.Action.DOWN))
             IO.println("Down");
-        if (input.isPressed(settings.controls.left))
+        if (input.isPressed(Input.Action.LEFT))
             IO.println("Left");
-        if (input.isPressed(settings.controls.right))
+        if (input.isPressed(Input.Action.RIGHT))
             IO.println("Right");
     }
 
