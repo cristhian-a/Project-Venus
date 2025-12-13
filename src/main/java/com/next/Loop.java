@@ -1,18 +1,18 @@
 package com.next;
 
 import com.next.graphic.Renderer;
-import com.next.io.InputReader;
+import com.next.system.Input;
 
 public class Loop implements Runnable {
 
     private final Game game;
     private final Renderer renderer;
-    private final InputReader input;
+    private final Input input;
 
     private Thread mainThread;
     private boolean running;
 
-    public Loop(Game game, Renderer renderer, InputReader input) {
+    public Loop(Game game, Renderer renderer, Input input) {
         this.game = game;
         this.renderer = renderer;
         this.input = input;
@@ -63,7 +63,7 @@ public class Loop implements Runnable {
 
             // Debug info *(frame rate)*
             if (System.currentTimeMillis() - timer >= 1000) {
-                IO.println("FPS: " + frames);
+                if (game.DEBUG_MODE_1) IO.println("FPS: " + frames);
                 frames = 0;
                 timer = System.currentTimeMillis();
             }

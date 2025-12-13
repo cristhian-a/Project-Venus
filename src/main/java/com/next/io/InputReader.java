@@ -32,7 +32,7 @@ public class InputReader implements KeyListener {
         }
     }
 
-    public void poll() {
+    public void snapshot() {
         System.arraycopy(currentKeys, 0, previousKeys, 0, currentKeys.length);
         System.arraycopy(realKeys, 0, currentKeys, 0, realKeys.length);
     }
