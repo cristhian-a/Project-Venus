@@ -63,7 +63,7 @@ public class Loop implements Runnable {
 
             // Debug info *(frame rate)*
             if (System.currentTimeMillis() - timer >= 1000) {
-                IO.println("FPS: " + frames);
+                if (game.DEBUG_MODE_1) IO.println("FPS: " + frames);
                 frames = 0;
                 timer = System.currentTimeMillis();
             }

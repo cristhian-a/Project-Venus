@@ -11,6 +11,8 @@ public class Game {
     private final Input input;
     private final Settings settings;
 
+    public boolean DEBUG_MODE_1;
+
     public Game(Input input, Settings settings) {
         this.input = input;
         this.settings = settings;
@@ -26,6 +28,9 @@ public class Game {
             IO.println("Left");
         if (input.isPressed(Input.Action.RIGHT))
             IO.println("Right");
+
+        if (input.isPressed(Input.Action.DEBUG_1))
+            DEBUG_MODE_1 = !DEBUG_MODE_1;
     }
 
     public void render(Graphics2D g) {
