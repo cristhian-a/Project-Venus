@@ -1,7 +1,6 @@
 package com.next;
 
 import com.next.graphics.GamePanel;
-import com.next.graphics.awt.AwtPanel;
 import com.next.system.Debugger;
 import com.next.system.Input;
 
@@ -57,12 +56,11 @@ public class Loop implements Runnable {
                 input.poll();
                 Debugger.update(input);
                 game.update(fixedDelta);
+                panel.requestRender();
 
                 accumulator -= fixedDelta;
                 frames++;   // Debug info *(frame rate)*
             }
-
-            panel.render();
 
             // Debug info *(frame rate)*
             if (System.currentTimeMillis() - timer >= 1000) {

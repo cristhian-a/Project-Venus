@@ -43,7 +43,7 @@ public class AwtPanel extends JPanel implements ComponentListener, GamePanel {
     }
 
     @Override
-    public void render() {
+    public void requestRender() {
         this.repaint();
     }
 
