@@ -7,7 +7,6 @@ import java.awt.*;
 
 public class UI implements Renderable {
 
-    // DEBUG
     private final AssetRegistry assets;
 
     public UI(AssetRegistry assets) {
