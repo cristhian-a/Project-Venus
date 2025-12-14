@@ -22,8 +22,8 @@ public class Camera {
     }
 
     public void follow(int targetX, int targetY) {
-        x = targetX - viewportWidth / 2;
-        y = targetY - viewportHeight / 2;
+        x = targetX - (viewportWidth >> 1);
+        y = targetY - (viewportHeight >> 1);
     }
 
     public int worldToScreenX(int worldX) {
