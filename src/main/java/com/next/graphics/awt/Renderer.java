@@ -23,7 +23,7 @@ public class Renderer {
         this.settings = settings;
 
         this.ui = new UI(assets);
-        this.world = new World(assets, game);
+        this.world = new World(assets);
     }
 
     public void render(Graphics2D g) {

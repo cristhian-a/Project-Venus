@@ -10,18 +10,16 @@ import java.awt.*;
 
 public class World {
 
-    public static final int TILE_SIZE = Settings.ORIGINAL_TILE_SIZE; // should retrieve this from settings later
+    public static final int TILE_SIZE = Settings.TILE_SIZE; // should retrieve this from settings later
 
     private final AssetRegistry assets;
-    private final Game game;
 
     private Tile[] tiles;
     private Integer[][] tileMap;
 
-    public World(AssetRegistry assets, Game game) {
+    public World(AssetRegistry assets) {
         this.assets = assets;
-        this.game = game;
-        this.tiles = new Tile[100];
+        this.tiles = new Tile[10];
         loadTiles();
 
         this.tileMap = assets.getTileMap("map_01");

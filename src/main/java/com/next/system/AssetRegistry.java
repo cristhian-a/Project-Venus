@@ -30,7 +30,7 @@ public class AssetRegistry {
     }
 
     private void loadSprites() throws IOException {
-        spriteSheets.put("world", new SpriteSheet("/sprites/spritesheet.png", Settings.ORIGINAL_TILE_SIZE, Settings.ORIGINAL_TILE_SIZE));
+        spriteSheets.put("world", new SpriteSheet("/sprites/spritesheet.png", Settings.TILE_SIZE, Settings.TILE_SIZE));
     }
 
     private void loadFonts() {

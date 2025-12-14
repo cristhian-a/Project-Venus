@@ -29,8 +29,8 @@ public class Player extends Entity {
     }
 
     public void setDefaultValues() {
-        worldX = Settings.ORIGINAL_TILE_SIZE * 23;
-        worldY = Settings.ORIGINAL_TILE_SIZE * 21;
+        worldX = Settings.TILE_SIZE * 23;
+        worldY = Settings.TILE_SIZE * 21;
         speed = 2;
     }
 }
