@@ -1,27 +1,24 @@
-package com.next.graphic;
+package com.next.graphics.awt;
 
-import com.next.Game;
-import com.next.io.InputReader;
-import com.next.system.Debugger;
+import com.next.graphics.GamePanel;
 import com.next.system.Settings.VideoSettings;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyListener;
 
-public class GamePanel extends JPanel implements ComponentListener {
-
-    private final Game game;
-    private final InputReader input;
+public class AwtPanel extends JPanel implements ComponentListener, GamePanel {
+    private final KeyListener input;
+    private final Renderer renderer;
     private final VideoSettings videoSettings;
 
-    // DEBUG
-    private final Font arial_30 = new Font("Arial", Font.PLAIN, 30);
+    private JFrame window;
 
-    public GamePanel(Game game, InputReader input, VideoSettings videoSettings) {
-        this.game = game;
+    public AwtPanel(KeyListener input, VideoSettings videoSettings, Renderer renderer) {
         this.input = input;
+        this.renderer = renderer;
         this.videoSettings = videoSettings;
 
         addKeyListener(input);
@@ -35,16 +32,25 @@ public class GamePanel extends JPanel implements ComponentListener {
     }
 
     @Override
+    public void openWindow() {
+        window = new JFrame("Project Venus");
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        window.add(this);
+        window.pack();
+        window.setLocationRelativeTo(null);
+        window.setVisible(true);
+    }
+
+    @Override
+    public void render() {
+        this.repaint();
+    }
+
+    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        var g2 = (Graphics2D) g;
-        g2.setFont(arial_30);
-        g2.setColor(Color.MAGENTA);
-
-        var debugData = Debugger.getPublishedData();
-        if (debugData.containsKey("FPS"))
-            g2.drawString("FPS: " + debugData.get("FPS").display(), 10, 30);
+        renderer.render((Graphics2D) g);
     }
 
     @Override

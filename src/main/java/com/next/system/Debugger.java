@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Debugger {
 
-    public static final Debugger INSTANCE = new Debugger();
+    private static final Debugger INSTANCE = new Debugger();
 
     private final Map<String, DebugValue> context;
     private volatile Map<String, DebugValue> publishedData;
@@ -16,21 +16,25 @@ public class Debugger {
         publishedData = Map.of();
     }
 
-    public static void put(String key, DebugValue value) {
-        INSTANCE.context.put(key, value);
-    }
-
-    public void update(Input input) {
+    public void update() {
         Map<String, DebugValue> snapshot = new LinkedHashMap<>();   // snapshotting to deal with concurrency
-
-        if (input.isPressed(Input.Action.DEBUG_1))
-            DEBUG_1 = !DEBUG_1;
 
         if (DEBUG_1) {
             if (context.containsKey("FPS")) snapshot.put("FPS", context.get("FPS"));
         }
 
         publishedData = Map.copyOf(snapshot);
+    }
+
+    public static void update(Input input) {
+        if (input.isPressed(Input.Action.DEBUG_1))
+            INSTANCE.DEBUG_1 = !INSTANCE.DEBUG_1;
+
+        INSTANCE.update();
+    }
+
+    public static void put(String key, DebugValue value) {
+        INSTANCE.context.put(key, value);
     }
 
     public static Map<String, DebugValue> getPublishedData() {
