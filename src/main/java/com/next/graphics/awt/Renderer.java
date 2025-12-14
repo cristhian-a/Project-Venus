@@ -2,26 +2,20 @@ package com.next.graphics.awt;
 
 import com.next.Game;
 import com.next.graphics.RenderData;
+import com.next.system.AssetRegistry;
 import com.next.system.Debugger;
 
 import java.awt.*;
-import java.io.IOException;
 
 public class Renderer implements Renderable {
     private final UI ui;
     private final Game game;
+    private final AssetRegistry assets;
 
-    private SpriteSheet spritesheet;
-
-    public Renderer(Game game) {
+    public Renderer(Game game, AssetRegistry assets) {
         this.game = game;
-        this.ui = new UI();
-
-        try {
-            this.spritesheet = new SpriteSheet("/sprites/spritesheet.png", 16, 16, 4);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.assets = assets;
+        this.ui = new UI(assets);
     }
 
     @Override
@@ -31,7 +25,7 @@ public class Renderer implements Renderable {
         var whatToRender = game.getRenderBuffer();
         for (var entry : whatToRender.entrySet()) {
             RenderData state = entry.getValue();
-            g.drawImage(spritesheet.getSprite(state.spriteId()), state.x(), state.y(), null);
+            g.drawImage(assets.getSpriteSheet("world").getSprite(state.spriteId()), state.x(), state.y(), null);
         }
 
         ui.render(g);   // always last damn it
