@@ -7,8 +7,8 @@
     "debugMode1": 112
   },
   "video": {
-    "width": 1024,
-    "height": 768,
-    "scale": 4
+    "WIDTH": 1024,
+    "HEIGHT": 768,
+    "SCALE": 4
   }
 }

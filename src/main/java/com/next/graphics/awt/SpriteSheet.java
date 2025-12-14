@@ -13,17 +13,15 @@ public class SpriteSheet {
     @Getter private final int spriteHeight;
     private final int columns;
     private final int rows;
-    private final int scale;
     private final int count;
 
     private final BufferedImage image;
     private final BufferedImage[] sprites;
 
-    public SpriteSheet(String path, int spriteWidth, int spriteHeight, int scale) throws IOException {
+    public SpriteSheet(String path, int spriteWidth, int spriteHeight) throws IOException {
         this.image = ImageIO.read(FileReader.getFile(path));
         this.spriteHeight = spriteHeight;
         this.spriteWidth = spriteWidth;
-        this.scale = scale;
 
         columns = image.getWidth() / spriteWidth;
         rows = image.getHeight() / spriteHeight;
@@ -59,7 +57,7 @@ public class SpriteSheet {
             while (columnCount < columns) {
                 if (index == count) break;
 
-                var img = getAndScaleSubImage(x, y, spriteWidth, spriteHeight, scale);
+                var img = getSubImage(x, y, spriteWidth, spriteHeight);
                 sprites[index] = img;
                 index++;
 
@@ -72,16 +70,7 @@ public class SpriteSheet {
         }
     }
 
-    private BufferedImage getAndScaleSubImage(int x, int y, int width, int height, int scale) {
-        var subImage = image.getSubimage(x, y, width, height);
-
-        int scaledWidth = width * scale;
-        int scaledHeight = height * scale;
-
-        var scaledImage = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = scaledImage.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        g.drawImage(subImage, 0, 0, scaledWidth, scaledHeight, null);
-        return scaledImage;
+    private BufferedImage getSubImage(int x, int y, int width, int height) {
+        return image.getSubimage(x, y, width, height);
     }
 }

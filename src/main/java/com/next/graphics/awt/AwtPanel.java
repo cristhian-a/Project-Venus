@@ -24,7 +24,7 @@ public class AwtPanel extends JPanel implements ComponentListener, GamePanel {
         addKeyListener(input);
         addComponentListener(this);
 
-        setPreferredSize(new Dimension(videoSettings.width, videoSettings.height));
+        setPreferredSize(new Dimension(videoSettings.WIDTH, videoSettings.HEIGHT));
         setBackground(Color.BLACK);
         setDoubleBuffered(true);
         setFocusable(true);
@@ -55,8 +55,11 @@ public class AwtPanel extends JPanel implements ComponentListener, GamePanel {
 
     @Override
     public void componentResized(ComponentEvent e) {
-        videoSettings.width = getWidth();
-        videoSettings.height = getHeight();
+        videoSettings.WIDTH = getWidth();
+        videoSettings.HEIGHT = getHeight();
+
+        videoSettings.ORIGINAL_WIDTH = getWidth() / videoSettings.SCALE;
+        videoSettings.ORIGINAL_HEIGHT = getHeight() / videoSettings.SCALE;
     }
 
     @Override

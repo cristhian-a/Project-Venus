@@ -24,7 +24,7 @@ public class Main {
 
         // Setup and injection
         Game game = new Game(input, settings);
-        Renderer renderer = new Renderer(game, assets);
+        Renderer renderer = new Renderer(game, settings.video, assets);
         GamePanel panel = new AwtPanel(keyboardDevice, settings.video, renderer);
 
         new Loop(game, panel, input).start();

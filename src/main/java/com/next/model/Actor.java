@@ -4,10 +4,10 @@ import com.next.graphics.RenderData;
 
 public abstract class Actor {
     protected int spriteId;
-    protected int x;
-    protected int y;
+    protected int worldX;
+    protected int worldY;
 
     public RenderData getRenderState() {
-        return new RenderData(x, y, spriteId);
+        return new RenderData(worldX, worldY, spriteId);
     }
 }
