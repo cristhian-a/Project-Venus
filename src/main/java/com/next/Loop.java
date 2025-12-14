@@ -21,7 +21,7 @@ public class Loop implements Runnable {
 
     public void start() {
         running = true;
-        mainThread = new Thread(this, "Main Thread");
+        mainThread = new Thread(this, "Main Game Thread");
 
         panel.openWindow();
         mainThread.start();
