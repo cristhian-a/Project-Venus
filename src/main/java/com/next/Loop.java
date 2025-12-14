@@ -1,31 +1,29 @@
 package com.next;
 
-import com.next.graphic.Renderer;
+import com.next.graphics.GamePanel;
 import com.next.system.Debugger;
 import com.next.system.Input;
 
 public class Loop implements Runnable {
 
     private final Game game;
-    private final Renderer renderer;
     private final Input input;
-    private final Debugger debugger;
+    private final GamePanel panel;
 
     private Thread mainThread;
     private boolean running;
 
-    public Loop(Game game, Renderer renderer, Input input, Debugger debugger) {
+    public Loop(Game game, GamePanel panel, Input input) {
         this.game = game;
-        this.renderer = renderer;
+        this.panel = panel;
         this.input = input;
-        this.debugger = debugger;
     }
 
     public void start() {
         running = true;
-        mainThread = new Thread(this, "Main Thread");
+        mainThread = new Thread(this, "Main Game Thread");
 
-        renderer.openWindow();
+        panel.openWindow();
         mainThread.start();
     }
 
@@ -56,14 +54,13 @@ public class Loop implements Runnable {
 
             while (accumulator >= fixedDelta) {
                 input.poll();
-                debugger.update(input);
+                Debugger.update(input);
                 game.update(fixedDelta);
+                panel.requestRender();
 
                 accumulator -= fixedDelta;
                 frames++;   // Debug info *(frame rate)*
             }
-
-            renderer.render();
 
             // Debug info *(frame rate)*
             if (System.currentTimeMillis() - timer >= 1000) {
