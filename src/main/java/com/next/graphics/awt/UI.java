@@ -17,5 +17,7 @@ public class UI implements Renderable {
         var debugData = Debugger.getPublishedData();
         if (debugData.containsKey("FPS"))
             g.drawString("FPS: " + debugData.get("FPS").display(), 10, 30);
+        if (debugData.containsKey("RENDER"))
+            g.drawString("RENDER: " + debugData.get("RENDER").display(), 200, 30);
     }
 }

@@ -20,7 +20,12 @@ public class Debugger {
         Map<String, DebugValue> snapshot = new LinkedHashMap<>();   // snapshotting to deal with concurrency
 
         if (DEBUG_1) {
-            if (context.containsKey("FPS")) snapshot.put("FPS", context.get("FPS"));
+            var fps = context.get("FPS");
+            var render = context.get("RENDER");
+
+            if (fps != null) snapshot.put("FPS", fps);
+            if (render != null) snapshot.put("RENDER", render);
+//            snapshot = Map.copyOf(context);
         }
 
         publishedData = Map.copyOf(snapshot);
@@ -41,7 +46,7 @@ public class Debugger {
         return INSTANCE.publishedData;
     }
 
-    public sealed interface DebugValue permits DebugInt, DebugFloat, DebugText {
+    public sealed interface DebugValue permits DebugInt, DebugFloat, DebugText, DebugLong {
         String display();
     }
 
@@ -63,6 +68,13 @@ public class Debugger {
         @Override
         public String display() {
             return value;
+        }
+    }
+
+    public record DebugLong(Long value) implements DebugValue {
+        @Override
+        public String display() {
+            return value.toString();
         }
     }
 }
