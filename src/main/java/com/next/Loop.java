@@ -9,14 +9,16 @@ public class Loop implements Runnable {
     private final Game game;
     private final Renderer renderer;
     private final Input input;
+    private final Debugger debugger;
 
     private Thread mainThread;
     private boolean running;
 
-    public Loop(Game game, Renderer renderer, Input input) {
+    public Loop(Game game, Renderer renderer, Input input, Debugger debugger) {
         this.game = game;
         this.renderer = renderer;
         this.input = input;
+        this.debugger = debugger;
     }
 
     public void start() {
@@ -53,8 +55,8 @@ public class Loop implements Runnable {
             accumulator += delta;
 
             while (accumulator >= fixedDelta) {
-                Debugger.INSTANCE.update(input);
                 input.poll();
+                debugger.update(input);
                 game.update(fixedDelta);
 
                 accumulator -= fixedDelta;

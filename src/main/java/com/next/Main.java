@@ -4,6 +4,7 @@ import com.next.graphic.GamePanel;
 import com.next.graphic.Renderer;
 import com.next.io.InputReader;
 import com.next.io.Loader.SettingsLoader;
+import com.next.system.Debugger;
 import com.next.system.Input;
 import com.next.system.Settings;
 
@@ -19,6 +20,7 @@ public class Main {
         GamePanel panel = new GamePanel(game, keyboardDevice, settings.video);
         Renderer renderer = new Renderer(game, panel);
 
-        new Loop(game, renderer, input).start();
+        Debugger debugger = Debugger.INSTANCE;
+        new Loop(game, renderer, input, debugger).start();
     }
 }
