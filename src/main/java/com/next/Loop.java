@@ -1,6 +1,7 @@
 package com.next;
 
 import com.next.graphic.Renderer;
+import com.next.system.Debugger;
 import com.next.system.Input;
 
 public class Loop implements Runnable {
@@ -8,14 +9,16 @@ public class Loop implements Runnable {
     private final Game game;
     private final Renderer renderer;
     private final Input input;
+    private final Debugger debugger;
 
     private Thread mainThread;
     private boolean running;
 
-    public Loop(Game game, Renderer renderer, Input input) {
+    public Loop(Game game, Renderer renderer, Input input, Debugger debugger) {
         this.game = game;
         this.renderer = renderer;
         this.input = input;
+        this.debugger = debugger;
     }
 
     public void start() {
@@ -53,6 +56,7 @@ public class Loop implements Runnable {
 
             while (accumulator >= fixedDelta) {
                 input.poll();
+                debugger.update(input);
                 game.update(fixedDelta);
 
                 accumulator -= fixedDelta;
@@ -63,7 +67,7 @@ public class Loop implements Runnable {
 
             // Debug info *(frame rate)*
             if (System.currentTimeMillis() - timer >= 1000) {
-                if (game.DEBUG_MODE_1) IO.println("FPS: " + frames);
+                Debugger.put("FPS", new Debugger.DebugInt(frames));
                 frames = 0;
                 timer = System.currentTimeMillis();
             }
