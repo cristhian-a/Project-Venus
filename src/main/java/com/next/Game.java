@@ -1,51 +1,59 @@
 package com.next;
 
-import com.next.graphics.RenderData;
+import com.next.graphics.RenderQueue;
 import com.next.model.Actor;
+import com.next.model.Camera;
 import com.next.model.Player;
+import com.next.model.World;
+import com.next.system.AssetRegistry;
 import com.next.system.Input;
 import com.next.system.Settings;
 import lombok.Getter;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class Game {
 
     private final Input input;
     private final Settings settings;
+    private final AssetRegistry assets;
 
-    private Player player;
-    private Actor[] objects;
-    @Getter private volatile Map<Integer, RenderData> renderBuffer;
+    @Getter private World world;
+    @Getter private final Player player;
+    @Getter private final Camera camera;
+    @Getter private final Actor[] objects;
+    @Getter private volatile RenderQueue renderQueue;
 
-    public Game(Input input, Settings settings) {
+    public Game(Input input, Settings settings, AssetRegistry assets) {
         this.input = input;
+        this.assets = assets;
         this.settings = settings;
 
+        setupWorld("map_01");
         player = new Player(2);
         objects = new Actor[30];
         objects[0] = player;
 
-        renderBuffer = Map.of();
+        renderQueue = new RenderQueue();
+        camera = new Camera(settings.video.ORIGINAL_WIDTH, settings.video.ORIGINAL_HEIGHT);
     }
 
     public void update(double delta) {
         // TODO: all the stuff goes here man
         player.update(delta, input);
-        setRenderBuffer();
+        camera.follow(player);
+        queueRendering();
     }
 
-    private void setRenderBuffer() {
-        Map<Integer, RenderData> snapshot = new LinkedHashMap<>(objects.length);
+    private void queueRendering() {
+        renderQueue.clear();
 
-        for (int i = 0; i < objects.length; i++) {
-            Actor object = objects[i];
+        for (Actor object : objects) {
             if (object != null) {
-                snapshot.put(i, object.getRenderState());
+                renderQueue.submit(object.getRenderInstruction());
             }
         }
+    }
 
-        renderBuffer = Map.copyOf(snapshot);
+    private void setupWorld(String map) {
+        world = new World(assets.getTileMap("map_01"));
     }
 }

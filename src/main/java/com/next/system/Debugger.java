@@ -20,12 +20,12 @@ public class Debugger {
         Map<String, DebugValue> snapshot = new LinkedHashMap<>();   // snapshotting to deal with concurrency
 
         if (DEBUG_1) {
-            var fps = context.get("FPS");
-            var render = context.get("RENDER");
-
-            if (fps != null) snapshot.put("FPS", fps);
-            if (render != null) snapshot.put("RENDER", render);
-//            snapshot = Map.copyOf(context);
+//            var fps = context.get("FPS");
+//            var render = context.get("RENDER");
+//
+//            if (fps != null) snapshot.put("FPS", fps);
+//            if (render != null) snapshot.put("RENDER", render);
+            snapshot = Map.copyOf(context);
         }
 
         publishedData = Map.copyOf(snapshot);

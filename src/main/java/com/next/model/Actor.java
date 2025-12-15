@@ -1,13 +1,14 @@
 package com.next.model;
 
-import com.next.graphics.RenderData;
+import com.next.graphics.Layer;
+import com.next.graphics.RenderInstruction;
 
 public abstract class Actor {
     protected int spriteId;
-    protected int x;
-    protected int y;
+    protected int worldX;
+    protected int worldY;
 
-    public RenderData getRenderState() {
-        return new RenderData(x, y, spriteId);
+    public RenderInstruction getRenderInstruction() {
+        return new RenderInstruction(Layer.ACTORS, worldX, worldY, spriteId);
     }
 }

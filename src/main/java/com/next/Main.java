@@ -23,8 +23,8 @@ public class Main {
         KeyListener keyboardDevice = input.mapActions(settings.controls);
 
         // Setup and injection
-        Game game = new Game(input, settings);
-        Renderer renderer = new Renderer(game, assets);
+        Game game = new Game(input, settings, assets);
+        Renderer renderer = new Renderer(game, settings.video, assets);
         GamePanel panel = new AwtPanel(keyboardDevice, settings.video, renderer);
 
         new Loop(game, panel, input).start();

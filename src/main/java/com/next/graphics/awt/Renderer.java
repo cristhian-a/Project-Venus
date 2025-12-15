@@ -1,36 +1,65 @@
 package com.next.graphics.awt;
 
 import com.next.Game;
-import com.next.graphics.RenderData;
+import com.next.graphics.Layer;
+import com.next.model.Camera;
 import com.next.system.AssetRegistry;
 import com.next.system.Debugger;
+import com.next.system.Settings.VideoSettings;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 
-public class Renderer implements Renderable {
+public class Renderer {
     private final UI ui;
     private final Game game;
     private final AssetRegistry assets;
+    private final VideoSettings settings;
+    private final TileRenderer tileRenderer;
 
-    public Renderer(Game game, AssetRegistry assets) {
+    public Renderer(Game game, VideoSettings settings, AssetRegistry assets) {
         this.game = game;
         this.assets = assets;
+        this.settings = settings;
+
         this.ui = new UI(assets);
+        this.tileRenderer = new TileRenderer(assets, game.getWorld());
     }
 
-    @Override
     public void render(Graphics2D g) {
         long start = System.nanoTime();
+        Camera camera = game.getCamera();
 
-        var whatToRender = game.getRenderBuffer();
-        for (var entry : whatToRender.entrySet()) {
-            RenderData state = entry.getValue();
-            g.drawImage(assets.getSpriteSheet("world").getSprite(state.spriteId()), state.x(), state.y(), null);
-        }
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
-        ui.render(g);   // always last damn it
+        AffineTransform oldScale = g.getTransform();
+        g.scale(settings.SCALE, settings.SCALE);
+
+        render(Layer.BACKGROUND, g, camera);
+        render(Layer.WORLD, g, camera);
+        tileRenderer.render(g, camera);
+
+        render(Layer.ACTORS, g, camera);
+
+        g.setTransform(oldScale);   // de-scaling
+        ui.render(g);   // always last, damn it
+
+//        render(Layer.UI, g, camera);
+//        render(Layer.DEBUG, g, camera);
 
         long end = System.nanoTime();
         Debugger.put("RENDER", new Debugger.DebugLong(end - start));
+    }
+
+    private void render(Layer layer, Graphics2D g, Camera camera) {
+        var instructions = game.getRenderQueue().getLayer(layer);
+        for (var instruction : instructions) {
+            g.drawImage(
+                    assets.getSpriteSheet("world").getSprite(instruction.spriteId()),
+                    camera.worldToScreenX(instruction.worldX()),
+                    camera.worldToScreenY(instruction.worldY()),
+                    null
+            );
+        }
     }
 }
