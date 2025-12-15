@@ -2,12 +2,13 @@ package com.next.graphics.awt;
 
 import com.next.model.Camera;
 import com.next.model.Tile;
+import com.next.model.World;
 import com.next.system.AssetRegistry;
 import com.next.system.Settings;
 
 import java.awt.*;
 
-public class World {
+public class TileRenderer {
 
     public static final int TILE_SIZE = Settings.TILE_SIZE; // should retrieve this from settings later
 
@@ -16,21 +17,10 @@ public class World {
     private Tile[] tiles;
     private Integer[][] tileMap;
 
-    public World(AssetRegistry assets) {
+    public TileRenderer(AssetRegistry assets, World world) {
         this.assets = assets;
-        this.tiles = new Tile[10];
-        loadTiles();
-
-        this.tileMap = assets.getTileMap("map_01");
-    }
-
-    private void loadTiles() {
-        tiles[0] = new Tile(0, false);  // grass
-        tiles[1] = new Tile(1, true);   // wall
-        tiles[2] = new Tile(25, true);  // water
-        tiles[3] = new Tile(27, false); // dirt
-        tiles[4] = new Tile(26, true);  // tree
-        tiles[5] = new Tile(28, false); // sand
+        tiles = world.getTiles();
+        tileMap = world.getMap();
     }
 
     public void render(Graphics2D g, Camera camera) {
@@ -52,13 +42,6 @@ public class World {
                 int screenY = camera.worldToScreenY(worldY);
 
                 g.drawImage(assets.getSpriteSheet("world").getSprite(tile.spriteId()), screenX, screenY, null);
-
-                // drawing collision box
-                if (tile.solid()) {
-                    g.setColor(Color.RED);
-                    Rectangle r = new Rectangle(screenX, screenY, TILE_SIZE, TILE_SIZE);
-                    g.draw(r);
-                }
             }
         }
     }
