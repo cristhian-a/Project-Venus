@@ -64,7 +64,7 @@ public class Loop implements Runnable {
 
             // Debug info *(frame rate)*
             if (System.currentTimeMillis() - timer >= 1000) {
-                Debugger.put("FPS", new Debugger.DebugInt(frames));
+                Debugger.publish("FPS", new Debugger.DebugInt(frames), 10, 30, Debugger.TYPE.INFO);
                 frames = 0;
                 timer = System.currentTimeMillis();
             }

@@ -22,7 +22,7 @@ public class Renderer {
         this.assets = assets;
         this.settings = settings;
 
-        this.ui = new UI(assets);
+        this.ui = new UI(assets, settings);
         this.tileRenderer = new TileRenderer(assets, game.getWorld());
     }
 
@@ -42,13 +42,13 @@ public class Renderer {
         render(Layer.ACTORS, g, camera);
 
         g.setTransform(oldScale);   // de-scaling
-        ui.render(g);   // always last, damn it
+        ui.render(g, camera);   // always last, damn it
 
 //        render(Layer.UI, g, camera);
 //        render(Layer.DEBUG, g, camera);
 
         long end = System.nanoTime();
-        Debugger.put("RENDER", new Debugger.DebugLong(end - start));
+        Debugger.publish("RENDER", new Debugger.DebugLong(end - start), 200, 30, Debugger.TYPE.INFO);
     }
 
     private void render(Layer layer, Graphics2D g, Camera camera) {

@@ -1,11 +1,9 @@
 package com.next;
 
 import com.next.graphics.RenderQueue;
-import com.next.model.Actor;
-import com.next.model.Camera;
-import com.next.model.Player;
-import com.next.model.World;
+import com.next.model.*;
 import com.next.system.AssetRegistry;
+import com.next.system.Debugger;
 import com.next.system.Input;
 import com.next.system.Settings;
 import lombok.Getter;
@@ -22,6 +20,8 @@ public class Game {
     @Getter private final Actor[] objects;
     @Getter private volatile RenderQueue renderQueue;
 
+    private final CollisionInspector collisionInspector;
+
     public Game(Input input, Settings settings, AssetRegistry assets) {
         this.input = input;
         this.assets = assets;
@@ -34,11 +34,13 @@ public class Game {
 
         renderQueue = new RenderQueue();
         camera = new Camera(settings.video.ORIGINAL_WIDTH, settings.video.ORIGINAL_HEIGHT);
+        collisionInspector = new CollisionInspector(Settings.TILE_SIZE, world);
     }
 
     public void update(double delta) {
         // TODO: all the stuff goes here man
-        player.update(delta, input);
+        player.update(delta, input, collisionInspector);
+
         camera.follow(player);
         queueRendering();
     }

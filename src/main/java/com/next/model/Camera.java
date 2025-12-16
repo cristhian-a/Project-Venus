@@ -18,7 +18,7 @@ public class Camera {
 
     public void follow(Actor actor) {
         follow(actor.worldX, actor.worldY);
-        Debugger.put("CAMERA", new Debugger.DebugText("X: " + x + ", Y: " + y));
+        Debugger.publish("CAMERA", new Debugger.DebugText("X: " + x + ", Y: " + y), 10, 60, Debugger.TYPE.INFO);
     }
 
     public void follow(int targetX, int targetY) {

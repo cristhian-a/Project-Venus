@@ -23,5 +23,10 @@ public class World {
         tiles[5] = new Tile(28, false); // sand
     }
 
+    public boolean isSolid(int row, int col) {
+        int tileId = map[row][col];
+        return tiles[tileId].solid();
+    }
+
 
 }

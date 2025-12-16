@@ -1,34 +1,37 @@
 package com.next.system;
 
+import com.next.model.CollisionBox;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+
 public class Debugger {
+
+    public enum TYPE {
+        INFO, COLLISION
+    }
 
     private static final Debugger INSTANCE = new Debugger();
 
-    private final Map<String, DebugValue> context;
-    private volatile Map<String, DebugValue> publishedData;
+    private final Map<String, DebugRenderInstruction> context;
+    private volatile Map<String, DebugRenderInstruction> renderQueue;
+
     private boolean DEBUG_1;
 
     private Debugger() {
         context = new LinkedHashMap<>();
-        publishedData = Map.of();
+        renderQueue = Map.of();
     }
 
     public void update() {
-        Map<String, DebugValue> snapshot = new LinkedHashMap<>();   // snapshotting to deal with concurrency
+        Map<String, DebugRenderInstruction> snapshot = new LinkedHashMap<>();  // snapshotting to deal with concurrency
 
         if (DEBUG_1) {
-//            var fps = context.get("FPS");
-//            var render = context.get("RENDER");
-//
-//            if (fps != null) snapshot.put("FPS", fps);
-//            if (render != null) snapshot.put("RENDER", render);
             snapshot = Map.copyOf(context);
         }
 
-        publishedData = Map.copyOf(snapshot);
+        renderQueue = Map.copyOf(snapshot);
     }
 
     public static void update(Input input) {
@@ -38,43 +41,62 @@ public class Debugger {
         INSTANCE.update();
     }
 
-    public static void put(String key, DebugValue value) {
-        INSTANCE.context.put(key, value);
+    public static void publish(String key, DebugValue value, int x, int y, TYPE type) {
+        INSTANCE.context.put(key, new DebugRenderInstruction(x, y, value, type));
     }
 
-    public static Map<String, DebugValue> getPublishedData() {
-        return INSTANCE.publishedData;
+    public static void publishCollision(String key, CollisionBox box) {
+        publish(key, new DebugCollision(box), 0, 0, TYPE.COLLISION);
     }
 
-    public sealed interface DebugValue permits DebugInt, DebugFloat, DebugText, DebugLong {
-        String display();
+    public static Map<String, DebugRenderInstruction> getRenderQueue() {
+        return INSTANCE.renderQueue;
+    }
+
+    public sealed interface DebugValue {
+        default String displayInfo() {
+            return toString();
+        }
+
+        default CollisionBox displayBox() {
+            return null;
+        }
     }
 
     public record DebugInt(int value) implements DebugValue {
         @Override
-        public String display() {
+        public String displayInfo() {
             return String.valueOf(value);
         }
     }
 
     public record DebugFloat(float value) implements DebugValue {
         @Override
-        public String display() {
+        public String displayInfo() {
             return String.valueOf(value);
         }
     }
 
     public record DebugText(String value) implements DebugValue {
         @Override
-        public String display() {
+        public String displayInfo() {
             return value;
         }
     }
 
     public record DebugLong(Long value) implements DebugValue {
         @Override
-        public String display() {
+        public String displayInfo() {
             return value.toString();
         }
     }
+
+    public record DebugCollision(CollisionBox box) implements DebugValue {
+        @Override
+        public CollisionBox displayBox() {
+            return box;
+        }
+    }
+
+    public record DebugRenderInstruction(int x, int y, DebugValue value, TYPE type) {}
 }
