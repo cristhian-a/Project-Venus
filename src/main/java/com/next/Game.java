@@ -1,9 +1,10 @@
 package com.next;
 
+import com.next.core.Animator;
 import com.next.graphics.RenderQueue;
 import com.next.model.*;
+import com.next.model.factory.PlayerFactory;
 import com.next.system.AssetRegistry;
-import com.next.system.Debugger;
 import com.next.system.Input;
 import com.next.system.Settings;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class Game {
         this.settings = settings;
 
         setupWorld("map_01");
-        player = new Player(2);
+        player = PlayerFactory.createPlayer();
         objects = new Actor[30];
         objects[0] = player;
 

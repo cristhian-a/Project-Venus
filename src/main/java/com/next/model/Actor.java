@@ -9,7 +9,7 @@ public abstract class Actor {
     protected int spriteId;
     protected int worldX;
     protected int worldY;
-    protected CollisionBox collisionBox;    // just remember to initialize this sometime
+    protected CollisionBox collisionBox;        // TODO: just remember to initialize this anytime
 
     public RenderInstruction getRenderInstruction() {
         return new RenderInstruction(Layer.ACTORS, worldX, worldY, spriteId);

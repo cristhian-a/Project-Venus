@@ -1,7 +1,6 @@
 package com.next.model;
 
 import com.next.system.Debugger;
-import lombok.Getter;
 import lombok.Setter;
 
 public class CollisionInspector {

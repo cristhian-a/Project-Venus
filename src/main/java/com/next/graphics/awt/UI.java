@@ -44,7 +44,7 @@ public class UI {
 
                 var oldScale = g.getTransform();
                 g.scale(settings.SCALE, settings.SCALE);  // TODO: get scale from the right place
-                g.setColor(box.isColliding() ? Color.WHITE : Color.RED);
+                g.setColor(Color.RED);
                 g.draw(r);
                 g.setTransform(oldScale);   // de-scaling
             }

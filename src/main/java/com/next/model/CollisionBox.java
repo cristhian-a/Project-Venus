@@ -9,7 +9,6 @@ public class CollisionBox {
     protected final float offsetY;
 
     @Getter @Setter private boolean solid;
-    @Getter @Setter private boolean colliding;
 
     public CollisionBox(float offsetX, float offsetY, float width, float height) {
         this.offsetX = offsetX;

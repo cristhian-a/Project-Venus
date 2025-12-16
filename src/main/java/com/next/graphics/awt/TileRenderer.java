@@ -13,12 +13,15 @@ public class TileRenderer {
     public static final int TILE_SIZE = Settings.TILE_SIZE; // should retrieve this from settings later
 
     private final AssetRegistry assets;
+    private final World world;
 
     private Tile[] tiles;
     private Integer[][] tileMap;
 
     public TileRenderer(AssetRegistry assets, World world) {
         this.assets = assets;
+        this.world = world;
+
         tiles = world.getTiles();
         tileMap = world.getMap();
     }
@@ -41,7 +44,12 @@ public class TileRenderer {
                 int screenX = camera.worldToScreenX(worldX);
                 int screenY = camera.worldToScreenY(worldY);
 
-                g.drawImage(assets.getSpriteSheet("world").getSprite(tile.spriteId()), screenX, screenY, null);
+                g.drawImage(
+                        assets.getSpriteSheet("world").getSprite(tile.spriteId()),
+                        screenX,
+                        screenY,
+                        null
+                );
             }
         }
     }
