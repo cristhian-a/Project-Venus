@@ -3,7 +3,7 @@ package com.next;
 import com.next.graphics.GamePanel;
 import com.next.graphics.awt.AwtPanel;
 import com.next.graphics.awt.Renderer;
-import com.next.io.Loader.SettingsLoader;
+import com.next.io.Loader;
 import com.next.system.AssetRegistry;
 import com.next.system.Input;
 import com.next.system.Settings;
@@ -14,7 +14,7 @@ public class Main {
 
     static void main() {
         // IO operations
-        Settings settings = SettingsLoader.load();
+        Settings settings = Loader.Settings.load();
         AssetRegistry assets = new AssetRegistry();
         assets.load();
 

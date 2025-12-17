@@ -1,8 +1,8 @@
 package com.next.graphics.awt;
 
 import com.next.model.Camera;
-import com.next.model.Tile;
-import com.next.model.World;
+import com.next.world.Tile;
+import com.next.world.World;
 import com.next.system.AssetRegistry;
 import com.next.system.Settings;
 
@@ -10,20 +10,23 @@ import java.awt.*;
 
 public class TileRenderer {
 
-    public static final int TILE_SIZE = Settings.TILE_SIZE; // should retrieve this from settings later
-
     private final AssetRegistry assets;
+    private final World world;
 
     private Tile[] tiles;
     private Integer[][] tileMap;
 
     public TileRenderer(AssetRegistry assets, World world) {
         this.assets = assets;
+        this.world = world;
+
         tiles = world.getTiles();
         tileMap = world.getMap();
     }
 
     public void render(Graphics2D g, Camera camera) {
+        final int TILE_SIZE = world.getTileSize();
+        
         int startCol = Math.max(0, camera.getX() / TILE_SIZE);
         int endCol = Math.min(tileMap[0].length, (camera.getX() + camera.getViewportWidth()) / TILE_SIZE + 1);
 
@@ -41,7 +44,12 @@ public class TileRenderer {
                 int screenX = camera.worldToScreenX(worldX);
                 int screenY = camera.worldToScreenY(worldY);
 
-                g.drawImage(assets.getSpriteSheet("world").getSprite(tile.spriteId()), screenX, screenY, null);
+                g.drawImage(
+                        assets.getSpriteSheet("world").getSprite(tile.spriteId()),
+                        screenX,
+                        screenY,
+                        null
+                );
             }
         }
     }

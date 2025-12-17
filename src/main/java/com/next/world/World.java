@@ -1,14 +1,17 @@
-package com.next.model;
+package com.next.world;
 
 import lombok.Getter;
 import lombok.Setter;
 
 public class World {
 
+    @Getter private final WorldRules rules;
+
     @Getter private Tile[] tiles;
     @Getter @Setter private Integer[][] map;
 
-    public World(Integer[][] map) {
+    public World(WorldRules rules, Integer[][] map) {
+        this.rules = rules;
         this.map = map;
         mapTiles();
     }
@@ -23,5 +26,13 @@ public class World {
         tiles[5] = new Tile(28, false); // sand
     }
 
+    public boolean isSolid(int row, int col) {
+        int tileId = map[row][col];
+        return tiles[tileId].solid();
+    }
+
+    public int getTileSize() {
+        return rules.tileSize();
+    }
 
 }
