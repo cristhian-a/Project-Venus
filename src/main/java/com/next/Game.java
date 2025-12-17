@@ -9,6 +9,7 @@ import com.next.system.AssetRegistry;
 import com.next.system.Input;
 import com.next.system.Settings;
 import com.next.world.LevelData;
+import com.next.world.Scene;
 import com.next.world.World;
 import com.next.world.WorldRules;
 import lombok.Getter;
@@ -21,12 +22,10 @@ public class Game {
     private final Settings settings;
     private final AssetRegistry assets;
 
-    @Getter private final Player player;
     @Getter private final Camera camera;
     @Getter private final RenderQueue renderQueue;
 
-    @Getter private World world;
-    @Getter private Actor[] objects;
+    @Getter private Scene scene;
 
     private final CollisionInspector collisionInspector;
 
@@ -35,47 +34,49 @@ public class Game {
         this.assets = assets;
         this.settings = settings;
 
-        player = setupScene("map_01");  // TODO: this is gambiarra, I need to fix it later
+        try {
+            scene = loadScene("world_1.json", "level_1.json", "map_01");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         renderQueue = new RenderQueue();
         camera = new Camera(settings.video.ORIGINAL_WIDTH, settings.video.ORIGINAL_HEIGHT);
-        collisionInspector = new CollisionInspector(world);
+        collisionInspector = new CollisionInspector(scene.world);
     }
 
     public void update(double delta) {
         // TODO: all the stuff goes here man
-        player.update(delta, input, collisionInspector);
+        scene.player.update(delta, input, collisionInspector);
 
-        for (Actor object : objects) {
-            collisionInspector.isColliding(player, object);
+        for (Actor object : scene.actors) {
+            collisionInspector.isColliding(scene.player, object);
         }
 
-        camera.follow(player);
+        camera.follow(scene.player);
         queueRendering();
     }
 
     private void queueRendering() {
         renderQueue.clear();
 
-        for (Actor object : objects) {
+        for (Actor object : scene.actors) {
             if (object != null) {
-                renderQueue.submit(object.getRenderInstruction());
+                renderQueue.submit(object.getRenderRequest());
             }
         }
 
-        renderQueue.submit(player.getRenderInstruction());
+        renderQueue.submit(scene.player.getRenderRequest());
     }
 
-    private Player setupScene(String map) {
-        try {
-            WorldRules rules = Loader.World.load("world_1.json");
-            LevelData level = Loader.Level.load("level_1.json");
+    private Scene loadScene(String worldFile, String levelFile, String map) throws IOException {
+        WorldRules rules = Loader.World.load(worldFile);
+        LevelData level = Loader.Level.load(levelFile);
 
-            world = new World(rules, assets.getTileMap(map));
-            objects = new PropFactory(world, level).createScene1Props().toArray(new Prop[0]);
-            return new PlayerFactory(world, level).create();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        var world = new World(rules, assets.getTileMap(map));
+        Actor[] objects = new PropFactory(world, level).createScene1Props().toArray(new Prop[0]);
+        Player player = new PlayerFactory(world, level).create();
+
+        return new Scene(world, player, objects);
     }
 }

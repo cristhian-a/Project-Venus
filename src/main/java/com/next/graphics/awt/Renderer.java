@@ -23,7 +23,7 @@ public class Renderer {
         this.settings = settings;
 
         this.ui = new UI(assets, settings);
-        this.tileRenderer = new TileRenderer(assets, game.getWorld());
+        this.tileRenderer = new TileRenderer(assets, game.getScene().world);
     }
 
     public void render(Graphics2D g) {

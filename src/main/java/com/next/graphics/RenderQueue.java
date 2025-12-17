@@ -6,7 +6,7 @@ import java.util.List;
 
 public final class RenderQueue {
 
-    private final EnumMap<Layer, List<RenderInstruction>> layers = new EnumMap<>(Layer.class);
+    private final EnumMap<Layer, List<RenderRequest>> layers = new EnumMap<>(Layer.class);
 
     public RenderQueue() {
         for (Layer l : Layer.values()) {
@@ -14,11 +14,11 @@ public final class RenderQueue {
         }
     }
 
-    public void submit(RenderInstruction instruction) {
+    public void submit(RenderRequest instruction) {
         layers.get(instruction.layer()).add(instruction);
     }
 
-    public List<RenderInstruction> getLayer(Layer layer) {
+    public List<RenderRequest> getLayer(Layer layer) {
         return layers.get(layer);
     }
 

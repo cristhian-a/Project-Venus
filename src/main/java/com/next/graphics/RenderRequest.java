@@ -1,6 +1,6 @@
 package com.next.graphics;
 
-public record RenderInstruction(
+public record RenderRequest(
         Layer layer,
         int worldX,
         int worldY,

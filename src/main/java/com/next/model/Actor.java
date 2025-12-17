@@ -1,7 +1,7 @@
 package com.next.model;
 
 import com.next.graphics.Layer;
-import com.next.graphics.RenderInstruction;
+import com.next.graphics.RenderRequest;
 import com.next.system.Debugger;
 import lombok.Getter;
 
@@ -10,11 +10,11 @@ public abstract class Actor {
     protected int spriteId;
     protected int worldX;
     protected int worldY;
-    protected CollisionBox collisionBox;        // TODO: just remember to initialize this anytime
+    protected CollisionBox collisionBox;        // TODO: remember to initialize it anytime (or move it to children)
 
-    public RenderInstruction getRenderInstruction() {
+    public RenderRequest getRenderRequest() {
         if (collisionBox != null) Debugger.publishCollision("ACTOR BOX" + this, collisionBox);
-        return new RenderInstruction(Layer.ACTORS, worldX, worldY, spriteId);
+        return new RenderRequest(Layer.ACTORS, worldX, worldY, spriteId);
     }
 
     public void setPosition(int worldX, int worldY) {
