@@ -4,19 +4,22 @@ import com.next.core.Animation;
 import com.next.core.AnimationState;
 import com.next.system.Debugger;
 import com.next.system.Input;
-import com.next.system.Settings;
 import lombok.Setter;
 
 public class Player extends AnimatedActor {
 
     @Setter private int speed = 1;
 
-    public Player(int spriteId, Animation upAnim, Animation downAnim, Animation leftAnim, Animation rightAnim) {
-        worldX = Settings.TILE_SIZE * 23;
-        worldY = Settings.TILE_SIZE * 21;
+    public Player(int spriteId, int worldX, int worldY,
+                  Animation upAnim, Animation downAnim, Animation leftAnim, Animation rightAnim
+    ) {
+        this.worldX = worldX;
+        this.worldY = worldY;
 
         collisionBox = new CollisionBox(3, 6, 10, 9);
         collisionBox.setSolid(true);
+
+        setPosition(worldX, worldY);
 
         animationState = AnimationState.IDLE;
         Animation idle = new Animation(new int[] { spriteId}, 0, false);

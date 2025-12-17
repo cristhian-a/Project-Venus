@@ -1,16 +1,14 @@
 package com.next.graphics.awt;
 
 import com.next.model.Camera;
-import com.next.model.Tile;
-import com.next.model.World;
+import com.next.world.Tile;
+import com.next.world.World;
 import com.next.system.AssetRegistry;
 import com.next.system.Settings;
 
 import java.awt.*;
 
 public class TileRenderer {
-
-    public static final int TILE_SIZE = Settings.TILE_SIZE; // should retrieve this from settings later
 
     private final AssetRegistry assets;
     private final World world;
@@ -27,6 +25,8 @@ public class TileRenderer {
     }
 
     public void render(Graphics2D g, Camera camera) {
+        final int TILE_SIZE = world.getTileSize();
+        
         int startCol = Math.max(0, camera.getX() / TILE_SIZE);
         int endCol = Math.min(tileMap[0].length, (camera.getX() + camera.getViewportWidth()) / TILE_SIZE + 1);
 

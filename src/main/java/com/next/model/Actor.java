@@ -2,6 +2,7 @@ package com.next.model;
 
 import com.next.graphics.Layer;
 import com.next.graphics.RenderInstruction;
+import com.next.system.Debugger;
 import lombok.Getter;
 
 @Getter
@@ -12,6 +13,7 @@ public abstract class Actor {
     protected CollisionBox collisionBox;        // TODO: just remember to initialize this anytime
 
     public RenderInstruction getRenderInstruction() {
+        if (collisionBox != null) Debugger.publishCollision("ACTOR BOX" + this, collisionBox);
         return new RenderInstruction(Layer.ACTORS, worldX, worldY, spriteId);
     }
 

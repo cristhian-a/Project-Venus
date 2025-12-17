@@ -2,10 +2,20 @@ package com.next.model.factory;
 
 import com.next.core.Animation;
 import com.next.model.Player;
+import com.next.world.LevelData;
+import com.next.world.World;
 
 public class PlayerFactory {
 
-    public static Player createPlayer() {
+    private final World world;
+    private final LevelData level;
+
+    public PlayerFactory(World world, LevelData level) {
+        this.world = world;
+        this.level = level;
+    }
+
+    public Player create() {
         var animBuilder = Animation.builder().loop(true).frameRate(20);
 
         animBuilder.frames(new int[] { 3, 4 });
@@ -20,6 +30,10 @@ public class PlayerFactory {
         animBuilder.frames(new int[] { 12, 13 });
         var leftAnimation = animBuilder.build();
 
-        return new Player(2, upAnimation, downAnimation, leftAnimation, rightAnimation);
+        int spawnX = world.getTileSize() * level.playerSpawnX();
+        int spawnY = world.getTileSize() * level.playerSpawnY();
+
+        return new Player(2, spawnX, spawnY, upAnimation, downAnimation, leftAnimation, rightAnimation);
     }
+
 }

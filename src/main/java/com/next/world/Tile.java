@@ -1,4 +1,4 @@
-package com.next.model;
+package com.next.world;
 
 public record Tile(
         int spriteId,

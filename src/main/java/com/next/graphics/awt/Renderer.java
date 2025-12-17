@@ -36,8 +36,9 @@ public class Renderer {
         g.scale(settings.SCALE, settings.SCALE);
 
         render(Layer.BACKGROUND, g, camera);
-        render(Layer.WORLD, g, camera);
+
         tileRenderer.render(g, camera);
+        render(Layer.WORLD, g, camera);
 
         render(Layer.ACTORS, g, camera);
 
