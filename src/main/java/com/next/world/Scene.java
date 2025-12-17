@@ -4,7 +4,7 @@ import com.next.model.Actor;
 import com.next.model.Player;
 
 /**
- * A scene holds all the runtime entities relevant to the current game scene.
+ * A {@code Scene} holds all the runtime entities relevant to the current game scene.
  */
 public class Scene {
     public final World world;
