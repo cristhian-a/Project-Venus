@@ -14,6 +14,8 @@ public abstract class Actor {
     protected CollisionBox collisionBox;        // TODO: remember to initialize it anytime (or move it to children)
     protected CollisionType collisionType = CollisionType.NONE;
 
+    protected boolean discarded;
+
     public RenderRequest getRenderRequest() {
         if (collisionBox != null) Debugger.publishCollision("ACTOR BOX" + this, collisionBox);
         return new RenderRequest(Layer.ACTORS, worldX, worldY, spriteId);
@@ -33,18 +35,8 @@ public abstract class Actor {
         worldX += (int) dx;
         collisionBox.update(worldX, worldY);
 
-        if (collisions.isCollidingWithTile(this)) {
-            var box = collisionBox.getBounds();
-
-            if (dx > 0) {
-                int tileCol = (int) (box.x + box.width) / collisions.getTileSize();
-                worldX = tileCol * collisions.getTileSize() - (int) (box.width + collisionBox.offsetX);
-            } else {
-                int tileCol = (int) box.x / collisions.getTileSize();
-                worldX = (tileCol + 1) * collisions.getTileSize() - (int) collisionBox.offsetX;
-            }
-
-            collisionBox.update(worldX, worldY);
+        if (collisions.isColliding(this)) {
+            clampX(dx, collisions.getTileSize());
         }
     }
 
@@ -54,18 +46,42 @@ public abstract class Actor {
         worldY += (int) dy;
         collisionBox.update(worldX, worldY);
 
-        if (collisions.isCollidingWithTile(this)) {
-            var box = collisionBox.getBounds();
-
-            if (dy > 0) {
-                int tileRow = (int) (box.y + box.height) / collisions.getTileSize();
-                worldY = tileRow * collisions.getTileSize() - (int) (box.height + collisionBox.offsetY);
-            } else {
-                int tileRow = (int) box.y / collisions.getTileSize();
-                worldY = (tileRow + 1) * collisions.getTileSize() - (int) collisionBox.offsetY;
-            }
-
-            collisionBox.update(worldX, worldY);
+        if (collisions.isColliding(this)) {
+            clampY(dy, collisions.getTileSize());
         }
+    }
+
+    public void clampX(float dx, int tileSize) {
+        var box = collisionBox.getBounds();
+
+        if (dx > 0) {
+            int tileCol = (int) (box.x + box.width) / tileSize;
+            worldX = tileCol * tileSize - (int) (box.width + collisionBox.offsetX);
+        } else {
+            int tileCol = (int) box.x / tileSize;
+            worldX = (tileCol + 1) * tileSize - (int) collisionBox.offsetX;
+        }
+
+        collisionBox.update(worldX, worldY);
+    }
+
+    public void clampY(float dy, int tileSize) {
+        var box = collisionBox.getBounds();
+
+        if (dy > 0) {
+            int tileRow = (int) (box.y + box.height) / tileSize;
+            worldY = tileRow * tileSize - (int) (box.height + collisionBox.offsetY);
+        } else {
+            int tileRow = (int) box.y / tileSize;
+            worldY = (tileRow + 1) * tileSize - (int) collisionBox.offsetY;
+        }
+
+        collisionBox.update(worldX, worldY);
+    }
+
+    public void onTrigger(Actor other) {}
+
+    public void discard() {
+        discarded = true;
     }
 }

@@ -1,6 +1,8 @@
 package com.next.model.factory;
 
 import com.next.core.CollisionType;
+import com.next.model.Door;
+import com.next.model.Key;
 import com.next.model.Prop;
 import com.next.world.LevelData;
 import com.next.world.World;
@@ -22,16 +24,16 @@ public class PropFactory {
         return new Prop(15, worldX, worldY, CollisionType.TRIGGER);
     }
 
-    public Prop createDoor(int worldX, int worldY) {
-        return new Prop(29, worldX, worldY, CollisionType.TRIGGER);
+    public Door createDoor(int worldX, int worldY) {
+        return new Door(29, worldX, worldY, CollisionType.TRIGGER);
     }
 
     public Prop createChest(int worldX, int worldY) {
         return new Prop(30, worldX, worldY, CollisionType.TRIGGER);
     }
 
-    public Prop createKey(int worldX, int worldY) {
-        return new Prop(31, worldX, worldY, CollisionType.TRIGGER);
+    public Key createKey(int worldX, int worldY) {
+        return new Key(31, worldX, worldY, CollisionType.TRIGGER);
     }
 
     public List<Prop> createScene1Props() {

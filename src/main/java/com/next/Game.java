@@ -42,16 +42,15 @@ public class Game {
 
         renderQueue = new RenderQueue();
         camera = new Camera(settings.video.ORIGINAL_WIDTH, settings.video.ORIGINAL_HEIGHT);
-        collisionInspector = new CollisionInspector(scene.world);
+        collisionInspector = new CollisionInspector();
+        collisionInspector.inspect(scene);
     }
 
     public void update(double delta) {
         // TODO: all the stuff goes here man
         scene.player.update(delta, input, collisionInspector);
 
-        for (Actor object : scene.actors) {
-            collisionInspector.isColliding(scene.player, object);
-        }
+        scene.removeDiscardedActors();
 
         camera.follow(scene.player);
         queueRendering();

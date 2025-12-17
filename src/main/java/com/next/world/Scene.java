@@ -16,4 +16,12 @@ public class Scene {
         this.player = player;
         this.actors = actors;
     }
+
+    public void removeDiscardedActors() {
+        for (int i = 0; i < actors.length; i++) {
+            if (actors[i] != null && actors[i].isDiscarded()) {
+                actors[i] = null;
+            }
+        }
+    }
 }

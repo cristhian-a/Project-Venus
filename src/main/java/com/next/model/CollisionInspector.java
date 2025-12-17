@@ -1,24 +1,28 @@
 package com.next.model;
 
-import com.next.world.World;
+import com.next.world.Scene;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CollisionInspector {
 
-    private World world;
+    private Scene scene;
     private int tileSize;
 
-    public CollisionInspector(World world) {
-        this.world = world;
-        tileSize = world.getTileSize();
+    private Map<Actor, Actor> lastCollisions = new HashMap<>();
+
+    public void inspect(Scene scene) {
+        this.scene = scene;
+        tileSize = scene.world.getTileSize();
     }
 
     public int getTileSize() {
-        return world.getTileSize();
+        return scene.world.getTileSize();
     }
 
-    public void setWorld(World world) {
-        this.world = world;
-        tileSize = world.getTileSize();
+    public boolean isColliding(Actor actor) {
+        return isCollidingWithTile(actor) || isCollidingWithActors(actor);
     }
 
     public boolean isCollidingWithTile(Actor actor) {
@@ -36,7 +40,7 @@ public class CollisionInspector {
 
         for (int row = top; row <= bottom; row++) {
             for (int col = left; col <= right; col++) {
-                if (world.isSolid(row, col)) {
+                if (scene.world.isSolid(row, col)) {
                     return true;
                 }
             }
@@ -45,10 +49,21 @@ public class CollisionInspector {
         return false;
     }
 
+    public boolean isCollidingWithActors(Actor actor) {
+        for (Actor other : scene.actors) {
+            if (other != null && other != actor && isColliding(actor, other)) return true;
+        }
+        return false;
+    }
+
     public boolean isColliding(Actor actor, Actor other) {
         boolean is = actor.collisionBox.intersects(other.collisionBox);
-        if (is) IO.println("COLLISION");
+        if (is) lastCollisions.put(actor, other);
         return is;
+    }
+
+    public Actor getLastCollisionWithActor(Actor actor) {
+        return lastCollisions.get(actor);
     }
 
 }

@@ -5,11 +5,16 @@ import com.next.core.AnimationState;
 import com.next.core.CollisionType;
 import com.next.system.Debugger;
 import com.next.system.Input;
+import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Player extends AnimatedActor {
 
     @Setter private int speed = 1;
+    @Getter private List<Key> keys = new ArrayList<>();
 
     public Player(int spriteId, int worldX, int worldY,
                   Animation upAnim, Animation downAnim, Animation leftAnim, Animation rightAnim
@@ -17,7 +22,7 @@ public class Player extends AnimatedActor {
         this.worldX = worldX;
         this.worldY = worldY;
 
-        collisionBox = new CollisionBox(3, 6, 10, 9);
+        collisionBox = new CollisionBox(3, 6, 10, 10);
         this.collisionType = CollisionType.SOLID;
 
         setPosition(worldX, worldY);
@@ -68,5 +73,65 @@ public class Player extends AnimatedActor {
     public void animate() {
         animator.set(animations.get(animationState));
         spriteId = animator.update();
+    }
+
+    @Override
+    protected void moveX(float dx, CollisionInspector collisions) {
+        if (dx == 0) return;
+
+        worldX += (int) dx;
+        collisionBox.update(worldX, worldY);
+
+        if (collisions.isCollidingWithTile(this))
+            clampX(dx, collisions.getTileSize());
+
+        if (collisions.isCollidingWithActors(this)) {
+            Actor actor = collisions.getLastCollisionWithActor(this);
+            if (actor == null) return;
+            switch (actor.collisionType) {
+                case SOLID -> clampX(dx, collisions.getTileSize());
+                case TRIGGER -> {
+                    if (actor instanceof Door) {
+                        if (keys.isEmpty()) clampX(dx, collisions.getTileSize());
+                        else {
+                            keys.removeLast();
+                            actor.onTrigger(this);
+                        }
+                    } else if (actor instanceof Key) {
+                        actor.onTrigger(this);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void moveY(float dy, CollisionInspector collisions) {
+        if (dy == 0) return;
+
+        worldY += (int) dy;
+        collisionBox.update(worldX, worldY);
+
+        if (collisions.isCollidingWithTile(this))
+            clampY(dy, collisions.getTileSize());
+
+        if (collisions.isCollidingWithActors(this)) {
+            Actor actor = collisions.getLastCollisionWithActor(this);
+            if (actor == null) return;
+            switch (actor.collisionType) {
+                case SOLID -> clampY(dy, collisions.getTileSize());
+                case TRIGGER -> {
+                    if (actor instanceof Door) {
+                        if (keys.isEmpty()) clampY(dy, collisions.getTileSize());
+                        else {
+                            keys.removeLast();
+                            actor.onTrigger(this);
+                        }
+                    } else if (actor instanceof Key) {
+                        actor.onTrigger(this);
+                    }
+                }
+            }
+        }
     }
 }
