@@ -1,14 +1,11 @@
 package com.next.model;
 
 import lombok.Getter;
-import lombok.Setter;
 
 public class CollisionBox {
     @Getter private final AABB bounds;
     protected final float offsetX;
     protected final float offsetY;
-
-    @Getter @Setter private boolean solid;
 
     public CollisionBox(float offsetX, float offsetY, float width, float height) {
         this.offsetX = offsetX;

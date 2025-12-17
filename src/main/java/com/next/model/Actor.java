@@ -1,5 +1,6 @@
 package com.next.model;
 
+import com.next.core.CollisionType;
 import com.next.graphics.Layer;
 import com.next.graphics.RenderRequest;
 import com.next.system.Debugger;
@@ -11,6 +12,7 @@ public abstract class Actor {
     protected int worldX;
     protected int worldY;
     protected CollisionBox collisionBox;        // TODO: remember to initialize it anytime (or move it to children)
+    protected CollisionType collisionType = CollisionType.NONE;
 
     public RenderRequest getRenderRequest() {
         if (collisionBox != null) Debugger.publishCollision("ACTOR BOX" + this, collisionBox);

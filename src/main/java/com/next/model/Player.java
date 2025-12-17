@@ -2,6 +2,7 @@ package com.next.model;
 
 import com.next.core.Animation;
 import com.next.core.AnimationState;
+import com.next.core.CollisionType;
 import com.next.system.Debugger;
 import com.next.system.Input;
 import lombok.Setter;
@@ -17,7 +18,7 @@ public class Player extends AnimatedActor {
         this.worldY = worldY;
 
         collisionBox = new CollisionBox(3, 6, 10, 9);
-        collisionBox.setSolid(true);
+        this.collisionType = CollisionType.SOLID;
 
         setPosition(worldX, worldY);
 
