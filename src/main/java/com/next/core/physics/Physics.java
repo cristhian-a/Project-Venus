@@ -25,7 +25,6 @@ public class Physics {
     }
 
     public void apply(double delta, List<Movement> intents) {
-        processedPairs.clear();
         for (Movement m : intents) {
             if (m != null) {
                 moveX(m);
@@ -34,6 +33,7 @@ public class Physics {
         }
 
         scene.dismissDisposedActors();
+        processedPairs.clear();
         intents.clear();
     }
 

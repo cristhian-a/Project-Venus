@@ -47,8 +47,6 @@ public class Player extends AnimatedActor {
         float dx = 0;
         float dy = 0;
 
-        float speed = this.speed + 0.5f;
-
         animationState = AnimationState.IDLE;
 
         if (input.isDown(Input.Action.UP)) {

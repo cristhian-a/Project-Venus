@@ -54,11 +54,11 @@ public class Game {
 
         // TODO maybe extract blocks to methods, or maybe not, whatever
 
+        scene.player.update(delta, input, mailbox);
         for (int i = 0; i < scene.actors.length; i++) {
             var actor = scene.actors[i];
             actor.update(delta, mailbox);
         }
-        scene.player.update(delta, input, mailbox);
 
         physics.apply(delta, mailbox.moveRequests);
 
