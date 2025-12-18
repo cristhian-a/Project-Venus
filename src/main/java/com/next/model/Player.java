@@ -2,22 +2,33 @@ package com.next.model;
 
 import com.next.core.Animation;
 import com.next.core.AnimationState;
-import com.next.core.CollisionType;
+import com.next.core.data.Mailbox;
+import com.next.core.physics.CollisionBox;
+import com.next.core.physics.CollisionType;
+import com.next.core.physics.Movement;
 import com.next.system.Debugger;
 import com.next.system.Input;
-import lombok.Setter;
+import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Player extends AnimatedActor {
 
-    @Setter private int speed = 1;
+    @Getter private final List<Key> heldKeys = new ArrayList<>();
 
-    public Player(int spriteId, int worldX, int worldY,
+    private float speed = 1f;
+
+    public Player(int spriteId, float worldX, float worldY,
                   Animation upAnim, Animation downAnim, Animation leftAnim, Animation rightAnim
     ) {
         this.worldX = worldX;
         this.worldY = worldY;
 
-        collisionBox = new CollisionBox(3, 6, 10, 9);
+        layer = 1;
+        collisionMask = 1;
+
+        collisionBox = new CollisionBox(3, 6, 10, 10);
         this.collisionType = CollisionType.SOLID;
 
         setPosition(worldX, worldY);
@@ -32,9 +43,11 @@ public class Player extends AnimatedActor {
         animations.put(AnimationState.WALK_RIGHT, rightAnim);
     }
 
-    public void update(double delta, Input input, CollisionInspector collisions) {
+    public void update(double delta, Input input, Mailbox mailbox) {
         float dx = 0;
         float dy = 0;
+
+        float speed = this.speed + 0.5f;
 
         animationState = AnimationState.IDLE;
 
@@ -55,9 +68,7 @@ public class Player extends AnimatedActor {
             animationState = AnimationState.WALK_RIGHT;
         }
 
-        moveX(dx, collisions);
-        moveY(dy, collisions);
-
+        mailbox.moveRequests.add(new Movement(this, dx, dy, 0f));
         animate();
 
         Debugger.publish("PLAYER", new Debugger.DebugText("X: " + worldX + ", Y: " + worldY), 10, 90, Debugger.TYPE.INFO);
@@ -68,5 +79,9 @@ public class Player extends AnimatedActor {
     public void animate() {
         animator.set(animations.get(animationState));
         spriteId = animator.update();
+    }
+
+    public void boostSpeed(float boost) {
+        speed += boost;
     }
 }

@@ -1,5 +1,6 @@
 package com.next;
 
+import com.next.core.data.Mailbox;
 import com.next.graphics.GamePanel;
 import com.next.graphics.awt.AwtPanel;
 import com.next.graphics.awt.Renderer;
@@ -22,9 +23,12 @@ public class Main {
         Input input = new Input();
         KeyListener keyboardDevice = input.mapActions(settings.controls);
 
+        // Central registry
+        Mailbox mailbox = new Mailbox();
+
         // Setup and injection
-        Game game = new Game(input, settings, assets);
-        Renderer renderer = new Renderer(game, settings.video, assets);
+        Game game = new Game(input, mailbox, settings, assets);
+        Renderer renderer = new Renderer(game, mailbox, settings.video, assets);
         GamePanel panel = new AwtPanel(keyboardDevice, settings.video, renderer);
 
         new Loop(game, panel, input).start();

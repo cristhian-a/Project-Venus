@@ -1,11 +1,11 @@
-package com.next.model;
+package com.next.core.physics;
 
 import lombok.Getter;
 
 public class CollisionBox {
     @Getter private final AABB bounds;
-    protected final float offsetX;
-    protected final float offsetY;
+    @Getter protected final float offsetX;
+    @Getter protected final float offsetY;
 
     public CollisionBox(float offsetX, float offsetY, float width, float height) {
         this.offsetX = offsetX;

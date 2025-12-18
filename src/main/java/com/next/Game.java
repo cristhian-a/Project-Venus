@@ -1,11 +1,13 @@
 package com.next;
 
-import com.next.graphics.RenderQueue;
+import com.next.core.data.Mailbox;
+import com.next.core.physics.CollisionInspector;
+import com.next.core.physics.Physics;
 import com.next.io.Loader;
 import com.next.model.*;
-import com.next.model.factory.PlayerFactory;
-import com.next.model.factory.PropFactory;
+import com.next.model.factory.*;
 import com.next.system.AssetRegistry;
+import com.next.system.Debugger;
 import com.next.system.Input;
 import com.next.system.Settings;
 import com.next.world.LevelData;
@@ -19,19 +21,20 @@ import java.io.IOException;
 public class Game {
 
     private final Input input;
+    private final Mailbox mailbox;
     private final Settings settings;
     private final AssetRegistry assets;
-
-    @Getter private final Camera camera;
-    @Getter private final RenderQueue renderQueue;
-
-    @Getter private Scene scene;
-
     private final CollisionInspector collisionInspector;
 
-    public Game(Input input, Settings settings, AssetRegistry assets) {
+    private final Physics physics = new Physics();
+
+    @Getter private final Camera camera;
+    @Getter private Scene scene;
+
+    public Game(Input input, Mailbox mailbox, Settings settings, AssetRegistry assets) {
         this.input = input;
         this.assets = assets;
+        this.mailbox = mailbox;
         this.settings = settings;
 
         try {
@@ -40,33 +43,36 @@ public class Game {
             throw new RuntimeException(e);
         }
 
-        renderQueue = new RenderQueue();
         camera = new Camera(settings.video.ORIGINAL_WIDTH, settings.video.ORIGINAL_HEIGHT);
-        collisionInspector = new CollisionInspector(scene.world);
+        collisionInspector = new CollisionInspector();
+        physics.ruleOver(scene);
+        physics.setInspector(collisionInspector);
     }
 
     public void update(double delta) {
-        // TODO: all the stuff goes here man
-        scene.player.update(delta, input, collisionInspector);
+        long start = System.nanoTime();
 
-        for (Actor object : scene.actors) {
-            collisionInspector.isColliding(scene.player, object);
+        // TODO maybe extract blocks to methods, or maybe not, whatever
+
+        for (int i = 0; i < scene.actors.length; i++) {
+            var actor = scene.actors[i];
+            actor.update(delta, mailbox);
         }
+        scene.player.update(delta, input, mailbox);
+
+        physics.apply(delta, mailbox.moveRequests);
+
+        // doing render block
+        for (int i = 0; i < scene.actors.length; i++) {
+            var actor = scene.actors[i];
+            actor.submitRender(mailbox);
+        }
+        scene.player.submitRender(mailbox);     // should always be last
 
         camera.follow(scene.player);
-        queueRendering();
-    }
 
-    private void queueRendering() {
-        renderQueue.clear();
-
-        for (Actor object : scene.actors) {
-            if (object != null) {
-                renderQueue.submit(object.getRenderRequest());
-            }
-        }
-
-        renderQueue.submit(scene.player.getRenderRequest());
+        long end = System.nanoTime();
+        Debugger.publish("UPDATE", new Debugger.DebugLong(end - start), 500, 30, Debugger.TYPE.INFO);
     }
 
     private Scene loadScene(String worldFile, String levelFile, String map) throws IOException {

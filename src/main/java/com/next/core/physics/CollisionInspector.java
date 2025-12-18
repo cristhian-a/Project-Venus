@@ -1,28 +1,24 @@
-package com.next.model;
+package com.next.core.physics;
 
-import com.next.world.World;
+import com.next.model.Actor;
+import com.next.world.Scene;
+import lombok.Getter;
 
 public class CollisionInspector {
 
-    private World world;
+    @Getter private Scene scene;
     private int tileSize;
 
-    public CollisionInspector(World world) {
-        this.world = world;
-        tileSize = world.getTileSize();
+    public CollisionInspector() {
     }
 
-    public int getTileSize() {
-        return world.getTileSize();
-    }
-
-    public void setWorld(World world) {
-        this.world = world;
-        tileSize = world.getTileSize();
+    public void inspecting(Scene scene) {
+        this.scene = scene;
+        this.tileSize = scene.world.getTileSize();
     }
 
     public boolean isCollidingWithTile(Actor actor) {
-        AABB box = actor.collisionBox.getBounds();
+        AABB box = actor.getCollisionBox().getBounds();
 
         final float EPSILON = 0.0001f;  // Needed to adjust right and bottom sides to not collide prematurely
                                         // in relation to left and top sides.
@@ -36,7 +32,7 @@ public class CollisionInspector {
 
         for (int row = top; row <= bottom; row++) {
             for (int col = left; col <= right; col++) {
-                if (world.isSolid(row, col)) {
+                if (scene.world.isSolid(row, col)) {
                     return true;
                 }
             }
@@ -46,9 +42,9 @@ public class CollisionInspector {
     }
 
     public boolean isColliding(Actor actor, Actor other) {
-        boolean is = actor.collisionBox.intersects(other.collisionBox);
-        if (is) IO.println("COLLISION");
-        return is;
+        if ((actor.getLayer() & other.getCollisionMask()) == 0 && (other.getLayer() & actor.getCollisionMask()) == 0)
+            return false;
+        return actor.getCollisionBox().intersects(other.getCollisionBox());
     }
 
 }

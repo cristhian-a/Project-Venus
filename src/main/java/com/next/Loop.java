@@ -1,5 +1,6 @@
 package com.next;
 
+import com.next.core.data.Mailbox;
 import com.next.graphics.GamePanel;
 import com.next.system.Debugger;
 import com.next.system.Input;

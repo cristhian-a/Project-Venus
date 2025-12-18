@@ -1,4 +1,4 @@
-package com.next.core;
+package com.next.core.physics;
 
 public enum CollisionType {
     NONE, SOLID, TRIGGER
