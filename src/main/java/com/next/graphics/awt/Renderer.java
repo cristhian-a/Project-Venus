@@ -1,7 +1,9 @@
 package com.next.graphics.awt;
 
 import com.next.Game;
+import com.next.core.data.Mailbox;
 import com.next.graphics.Layer;
+import com.next.graphics.RenderQueue;
 import com.next.model.Camera;
 import com.next.system.AssetRegistry;
 import com.next.system.Debugger;
@@ -13,12 +15,14 @@ import java.awt.geom.AffineTransform;
 public class Renderer {
     private final UI ui;
     private final Game game;
+    private final Mailbox mailbox;
     private final AssetRegistry assets;
     private final VideoSettings settings;
     private final TileRenderer tileRenderer;
 
-    public Renderer(Game game, VideoSettings settings, AssetRegistry assets) {
+    public Renderer(Game game, Mailbox mailbox, VideoSettings settings, AssetRegistry assets) {
         this.game = game;
+        this.mailbox = mailbox;
         this.assets = assets;
         this.settings = settings;
 
@@ -28,6 +32,8 @@ public class Renderer {
 
     public void render(Graphics2D g) {
         long start = System.nanoTime();
+
+        RenderQueue queue = mailbox.renderQueue;
         Camera camera = game.getCamera();
 
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
@@ -35,12 +41,12 @@ public class Renderer {
         AffineTransform oldScale = g.getTransform();
         g.scale(settings.SCALE, settings.SCALE);
 
-        render(Layer.BACKGROUND, g, camera);
+        render(Layer.BACKGROUND, queue, g, camera);
 
         tileRenderer.render(g, camera);
-        render(Layer.WORLD, g, camera);
+        render(Layer.WORLD, queue, g, camera);
 
-        render(Layer.ACTORS, g, camera);
+        render(Layer.ACTORS, queue, g, camera);
 
         g.setTransform(oldScale);   // de-scaling
         ui.render(g, camera);   // always last, damn it
@@ -48,12 +54,14 @@ public class Renderer {
 //        render(Layer.UI, g, camera);
 //        render(Layer.DEBUG, g, camera);
 
+        queue.clear();
+
         long end = System.nanoTime();
         Debugger.publish("RENDER", new Debugger.DebugLong(end - start), 200, 30, Debugger.TYPE.INFO);
     }
 
-    private void render(Layer layer, Graphics2D g, Camera camera) {
-        var instructions = game.getRenderQueue().getLayer(layer);
+    private void render(Layer layer, RenderQueue queue, Graphics2D g, Camera camera) {
+        var instructions = queue.getLayer(layer);
         for (var instruction : instructions) {
             g.drawImage(
                     assets.getSpriteSheet("world").getSprite(instruction.spriteId()),

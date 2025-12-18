@@ -27,11 +27,11 @@ public class TileRenderer {
     public void render(Graphics2D g, Camera camera) {
         final int TILE_SIZE = world.getTileSize();
         
-        int startCol = Math.max(0, camera.getX() / TILE_SIZE);
-        int endCol = Math.min(tileMap[0].length, (camera.getX() + camera.getViewportWidth()) / TILE_SIZE + 1);
+        int startCol = (int) Math.max(0, camera.getX() / TILE_SIZE);
+        int endCol = (int) Math.min(tileMap[0].length, (camera.getX() + camera.getViewportWidth()) / TILE_SIZE + 1);
 
-        int startRow = Math.max(0, camera.getY() / TILE_SIZE);
-        int endRow = Math.min(tileMap.length, (camera.getY() + camera.getViewportHeight()) / TILE_SIZE + 1);
+        int startRow = (int) Math.max(0, camera.getY() / TILE_SIZE);
+        int endRow = (int) Math.min(tileMap.length, (camera.getY() + camera.getViewportHeight()) / TILE_SIZE + 1);
 
         for (int row = startRow; row < endRow; row++) {
 

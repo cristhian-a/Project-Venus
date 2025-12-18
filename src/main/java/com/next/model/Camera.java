@@ -5,8 +5,8 @@ import lombok.Getter;
 
 @Getter
 public class Camera {
-    private int x;
-    private int y;
+    private float x;
+    private float y;
 
     private final int viewportWidth;
     private final int viewportHeight;
@@ -21,16 +21,16 @@ public class Camera {
         Debugger.publish("CAMERA", new Debugger.DebugText("X: " + x + ", Y: " + y), 10, 60, Debugger.TYPE.INFO);
     }
 
-    public void follow(int targetX, int targetY) {
+    public void follow(float targetX, float targetY) {
         x = targetX - (viewportWidth >> 1);
         y = targetY - (viewportHeight >> 1);
     }
 
-    public int worldToScreenX(int worldX) {
-        return worldX - x;
+    public int worldToScreenX(float worldX) {
+        return Math.round(worldX - x);
     }
 
-    public int worldToScreenY(int worldY) {
-        return worldY - y;
+    public int worldToScreenY(float worldY) {
+        return Math.round(worldY - y);
     }
 }

@@ -1,5 +1,10 @@
 package com.next.model;
 
+import com.next.core.data.Mailbox;
+import com.next.core.physics.CollisionBox;
+import com.next.core.physics.CollisionEvent;
+import com.next.core.physics.CollisionType;
+import com.next.core.physics.CollisionResult;
 import com.next.graphics.Layer;
 import com.next.graphics.RenderRequest;
 import com.next.system.Debugger;
@@ -8,16 +13,25 @@ import lombok.Getter;
 @Getter
 public abstract class Actor {
     protected int spriteId;
-    protected int worldX;
-    protected int worldY;
-    protected CollisionBox collisionBox;        // TODO: remember to initialize it anytime (or move it to children)
+    protected float worldX;
+    protected float worldY;
 
-    public RenderRequest getRenderRequest() {
-        if (collisionBox != null) Debugger.publishCollision("ACTOR BOX" + this, collisionBox);
-        return new RenderRequest(Layer.ACTORS, worldX, worldY, spriteId);
+    protected int layer;
+    protected int collisionMask;
+    protected CollisionBox collisionBox;        // TODO: remember to initialize it anytime (or move it to children)
+    protected CollisionType collisionType = CollisionType.NONE;
+
+    protected boolean disposed = false;
+
+    public void update(double delta, Mailbox mailbox) {
     }
 
-    public void setPosition(int worldX, int worldY) {
+    public void submitRender(Mailbox mailbox) {
+        if (collisionBox != null) Debugger.publishCollision("ACTOR BOX" + this, collisionBox);
+        mailbox.renderQueue.submit(new RenderRequest(Layer.ACTORS, (int) worldX, (int) worldY, spriteId));
+    }
+
+    public void setPosition(float worldX, float worldY) {
         this.worldX = worldX;
         this.worldY = worldY;
         if (collisionBox != null) {
@@ -25,45 +39,25 @@ public abstract class Actor {
         }
     }
 
-    protected void moveX(float dx, CollisionInspector collisions) {
+    public void moveX(float dx) {
         if (dx == 0) return;
 
-        worldX += (int) dx;
+        worldX += dx;
         collisionBox.update(worldX, worldY);
-
-        if (collisions.isCollidingWithTile(this)) {
-            var box = collisionBox.getBounds();
-
-            if (dx > 0) {
-                int tileCol = (int) (box.x + box.width) / collisions.getTileSize();
-                worldX = tileCol * collisions.getTileSize() - (int) (box.width + collisionBox.offsetX);
-            } else {
-                int tileCol = (int) box.x / collisions.getTileSize();
-                worldX = (tileCol + 1) * collisions.getTileSize() - (int) collisionBox.offsetX;
-            }
-
-            collisionBox.update(worldX, worldY);
-        }
     }
 
-    protected void moveY(float dy, CollisionInspector collisions) {
+    public void moveY(float dy) {
         if (dy == 0) return;
 
-        worldY += (int) dy;
+        worldY += dy;
         collisionBox.update(worldX, worldY);
+    }
 
-        if (collisions.isCollidingWithTile(this)) {
-            var box = collisionBox.getBounds();
+    public CollisionResult onCollision(CollisionEvent event) {
+        return null;
+    }
 
-            if (dy > 0) {
-                int tileRow = (int) (box.y + box.height) / collisions.getTileSize();
-                worldY = tileRow * collisions.getTileSize() - (int) (box.height + collisionBox.offsetY);
-            } else {
-                int tileRow = (int) box.y / collisions.getTileSize();
-                worldY = (tileRow + 1) * collisions.getTileSize() - (int) collisionBox.offsetY;
-            }
-
-            collisionBox.update(worldX, worldY);
-        }
+    public void dispose() {
+        this.disposed = true;
     }
 }

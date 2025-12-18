@@ -1,8 +1,8 @@
 package com.next.graphics.awt;
 
-import com.next.model.AABB;
+import com.next.core.physics.AABB;
 import com.next.model.Camera;
-import com.next.model.CollisionBox;
+import com.next.core.physics.CollisionBox;
 import com.next.system.AssetRegistry;
 import com.next.system.Debugger;
 import com.next.system.Settings.VideoSettings;
