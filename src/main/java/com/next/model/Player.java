@@ -92,7 +92,7 @@ public class Player extends AnimatedActor {
         super.submitRender(mailbox);
         for (int i = 0; i < heldKeys.size(); i++) {
             var key = heldKeys.get(i);
-            mailbox.renderQueue.submit(new RenderRequest(Layer.UI, 10 + 75 * i, 10, key.spriteId));
+            mailbox.renderQueue.submit(Layer.UI, 20 + 75 * i, 5, key.spriteId);
         }
     }
 }

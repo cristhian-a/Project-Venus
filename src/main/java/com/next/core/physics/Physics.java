@@ -32,7 +32,6 @@ public class Physics {
             }
         }
 
-        scene.dismissDisposedActors();
         processedPairs.clear();
         intents.clear();
     }

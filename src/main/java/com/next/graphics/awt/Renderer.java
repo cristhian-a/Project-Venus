@@ -41,10 +41,10 @@ public class Renderer {
         AffineTransform oldScale = g.getTransform();
         g.scale(settings.SCALE, settings.SCALE);
 
-        render(Layer.BACKGROUND, queue, g, camera);
+//        render(Layer.BACKGROUND, queue, g, camera);
 
         tileRenderer.render(g, camera);
-        render(Layer.WORLD, queue, g, camera);
+//        render(Layer.WORLD, queue, g, camera);
 
         render(Layer.ACTORS, queue, g, camera);
 
@@ -64,9 +64,9 @@ public class Renderer {
         var instructions = queue.getLayer(layer);
         for (var instruction : instructions) {
             g.drawImage(
-                    assets.getSpriteSheet("world").getSprite(instruction.spriteId()),
-                    camera.worldToScreenX(instruction.worldX()),
-                    camera.worldToScreenY(instruction.worldY()),
+                    assets.getSpriteSheet("world").getSprite(instruction.getSpriteId()),
+                    camera.worldToScreenX(instruction.getX()),
+                    camera.worldToScreenY(instruction.getY()),
                     null
             );
         }

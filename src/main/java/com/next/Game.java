@@ -52,8 +52,6 @@ public class Game {
     public void update(double delta) {
         long start = System.nanoTime();
 
-        // TODO maybe extract blocks to methods, or maybe not, whatever
-
         scene.player.update(delta, input, mailbox);
         for (int i = 0; i < scene.actors.length; i++) {
             var actor = scene.actors[i];
@@ -62,12 +60,14 @@ public class Game {
 
         physics.apply(delta, mailbox.moveRequests);
 
-        // doing render block
+        // render portion
+        scene.dismissDisposedActors(mailbox);   // PLEASE, dismiss before rendering
+
         for (int i = 0; i < scene.actors.length; i++) {
             var actor = scene.actors[i];
             actor.submitRender(mailbox);
         }
-        scene.player.submitRender(mailbox);     // should always be last
+        scene.player.submitRender(mailbox);     // player always last
 
         camera.follow(scene.player);
 

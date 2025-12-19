@@ -1,5 +1,6 @@
 package com.next.world;
 
+import com.next.core.data.Mailbox;
 import com.next.model.Actor;
 import com.next.model.Player;
 
@@ -19,10 +20,11 @@ public class Scene {
         this.actors = actors;
     }
 
-    public void dismissDisposedActors() {
+    public void dismissDisposedActors(Mailbox mailbox) {
         for (int i = 0; i < actors.length; i++) {
             Actor actor = actors[i];
             if (actor.isDisposed()) {
+                actor.onDispose(mailbox);
                 actors[i] = actors[actors.length - 1];
                 actors[actors.length - 1] = null;
                 actors = Arrays.copyOf(actors, actors.length - 1);

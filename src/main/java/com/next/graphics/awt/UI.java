@@ -11,7 +11,6 @@ import com.next.system.Debugger;
 import com.next.system.Settings.VideoSettings;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 
 public class UI {
 
@@ -27,18 +26,40 @@ public class UI {
         var requests = queue.getLayer(Layer.UI);
 
         for (var r : requests) {
-            g.drawImage(
-                    assets.getSpriteSheet("world").getSprite(r.spriteId()),
-                    r.worldX(),
-                    r.worldY(),
-                    16*4, 16*4, // TODO refactor: these are here just because we need to upscale the sprite
-                    null
-            );
+            int x = r.getX();
+            int y = r.getY();
+
+            if (r.getPosition() == RenderRequest.Position.CENTERED) {
+                x += settings.WIDTH / 2;
+                y += settings.HEIGHT / 2;
+            }
+
+            if (r.getType() == RenderRequest.Type.SPRITE) {
+                renderSprite(g, r.getSpriteId(), x, y);
+            } else if (r.getType() == RenderRequest.Type.TEXT) {
+                renderText(g, r.getMessage(), x, y, Color.WHITE, assets.getFont("arial_30"));
+            }
         }
 
         g.setFont(assets.getFont("arial_30"));
         g.setColor(Color.GREEN);
         renderDebugInfo(g, camera);
+    }
+
+    private void renderSprite(Graphics2D g, int sprite, int x, int y) {
+        g.drawImage(
+                assets.getSpriteSheet("world").getSprite(sprite),
+                x,
+                y,
+                16*4, 16*4, // TODO refactor: these are here just because we need to upscale the sprite
+                null
+        );
+    }
+
+    private void renderText(Graphics2D g, String text, int x, int y, Color color, Font font) {
+        g.setColor(color);
+        g.setFont(font);
+        g.drawString(text, x, y);
     }
 
     public void renderDebugInfo(Graphics2D g, Camera camera) {

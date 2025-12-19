@@ -6,7 +6,6 @@ import com.next.core.physics.CollisionEvent;
 import com.next.core.physics.CollisionType;
 import com.next.core.physics.CollisionResult;
 import com.next.graphics.Layer;
-import com.next.graphics.RenderRequest;
 import com.next.system.Debugger;
 import lombok.Getter;
 
@@ -28,7 +27,7 @@ public abstract class Actor {
 
     public void submitRender(Mailbox mailbox) {
         if (collisionBox != null) Debugger.publishCollision("ACTOR BOX" + this, collisionBox);
-        mailbox.renderQueue.submit(new RenderRequest(Layer.ACTORS, (int) worldX, (int) worldY, spriteId));
+        mailbox.renderQueue.submit(Layer.ACTORS, (int) worldX, (int) worldY, spriteId);
     }
 
     public void setPosition(float worldX, float worldY) {
@@ -60,4 +59,6 @@ public abstract class Actor {
     public void dispose() {
         this.disposed = true;
     }
+
+    public void onDispose(Mailbox mailbox) {}
 }
