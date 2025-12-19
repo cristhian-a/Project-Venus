@@ -1,6 +1,9 @@
 package com.next.graphics.awt;
 
 import com.next.core.physics.AABB;
+import com.next.graphics.Layer;
+import com.next.graphics.RenderQueue;
+import com.next.graphics.RenderRequest;
 import com.next.model.Camera;
 import com.next.core.physics.CollisionBox;
 import com.next.system.AssetRegistry;
@@ -8,6 +11,7 @@ import com.next.system.Debugger;
 import com.next.system.Settings.VideoSettings;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 public class UI {
 
@@ -19,10 +23,21 @@ public class UI {
         this.settings = settings;
     }
 
-    public void render(Graphics2D g, Camera camera) {
+    public void render(Graphics2D g, RenderQueue queue, Camera camera) {
+        var requests = queue.getLayer(Layer.UI);
+
+        for (var r : requests) {
+            g.drawImage(
+                    assets.getSpriteSheet("world").getSprite(r.spriteId()),
+                    r.worldX(),
+                    r.worldY(),
+                    16*4, 16*4, // TODO refactor: these are here just because we need to upscale the sprite
+                    null
+            );
+        }
+
         g.setFont(assets.getFont("arial_30"));
         g.setColor(Color.GREEN);
-
         renderDebugInfo(g, camera);
     }
 

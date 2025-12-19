@@ -49,9 +49,9 @@ public class Renderer {
         render(Layer.ACTORS, queue, g, camera);
 
         g.setTransform(oldScale);   // de-scaling
-        ui.render(g, camera);   // always last, damn it
+        ui.render(g, queue, camera);   // always last, damn it
 
-//        render(Layer.UI, g, camera);
+//        render(Layer.UI, queue, g, camera);
 //        render(Layer.DEBUG, g, camera);
 
         queue.clear();

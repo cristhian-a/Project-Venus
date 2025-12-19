@@ -6,6 +6,8 @@ import com.next.core.data.Mailbox;
 import com.next.core.physics.CollisionBox;
 import com.next.core.physics.CollisionType;
 import com.next.core.physics.Movement;
+import com.next.graphics.Layer;
+import com.next.graphics.RenderRequest;
 import com.next.system.Debugger;
 import com.next.system.Input;
 import lombok.Getter;
@@ -17,7 +19,7 @@ public class Player extends AnimatedActor {
 
     @Getter private final List<Key> heldKeys = new ArrayList<>();
 
-    private float speed = 1f;
+    private float speed = 60f;
 
     public Player(int spriteId, float worldX, float worldY,
                   Animation upAnim, Animation downAnim, Animation leftAnim, Animation rightAnim
@@ -49,6 +51,8 @@ public class Player extends AnimatedActor {
 
         animationState = AnimationState.IDLE;
 
+        float speed = (float) (this.speed * delta);
+
         if (input.isDown(Input.Action.UP)) {
             dy -= speed;
             animationState = AnimationState.WALK_UP;
@@ -73,13 +77,22 @@ public class Player extends AnimatedActor {
         Debugger.publish("HITBOX", new Debugger.DebugText("X: " + collisionBox.getBounds().x + ", Y: " + collisionBox.getBounds().y + ", Width: " + collisionBox.getBounds().width + ", Height: " + collisionBox.getBounds().height), 10, 120, Debugger.TYPE.INFO);
     }
 
+    public void boostSpeed(float boost) {
+        speed *= boost;
+    }
+
     @Override
     public void animate() {
         animator.set(animations.get(animationState));
         spriteId = animator.update();
     }
 
-    public void boostSpeed(float boost) {
-        speed += boost;
+    @Override
+    public void submitRender(Mailbox mailbox) {
+        super.submitRender(mailbox);
+        for (int i = 0; i < heldKeys.size(); i++) {
+            var key = heldKeys.get(i);
+            mailbox.renderQueue.submit(new RenderRequest(Layer.UI, 10 + 75 * i, 10, key.spriteId));
+        }
     }
 }

@@ -13,7 +13,7 @@ public class Spell extends Prop {
     @Override
     public CollisionResult onCollision(CollisionEvent event) {
         if (event.collider() instanceof Player player) {
-            player.boostSpeed(2);
+            player.boostSpeed(3);
             this.dispose();
         }
         return super.onCollision(event);
