@@ -1,13 +1,13 @@
 package com.next.model;
 
-import com.next.core.Animation;
-import com.next.core.AnimationState;
+import com.next.core.animation.Animation;
+import com.next.core.animation.AnimationState;
 import com.next.core.data.Mailbox;
+import com.next.core.model.AnimatedActor;
 import com.next.core.physics.CollisionBox;
 import com.next.core.physics.CollisionType;
 import com.next.core.physics.Movement;
 import com.next.graphics.Layer;
-import com.next.graphics.RenderRequest;
 import com.next.system.Debugger;
 import com.next.system.Input;
 import lombok.Getter;
@@ -92,7 +92,7 @@ public class Player extends AnimatedActor {
         super.submitRender(mailbox);
         for (int i = 0; i < heldKeys.size(); i++) {
             var key = heldKeys.get(i);
-            mailbox.renderQueue.submit(Layer.UI, 20 + 75 * i, 5, key.spriteId);
+            mailbox.renderQueue.submit(Layer.UI, 20 + 75 * i, 5, key.getSpriteId());
         }
     }
 }

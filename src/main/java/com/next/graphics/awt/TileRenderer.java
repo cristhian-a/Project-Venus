@@ -1,10 +1,9 @@
 package com.next.graphics.awt;
 
-import com.next.model.Camera;
+import com.next.core.model.Camera;
 import com.next.world.Tile;
 import com.next.world.World;
 import com.next.system.AssetRegistry;
-import com.next.system.Settings;
 
 import java.awt.*;
 

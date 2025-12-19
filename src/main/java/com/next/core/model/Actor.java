@@ -1,4 +1,4 @@
-package com.next.model;
+package com.next.core.model;
 
 import com.next.core.data.Mailbox;
 import com.next.core.physics.CollisionBox;

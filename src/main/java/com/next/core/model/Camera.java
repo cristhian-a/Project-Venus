@@ -1,4 +1,4 @@
-package com.next.model;
+package com.next.core.model;
 
 import com.next.system.Debugger;
 import lombok.Getter;

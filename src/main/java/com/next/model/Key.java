@@ -1,6 +1,7 @@
 package com.next.model;
 
 import com.next.core.data.Mailbox;
+import com.next.core.model.Prop;
 import com.next.core.physics.CollisionEvent;
 import com.next.core.physics.CollisionType;
 import com.next.core.physics.CollisionResult;

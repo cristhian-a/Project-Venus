@@ -1,6 +1,7 @@
 package com.next.core.physics;
 
-import com.next.model.Actor;
+import com.next.core.model.AABB;
+import com.next.core.model.Actor;
 import com.next.world.Scene;
 import lombok.Getter;
 

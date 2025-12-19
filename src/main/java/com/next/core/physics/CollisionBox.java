@@ -1,5 +1,6 @@
 package com.next.core.physics;
 
+import com.next.core.model.AABB;
 import lombok.Getter;
 
 public class CollisionBox {

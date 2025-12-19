@@ -1,8 +1,8 @@
-package com.next.model;
+package com.next.core.model;
 
-import com.next.core.Animation;
-import com.next.core.AnimationState;
-import com.next.core.Animator;
+import com.next.core.animation.Animation;
+import com.next.core.animation.AnimationState;
+import com.next.core.animation.Animator;
 
 import java.util.EnumMap;
 

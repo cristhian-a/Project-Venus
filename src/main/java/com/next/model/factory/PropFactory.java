@@ -1,5 +1,6 @@
 package com.next.model.factory;
 
+import com.next.core.model.Prop;
 import com.next.core.physics.CollisionType;
 import com.next.model.*;
 import com.next.world.LevelData;

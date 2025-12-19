@@ -1,6 +1,9 @@
 package com.next;
 
 import com.next.core.data.Mailbox;
+import com.next.core.model.Actor;
+import com.next.core.model.Camera;
+import com.next.core.model.Prop;
 import com.next.core.physics.CollisionInspector;
 import com.next.core.physics.Physics;
 import com.next.io.Loader;

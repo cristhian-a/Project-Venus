@@ -4,7 +4,7 @@ import com.next.Game;
 import com.next.core.data.Mailbox;
 import com.next.graphics.Layer;
 import com.next.graphics.RenderQueue;
-import com.next.model.Camera;
+import com.next.core.model.Camera;
 import com.next.system.AssetRegistry;
 import com.next.system.Debugger;
 import com.next.system.Settings.VideoSettings;

@@ -1,6 +1,6 @@
 package com.next.core.physics;
 
-import com.next.model.Actor;
+import com.next.core.model.Actor;
 
 public record CollisionResult(
         Type type,
