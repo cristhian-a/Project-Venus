@@ -6,6 +6,9 @@ import com.next.core.model.Prop;
 import com.next.core.physics.CollisionEvent;
 import com.next.core.physics.CollisionType;
 import com.next.core.physics.CollisionResult;
+import com.next.event.KeyPickedUpEvent;
+
+import java.util.List;
 
 public class Key extends Prop {
 
@@ -19,20 +22,16 @@ public class Key extends Prop {
             player.getHeldKeys().add(this);
             IO.println("AAAAAAI CHAVES: " + player.getHeldKeys().size());
             this.dispose();
-            return new CollisionResult(CollisionResult.Type.TRIGGER, event.collider(), 0, 0);
+            return new CollisionResult(
+                    CollisionResult.Type.TRIGGER,
+                    event.collider(),
+                    0,
+                    0,
+                    List.of(new KeyPickedUpEvent(this))
+            );
         }
 
         return super.onCollision(event);
     }
 
-    @Override
-    public void submitRender(Mailbox mailbox) {
-        super.submitRender(mailbox);
-    }
-
-    @Override
-    public void onDispose(Mailbox mailbox) {
-        mailbox.events.add(new GameEvent.KeyPickedUp());
-//        mailbox.renderQueue.submit(Layer.UI, "Got a Key!", -32, -25, RenderRequest.Position.CENTERED, 240);
-    }
 }

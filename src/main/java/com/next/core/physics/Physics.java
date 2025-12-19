@@ -1,5 +1,6 @@
 package com.next.core.physics;
 
+import com.next.core.data.Mailbox;
 import com.next.core.model.Actor;
 import com.next.world.Scene;
 
@@ -24,19 +25,19 @@ public class Physics {
         if (inspector != null) inspector.inspecting(scene);
     }
 
-    public void apply(double delta, List<Movement> intents) {
-        for (Movement m : intents) {
+    public void apply(double delta, Mailbox mailbox) {
+        for (Movement m : mailbox.moveRequests) {
             if (m != null) {
-                moveX(m);
-                moveY(m);
+                moveX(m, mailbox);
+                moveY(m, mailbox);
             }
         }
 
         processedPairs.clear();
-        intents.clear();
+        mailbox.moveRequests.clear();
     }
 
-    public void moveX(Movement movement) {
+    public void moveX(Movement movement, Mailbox mailbox) {
         Actor actor = movement.actor();
         actor.moveX(movement.dx());
 
@@ -58,11 +59,15 @@ public class Physics {
                 if (response.type() == CollisionResult.Type.BLOCK) {
                     clampX(movement);
                 }
+
+                if (response.events() != null && !response.events().isEmpty()) {
+                    mailbox.events.addAll(response.events());
+                }
             }
         }
     }
 
-    public void moveY(Movement movement) {
+    public void moveY(Movement movement, Mailbox mailbox) {
         Actor actor = movement.actor();
         actor.moveY(movement.dy());
 
@@ -83,6 +88,10 @@ public class Physics {
 
                 if (response.type() == CollisionResult.Type.BLOCK) {
                     clampY(movement);
+                }
+
+                if (response.events() != null && !response.events().isEmpty()) {
+                    mailbox.events.addAll(response.events());
                 }
             }
         }

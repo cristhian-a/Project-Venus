@@ -20,11 +20,10 @@ public class Scene {
         this.actors = actors;
     }
 
-    public void dismissDisposedActors(Mailbox mailbox) {
+    public void dismissDisposedActors() {
         for (int i = 0; i < actors.length; i++) {
             Actor actor = actors[i];
             if (actor.isDisposed()) {
-                actor.onDispose(mailbox);
                 actors[i] = actors[actors.length - 1];
                 actors[actors.length - 1] = null;
                 actors = Arrays.copyOf(actors, actors.length - 1);

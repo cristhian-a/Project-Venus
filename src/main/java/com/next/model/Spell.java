@@ -5,8 +5,11 @@ import com.next.core.model.Prop;
 import com.next.core.physics.CollisionEvent;
 import com.next.core.physics.CollisionType;
 import com.next.core.physics.CollisionResult;
+import com.next.event.SpellPickedUpEvent;
 import com.next.graphics.Layer;
 import com.next.graphics.RenderRequest;
+
+import java.util.List;
 
 public class Spell extends Prop {
 
@@ -17,15 +20,15 @@ public class Spell extends Prop {
     @Override
     public CollisionResult onCollision(CollisionEvent event) {
         if (event.collider() instanceof Player player) {
-            player.boostSpeed(3);
-            this.dispose();
+            return new CollisionResult(
+                    CollisionResult.Type.TRIGGER,
+                    event.collider(),
+                    0,
+                    0,
+                    List.of(new SpellPickedUpEvent(this, player))
+            );
         }
         return super.onCollision(event);
     }
 
-    @Override
-    public void onDispose(Mailbox mailbox) {
-        super.onDispose(mailbox);
-//        mailbox.renderQueue.submit(Layer.UI, "Mercury Bless!", -60, -25, RenderRequest.Position.CENTERED, 300);
-    }
 }

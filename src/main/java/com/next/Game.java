@@ -62,18 +62,19 @@ public class Game {
             actor.update(delta, mailbox);
         }
 
-        physics.apply(delta, mailbox.moveRequests); // always after update
+        physics.apply(delta, mailbox); // always after update
 
         EventDispatcher.dispatch(mailbox);    // for now, this should happen after physics
 
+        //
         // render portion
-        scene.dismissDisposedActors(mailbox);   // PLEASE, dismiss before rendering
+        scene.dismissDisposedActors();   // PLEASE, dismiss before rendering
 
         for (int i = 0; i < scene.actors.length; i++) {
             var actor = scene.actors[i];
             actor.submitRender(mailbox);
         }
-        scene.player.submitRender(mailbox);     // player always last
+        scene.player.submitRender(mailbox);     // player always for last
 
         camera.follow(scene.player);
 

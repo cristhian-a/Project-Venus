@@ -4,6 +4,9 @@ import com.next.core.model.Prop;
 import com.next.core.physics.CollisionEvent;
 import com.next.core.physics.CollisionType;
 import com.next.core.physics.CollisionResult;
+import com.next.event.FinishGameEvent;
+
+import java.util.List;
 
 public class Chest extends Prop {
 
@@ -13,6 +16,9 @@ public class Chest extends Prop {
 
     @Override
     public CollisionResult onCollision(CollisionEvent event) {
-        return new CollisionResult(CollisionResult.Type.BLOCK, event.collider(), 0, 0);
+        return new CollisionResult(
+                CollisionResult.Type.BLOCK, event.collider(), 0, 0,
+                List.of(new FinishGameEvent())
+        );
     }
 }

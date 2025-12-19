@@ -56,9 +56,14 @@ public abstract class Actor {
         return null;
     }
 
-    public void dispose() {
+    public final void dispose() {
         this.disposed = true;
+        onDispose();
     }
 
-    public void onDispose(Mailbox mailbox) {}
+    /**
+     * Always called after {@code dispose()}. By default, it does nothing. Override it with any behavior upon disposing
+     * is needed.
+     */
+    public void onDispose() {}
 }
