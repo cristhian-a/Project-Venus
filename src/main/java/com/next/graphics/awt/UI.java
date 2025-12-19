@@ -6,20 +6,27 @@ import com.next.graphics.RenderQueue;
 import com.next.graphics.RenderRequest;
 import com.next.core.model.Camera;
 import com.next.core.physics.CollisionBox;
+import com.next.graphics.UIMessage;
 import com.next.system.AssetRegistry;
 import com.next.system.Debugger;
 import com.next.system.Settings.VideoSettings;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UI {
 
     private final AssetRegistry assets;
     private final VideoSettings settings;
 
+    private final List<UIMessage> messages;
+
     public UI(AssetRegistry assets, VideoSettings settings) {
         this.assets = assets;
         this.settings = settings;
+
+        messages = new ArrayList<>();
     }
 
     public void render(Graphics2D g, RenderQueue queue, Camera camera) {
@@ -37,9 +44,12 @@ public class UI {
             if (r.getType() == RenderRequest.Type.SPRITE) {
                 renderSprite(g, r.getSpriteId(), x, y);
             } else if (r.getType() == RenderRequest.Type.TEXT) {
-                renderText(g, r.getMessage(), x, y, Color.WHITE, assets.getFont("arial_30"));
+                // TODO toda a lógica de re-inscrição das mensagens na lista deve ser feita no update!
+                messages.add(new UIMessage(r.getMessage(), x, y, r.getFramesToDie()));
             }
         }
+
+        renderMessages(g);
 
         g.setFont(assets.getFont("arial_30"));
         g.setColor(Color.GREEN);
@@ -54,6 +64,23 @@ public class UI {
                 16*4, 16*4, // TODO refactor: these are here just because we need to upscale the sprite
                 null
         );
+    }
+
+    private void renderMessages(Graphics2D g) {
+        for (int i = 0; i < messages.size(); i++) {
+            var message = messages.get(i);
+            if (message.remainingFrames < 1) {
+                messages.remove(message);
+                continue;
+            }
+
+            renderText(g, message);
+            message.remainingFrames--;
+        }
+    }
+
+    private void renderText(Graphics2D g, UIMessage m) {
+        renderText(g, m.text, m.x, m.y, Color.WHITE, assets.getFont("arial_30"));
     }
 
     private void renderText(Graphics2D g, String text, int x, int y, Color color, Font font) {

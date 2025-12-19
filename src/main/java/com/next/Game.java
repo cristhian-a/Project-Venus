@@ -1,6 +1,7 @@
 package com.next;
 
 import com.next.core.data.Mailbox;
+import com.next.core.event.EventDispatcher;
 import com.next.core.model.Actor;
 import com.next.core.model.Camera;
 import com.next.core.model.Prop;
@@ -61,7 +62,9 @@ public class Game {
             actor.update(delta, mailbox);
         }
 
-        physics.apply(delta, mailbox.moveRequests);
+        physics.apply(delta, mailbox.moveRequests); // always after update
+
+        EventDispatcher.dispatch(mailbox);    // for now, this should happen after physics
 
         // render portion
         scene.dismissDisposedActors(mailbox);   // PLEASE, dismiss before rendering

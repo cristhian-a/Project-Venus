@@ -3,15 +3,12 @@ package com.next.graphics;
 import com.next.core.physics.CollisionBox;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 
 public final class RenderQueue {
 
     private final EnumMap<Layer, List<RenderRequest>> layers = new EnumMap<>(Layer.class);
-
-    private final List<RenderRequest> retransmitQueue = new ArrayList<>();
 
     public RenderQueue() {
         for (Layer l : Layer.values()) {
@@ -38,9 +35,6 @@ public final class RenderQueue {
 
     public void submit(Layer layer, String message, int x, int y, RenderRequest.Position pos, int frames) {
         layers.get(layer).add(new RenderRequest(layer, message, x, y, pos, frames));
-        if (frames > 0) {
-            retransmitQueue.add(new RenderRequest(layer, message, x, y, pos, frames - 1));
-        }
     }
 
     public List<RenderRequest> getLayer(Layer layer) {
@@ -49,19 +43,5 @@ public final class RenderQueue {
 
     public void clear() {
         layers.values().forEach(List::clear);
-        retransmit();
-    }
-
-    private void retransmit() {
-        if (!retransmitQueue.isEmpty()) {
-            List<RenderRequest> tempQueue = List.copyOf(retransmitQueue);
-            retransmitQueue.clear();
-
-            for (RenderRequest r : tempQueue) {
-                if (r.framesToDie > 0) {
-                    submit(r.getLayer(), r.getMessage(), r.getX(), r.getY(), r.getPosition(), r.getFramesToDie() - 1);
-                }
-            }
-        }
     }
 }

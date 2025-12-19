@@ -26,6 +26,6 @@ public class Spell extends Prop {
     @Override
     public void onDispose(Mailbox mailbox) {
         super.onDispose(mailbox);
-        mailbox.renderQueue.submit(Layer.UI, "Mercury Bless!", -60, -25, RenderRequest.Position.CENTERED, 300);
+//        mailbox.renderQueue.submit(Layer.UI, "Mercury Bless!", -60, -25, RenderRequest.Position.CENTERED, 300);
     }
 }
