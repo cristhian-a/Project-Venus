@@ -21,11 +21,11 @@ public class Spell extends Prop {
     public CollisionResult onCollision(CollisionEvent event) {
         if (event.collider() instanceof Player player) {
             return new CollisionResult(
-                    CollisionResult.Type.TRIGGER,
+                    this.collisionType,
                     event.collider(),
                     0,
                     0,
-                    List.of(new SpellPickedUpEvent(this, player))
+                    () -> new SpellPickedUpEvent(this, player)
             );
         }
         return super.onCollision(event);

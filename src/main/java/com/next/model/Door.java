@@ -20,22 +20,22 @@ public class Door extends Prop {
         if (event.collider() instanceof Player player) {
             if (!player.getHeldKeys().isEmpty()) {
                 return new CollisionResult(
-                        CollisionResult.Type.TRIGGER,
+                        this.collisionType,
                         event.collider(),
                         0,
                         0,
-                        List.of(new DoorUnlockedEvent(this, player))
+                        () -> new DoorUnlockedEvent(this, player)
                 );
             } else {
                 return new CollisionResult(
-                        CollisionResult.Type.BLOCK,
+                        this.collisionType,
                         event.collider(),
                         0,
                         0,
-                        List.of(new NoKeysEvent())
+                        NoKeysEvent::new
                 );
             }
         }
-        return new CollisionResult(CollisionResult.Type.BLOCK, event.collider(), 0, 0, null);
+        return new CollisionResult(this.collisionType, event.collider(), 0, 0, null);
     }
 }

@@ -6,6 +6,7 @@ import com.next.graphics.RenderQueue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * A {@code Mailbox} is a bus of relevant requests that entities must submit to the many systems of the application.
@@ -17,7 +18,10 @@ public class Mailbox {
     public final RenderQueue renderQueue = new RenderQueue();
     public final List<GameEvent> events = new ArrayList<>();
 
+    public final List<Supplier<? extends GameEvent>> eventSuppliers = new ArrayList<>();
+
     public void clearAll() {
+        eventSuppliers.clear();
         moveRequests.clear();
         renderQueue.clear();
         events.clear();

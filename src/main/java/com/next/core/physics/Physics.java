@@ -56,12 +56,12 @@ public class Physics {
                 CollisionResult response = other.onCollision(new CollisionEvent(actor));
                 if (response == null) continue;
 
-                if (response.type() == CollisionResult.Type.BLOCK) {
+                if (response.type() == CollisionType.SOLID) {
                     clampX(movement);
                 }
 
-                if (response.events() != null && !response.events().isEmpty()) {
-                    mailbox.events.addAll(response.events());
+                if (response.eventFactory() != null) {
+                    mailbox.eventSuppliers.add(response.eventFactory());
                 }
             }
         }
@@ -86,12 +86,12 @@ public class Physics {
                 CollisionResult response = other.onCollision(new CollisionEvent(actor));
                 if (response == null) continue;
 
-                if (response.type() == CollisionResult.Type.BLOCK) {
+                if (response.type() == CollisionType.SOLID) {
                     clampY(movement);
                 }
 
-                if (response.events() != null && !response.events().isEmpty()) {
-                    mailbox.events.addAll(response.events());
+                if (response.eventFactory() != null) {
+                    mailbox.eventSuppliers.add(response.eventFactory());
                 }
             }
         }

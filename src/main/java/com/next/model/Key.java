@@ -23,11 +23,11 @@ public class Key extends Prop {
             IO.println("AAAAAAI CHAVES: " + player.getHeldKeys().size());
             this.dispose();
             return new CollisionResult(
-                    CollisionResult.Type.TRIGGER,
+                    this.collisionType,
                     event.collider(),
                     0,
                     0,
-                    List.of(new KeyPickedUpEvent(this))
+                    () -> new KeyPickedUpEvent(this)
             );
         }
 

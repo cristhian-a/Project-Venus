@@ -17,8 +17,8 @@ public class Chest extends Prop {
     @Override
     public CollisionResult onCollision(CollisionEvent event) {
         return new CollisionResult(
-                CollisionResult.Type.BLOCK, event.collider(), 0, 0,
-                List.of(new FinishGameEvent())
+                this.collisionType, event.collider(), 0, 0,
+                FinishGameEvent::new
         );
     }
 }
