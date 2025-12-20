@@ -1,4 +1,4 @@
-package com.next.graphics;
+package com.next.engine.graphics;
 
 import com.next.engine.physics.CollisionBox;
 

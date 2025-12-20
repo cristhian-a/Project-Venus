@@ -2,7 +2,7 @@ package com.next.engine.data;
 
 import com.next.engine.event.GameEvent;
 import com.next.engine.physics.Movement;
-import com.next.graphics.RenderQueue;
+import com.next.engine.graphics.RenderQueue;
 
 import java.util.ArrayList;
 import java.util.List;

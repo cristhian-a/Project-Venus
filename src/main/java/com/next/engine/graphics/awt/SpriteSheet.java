@@ -1,4 +1,4 @@
-package com.next.graphics.awt;
+package com.next.engine.graphics.awt;
 
 import com.next.io.FileReader;
 import lombok.Getter;

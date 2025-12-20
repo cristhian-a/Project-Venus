@@ -1,6 +1,6 @@
 package com.next.system;
 
-import com.next.graphics.awt.SpriteSheet;
+import com.next.engine.graphics.awt.SpriteSheet;
 import com.next.io.FileReader;
 
 import java.awt.*;

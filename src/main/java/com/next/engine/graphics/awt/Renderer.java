@@ -1,9 +1,9 @@
-package com.next.graphics.awt;
+package com.next.engine.graphics.awt;
 
 import com.next.Game;
 import com.next.engine.data.Mailbox;
-import com.next.graphics.Layer;
-import com.next.graphics.RenderQueue;
+import com.next.engine.graphics.Layer;
+import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
 import com.next.system.AssetRegistry;
 import com.next.system.Debugger;

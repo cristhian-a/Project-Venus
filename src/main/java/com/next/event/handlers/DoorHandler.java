@@ -5,8 +5,8 @@ import com.next.engine.event.EventDispatcher;
 import com.next.event.DoorUnlockedEvent;
 import com.next.event.KeyPickedUpEvent;
 import com.next.event.NoKeysEvent;
-import com.next.graphics.Layer;
-import com.next.graphics.RenderRequest;
+import com.next.engine.graphics.Layer;
+import com.next.engine.graphics.RenderRequest;
 
 public class DoorHandler {
 

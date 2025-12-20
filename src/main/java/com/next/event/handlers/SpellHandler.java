@@ -3,8 +3,8 @@ package com.next.event.handlers;
 import com.next.engine.data.Mailbox;
 import com.next.engine.event.EventDispatcher;
 import com.next.event.SpellPickedUpEvent;
-import com.next.graphics.Layer;
-import com.next.graphics.RenderRequest;
+import com.next.engine.graphics.Layer;
+import com.next.engine.graphics.RenderRequest;
 
 public class SpellHandler {
 

@@ -5,7 +5,7 @@ import com.next.engine.physics.CollisionBox;
 import com.next.engine.physics.CollisionEvent;
 import com.next.engine.physics.CollisionType;
 import com.next.engine.physics.CollisionResult;
-import com.next.graphics.Layer;
+import com.next.engine.graphics.Layer;
 import com.next.system.Debugger;
 import lombok.Getter;
 

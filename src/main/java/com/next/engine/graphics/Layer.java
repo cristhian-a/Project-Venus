@@ -1,4 +1,4 @@
-package com.next.graphics;
+package com.next.engine.graphics;
 
 public enum Layer {
     BACKGROUND,

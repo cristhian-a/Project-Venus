@@ -1,4 +1,4 @@
-package com.next.graphics;
+package com.next.engine.graphics;
 
 public class UIMessage {
     public String text;

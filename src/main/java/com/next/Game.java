@@ -1,5 +1,6 @@
 package com.next;
 
+import com.next.engine.GameState;
 import com.next.engine.data.Mailbox;
 import com.next.engine.event.EventDispatcher;
 import com.next.engine.model.Actor;
@@ -7,8 +8,8 @@ import com.next.engine.model.Camera;
 import com.next.engine.model.Prop;
 import com.next.engine.physics.CollisionInspector;
 import com.next.engine.physics.Physics;
-import com.next.event.FinishGameEvent;
 import com.next.event.handlers.DoorHandler;
+import com.next.event.handlers.GameFlowHandler;
 import com.next.event.handlers.SpellHandler;
 import com.next.io.Loader;
 import com.next.model.*;
@@ -22,6 +23,7 @@ import com.next.world.Scene;
 import com.next.world.World;
 import com.next.world.WorldRules;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 
@@ -34,8 +36,11 @@ public class Game {
     private final EventDispatcher dispatcher;
     private final CollisionInspector collisionInspector;
 
+    private final GameFlowHandler gameFlowHandler;
+
     private final Physics physics = new Physics();
 
+    @Getter @Setter private GameState gameState = GameState.RUNNING;
     @Getter private final Camera camera;
     @Getter private Scene scene;
 
@@ -59,7 +64,7 @@ public class Game {
 
         new DoorHandler(dispatcher, mailbox);
         new SpellHandler(dispatcher, mailbox);
-        new FinishGameEvent.Handler(dispatcher, mailbox);
+        gameFlowHandler = new GameFlowHandler(dispatcher, mailbox, this);
     }
 
     public void update(double delta) {
@@ -87,11 +92,12 @@ public class Game {
 
         camera.follow(scene.player);
 
+        gameFlowHandler.update(delta);
         long end = System.nanoTime();
         Debugger.publish("UPDATE", new Debugger.DebugLong(end - start), 500, 30, Debugger.TYPE.INFO);
     }
 
-    private Scene loadScene(String worldFile, String levelFile, String map) throws IOException {
+    public Scene loadScene(String worldFile, String levelFile, String map) throws IOException {
         WorldRules rules = Loader.World.load(worldFile);
         LevelData level = Loader.Level.load(levelFile);
 

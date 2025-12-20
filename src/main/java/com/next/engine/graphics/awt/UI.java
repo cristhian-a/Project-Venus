@@ -1,12 +1,12 @@
-package com.next.graphics.awt;
+package com.next.engine.graphics.awt;
 
 import com.next.engine.model.AABB;
-import com.next.graphics.Layer;
-import com.next.graphics.RenderQueue;
-import com.next.graphics.RenderRequest;
+import com.next.engine.graphics.Layer;
+import com.next.engine.graphics.RenderQueue;
+import com.next.engine.graphics.RenderRequest;
 import com.next.engine.model.Camera;
 import com.next.engine.physics.CollisionBox;
-import com.next.graphics.UIMessage;
+import com.next.engine.graphics.UIMessage;
 import com.next.system.AssetRegistry;
 import com.next.system.Debugger;
 import com.next.system.Settings.VideoSettings;
