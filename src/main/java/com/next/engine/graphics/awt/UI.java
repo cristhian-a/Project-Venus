@@ -61,7 +61,8 @@ public class UI {
                 assets.getSpriteSheet("world").getSprite(sprite),
                 x,
                 y,
-                16*4, 16*4, // TODO refactor: these are here just because we need to upscale the sprite
+                // TODO refactor: these are here just because we need to upscale the sprite
+                16*settings.SCALE, 16*settings.SCALE,
                 null
         );
     }

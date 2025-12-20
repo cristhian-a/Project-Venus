@@ -10,10 +10,14 @@ public class Camera {
 
     private final int viewportWidth;
     private final int viewportHeight;
+    private final int followOffsetX;
+    private final int followOffsetY;
 
-    public Camera(int viewportWidth, int viewportHeight) {
+    public Camera(int viewportWidth, int viewportHeight, int followOffsetX, int followOffsetY) {
         this.viewportWidth = viewportWidth;
         this.viewportHeight = viewportHeight;
+        this.followOffsetX = followOffsetX;
+        this.followOffsetY = followOffsetY;
     }
 
     public void follow(Actor actor) {
@@ -22,8 +26,8 @@ public class Camera {
     }
 
     public void follow(float targetX, float targetY) {
-        x = targetX - (viewportWidth >> 1);
-        y = targetY - (viewportHeight >> 1);
+        x = targetX - ((float) (viewportWidth - followOffsetX) / 2);
+        y = targetY - ((float) (viewportHeight - followOffsetY) / 2);
     }
 
     public int worldToScreenX(float worldX) {

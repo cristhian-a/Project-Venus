@@ -57,7 +57,8 @@ public class Game {
             throw new RuntimeException(e);
         }
 
-        camera = new Camera(settings.video.ORIGINAL_WIDTH, settings.video.ORIGINAL_HEIGHT);
+        int tileSize = scene.world.getRules().tileSize();   // Just to adjust the camera following
+        camera = new Camera(settings.video.ORIGINAL_WIDTH, settings.video.ORIGINAL_HEIGHT, tileSize, tileSize);
         collisionInspector = new CollisionInspector();
         physics.ruleOver(scene);
         physics.setInspector(collisionInspector);
