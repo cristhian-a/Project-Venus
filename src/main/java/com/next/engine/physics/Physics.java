@@ -1,11 +1,10 @@
-package com.next.core.physics;
+package com.next.engine.physics;
 
-import com.next.core.data.Mailbox;
-import com.next.core.model.Actor;
+import com.next.engine.data.Mailbox;
+import com.next.engine.model.Actor;
 import com.next.world.Scene;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Physics {

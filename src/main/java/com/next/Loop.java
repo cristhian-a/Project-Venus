@@ -1,6 +1,5 @@
 package com.next;
 
-import com.next.core.data.Mailbox;
 import com.next.graphics.GamePanel;
 import com.next.system.Debugger;
 import com.next.system.Input;
@@ -37,6 +36,10 @@ public class Loop implements Runnable {
         }
     }
 
+    public void finishGame() {
+        running = false;
+    }
+
     @Override
     public void run() {
         final double fixedDelta = 1.0 / 60.0;
@@ -70,5 +73,7 @@ public class Loop implements Runnable {
                 timer = System.currentTimeMillis();
             }
         }
+
+        stop();
     }
 }

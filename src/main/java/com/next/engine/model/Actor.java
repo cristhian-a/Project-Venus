@@ -1,10 +1,10 @@
-package com.next.core.model;
+package com.next.engine.model;
 
-import com.next.core.data.Mailbox;
-import com.next.core.physics.CollisionBox;
-import com.next.core.physics.CollisionEvent;
-import com.next.core.physics.CollisionType;
-import com.next.core.physics.CollisionResult;
+import com.next.engine.data.Mailbox;
+import com.next.engine.physics.CollisionBox;
+import com.next.engine.physics.CollisionEvent;
+import com.next.engine.physics.CollisionType;
+import com.next.engine.physics.CollisionResult;
 import com.next.graphics.Layer;
 import com.next.system.Debugger;
 import lombok.Getter;

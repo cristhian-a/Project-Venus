@@ -1,6 +1,7 @@
 package com.next;
 
-import com.next.core.data.Mailbox;
+import com.next.engine.Global;
+import com.next.engine.data.Mailbox;
 import com.next.graphics.GamePanel;
 import com.next.graphics.awt.AwtPanel;
 import com.next.graphics.awt.Renderer;
@@ -31,6 +32,9 @@ public class Main {
         Renderer renderer = new Renderer(game, mailbox, settings.video, assets);
         GamePanel panel = new AwtPanel(keyboardDevice, settings.video, renderer);
 
-        new Loop(game, panel, input).start();
+        Loop gameLoop = new Loop(game, panel, input);
+        Global.setGameLoop(gameLoop);   // I might reconsider this later
+
+        gameLoop.start();
     }
 }

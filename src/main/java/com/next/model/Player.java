@@ -1,12 +1,12 @@
 package com.next.model;
 
-import com.next.core.animation.Animation;
-import com.next.core.animation.AnimationState;
-import com.next.core.data.Mailbox;
-import com.next.core.model.AnimatedActor;
-import com.next.core.physics.CollisionBox;
-import com.next.core.physics.CollisionType;
-import com.next.core.physics.Movement;
+import com.next.engine.animation.Animation;
+import com.next.engine.animation.AnimationState;
+import com.next.engine.data.Mailbox;
+import com.next.engine.model.AnimatedActor;
+import com.next.engine.physics.CollisionBox;
+import com.next.engine.physics.CollisionType;
+import com.next.engine.physics.Movement;
 import com.next.graphics.Layer;
 import com.next.system.Debugger;
 import com.next.system.Input;

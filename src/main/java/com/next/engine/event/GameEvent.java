@@ -1,4 +1,4 @@
-package com.next.core.event;
+package com.next.engine.event;
 
 public interface GameEvent {
 }

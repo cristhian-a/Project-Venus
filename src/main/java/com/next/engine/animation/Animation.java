@@ -1,4 +1,4 @@
-package com.next.core.animation;
+package com.next.engine.animation;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

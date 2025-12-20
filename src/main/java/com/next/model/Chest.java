@@ -1,12 +1,10 @@
 package com.next.model;
 
-import com.next.core.model.Prop;
-import com.next.core.physics.CollisionEvent;
-import com.next.core.physics.CollisionType;
-import com.next.core.physics.CollisionResult;
+import com.next.engine.model.Prop;
+import com.next.engine.physics.CollisionEvent;
+import com.next.engine.physics.CollisionType;
+import com.next.engine.physics.CollisionResult;
 import com.next.event.FinishGameEvent;
-
-import java.util.List;
 
 public class Chest extends Prop {
 

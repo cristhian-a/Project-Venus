@@ -1,12 +1,15 @@
 package com.next;
 
-import com.next.core.data.Mailbox;
-import com.next.core.event.EventDispatcher;
-import com.next.core.model.Actor;
-import com.next.core.model.Camera;
-import com.next.core.model.Prop;
-import com.next.core.physics.CollisionInspector;
-import com.next.core.physics.Physics;
+import com.next.engine.data.Mailbox;
+import com.next.engine.event.EventDispatcher;
+import com.next.engine.model.Actor;
+import com.next.engine.model.Camera;
+import com.next.engine.model.Prop;
+import com.next.engine.physics.CollisionInspector;
+import com.next.engine.physics.Physics;
+import com.next.event.handlers.DoorHandler;
+import com.next.event.handlers.GameCycleHandler;
+import com.next.event.handlers.SpellHandler;
 import com.next.io.Loader;
 import com.next.model.*;
 import com.next.model.factory.*;
@@ -30,6 +33,8 @@ public class Game {
     private final AssetRegistry assets;
     private final CollisionInspector collisionInspector;
 
+    private final EventDispatcher dispatcher = new EventDispatcher();
+
     private final Physics physics = new Physics();
 
     @Getter private final Camera camera;
@@ -51,6 +56,10 @@ public class Game {
         collisionInspector = new CollisionInspector();
         physics.ruleOver(scene);
         physics.setInspector(collisionInspector);
+
+        new DoorHandler(dispatcher, mailbox);
+        new SpellHandler(dispatcher, mailbox);
+        new GameCycleHandler(dispatcher, mailbox);
     }
 
     public void update(double delta) {
@@ -64,7 +73,7 @@ public class Game {
 
         physics.apply(delta, mailbox); // always after update
 
-        EventDispatcher.dispatch(mailbox);    // for now, this should happen after physics
+        dispatcher.dispatch(mailbox);   // for now, this should happen after physics
 
         //
         // render portion

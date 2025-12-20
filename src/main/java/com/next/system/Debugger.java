@@ -1,6 +1,6 @@
 package com.next.system;
 
-import com.next.core.physics.CollisionBox;
+import com.next.engine.physics.CollisionBox;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

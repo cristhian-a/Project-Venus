@@ -1,7 +1,6 @@
 package com.next.world;
 
-import com.next.core.data.Mailbox;
-import com.next.core.model.Actor;
+import com.next.engine.model.Actor;
 import com.next.model.Player;
 
 import java.util.Arrays;

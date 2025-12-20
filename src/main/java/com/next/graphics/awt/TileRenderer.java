@@ -1,6 +1,6 @@
 package com.next.graphics.awt;
 
-import com.next.core.model.Camera;
+import com.next.engine.model.Camera;
 import com.next.world.Tile;
 import com.next.world.World;
 import com.next.system.AssetRegistry;

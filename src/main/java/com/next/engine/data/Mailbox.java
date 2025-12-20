@@ -1,7 +1,7 @@
-package com.next.core.data;
+package com.next.engine.data;
 
-import com.next.core.event.GameEvent;
-import com.next.core.physics.Movement;
+import com.next.engine.event.GameEvent;
+import com.next.engine.physics.Movement;
 import com.next.graphics.RenderQueue;
 
 import java.util.ArrayList;
@@ -14,16 +14,13 @@ import java.util.function.Supplier;
  * @value {@code renderQueue} holds requests to be consumed by a renderer (see {@link RenderQueue}).
  */
 public class Mailbox {
+    public final List<Supplier<? extends GameEvent>> eventSuppliers = new ArrayList<>();
     public final List<Movement> moveRequests = new ArrayList<>();
     public final RenderQueue renderQueue = new RenderQueue();
-    public final List<GameEvent> events = new ArrayList<>();
-
-    public final List<Supplier<? extends GameEvent>> eventSuppliers = new ArrayList<>();
 
     public void clearAll() {
         eventSuppliers.clear();
         moveRequests.clear();
         renderQueue.clear();
-        events.clear();
     }
 }

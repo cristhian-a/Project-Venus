@@ -1,6 +1,6 @@
 package com.next.graphics;
 
-import com.next.core.physics.CollisionBox;
+import com.next.engine.physics.CollisionBox;
 import lombok.Getter;
 
 /**

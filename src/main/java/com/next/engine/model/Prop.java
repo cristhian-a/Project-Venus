@@ -1,7 +1,7 @@
-package com.next.core.model;
+package com.next.engine.model;
 
-import com.next.core.physics.CollisionBox;
-import com.next.core.physics.CollisionType;
+import com.next.engine.physics.CollisionBox;
+import com.next.engine.physics.CollisionType;
 
 public class Prop extends Actor {
 

@@ -1,11 +1,11 @@
 package com.next.graphics.awt;
 
-import com.next.core.model.AABB;
+import com.next.engine.model.AABB;
 import com.next.graphics.Layer;
 import com.next.graphics.RenderQueue;
 import com.next.graphics.RenderRequest;
-import com.next.core.model.Camera;
-import com.next.core.physics.CollisionBox;
+import com.next.engine.model.Camera;
+import com.next.engine.physics.CollisionBox;
 import com.next.graphics.UIMessage;
 import com.next.system.AssetRegistry;
 import com.next.system.Debugger;
