@@ -36,7 +36,10 @@ public class Loop implements Runnable {
         }
     }
 
-    public void gracefullyEnd() {
+    /**
+     * Stops the game loop after finishing the current cycle.
+     */
+    public void gracefullyStop() {
         running = false;
     }
 
