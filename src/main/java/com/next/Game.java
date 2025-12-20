@@ -7,8 +7,8 @@ import com.next.engine.model.Camera;
 import com.next.engine.model.Prop;
 import com.next.engine.physics.CollisionInspector;
 import com.next.engine.physics.Physics;
+import com.next.event.FinishGameEvent;
 import com.next.event.handlers.DoorHandler;
-import com.next.event.handlers.GameCycleHandler;
 import com.next.event.handlers.SpellHandler;
 import com.next.io.Loader;
 import com.next.model.*;
@@ -31,20 +31,20 @@ public class Game {
     private final Mailbox mailbox;
     private final Settings settings;
     private final AssetRegistry assets;
+    private final EventDispatcher dispatcher;
     private final CollisionInspector collisionInspector;
-
-    private final EventDispatcher dispatcher = new EventDispatcher();
 
     private final Physics physics = new Physics();
 
     @Getter private final Camera camera;
     @Getter private Scene scene;
 
-    public Game(Input input, Mailbox mailbox, Settings settings, AssetRegistry assets) {
+    public Game(Input input, Mailbox mailbox, Settings settings, AssetRegistry assets, EventDispatcher dispatcher) {
         this.input = input;
         this.assets = assets;
         this.mailbox = mailbox;
         this.settings = settings;
+        this.dispatcher = dispatcher;
 
         try {
             scene = loadScene("world_1.json", "level_1.json", "map_01");
@@ -59,7 +59,7 @@ public class Game {
 
         new DoorHandler(dispatcher, mailbox);
         new SpellHandler(dispatcher, mailbox);
-        new GameCycleHandler(dispatcher, mailbox);
+        new FinishGameEvent.Handler(dispatcher, mailbox);
     }
 
     public void update(double delta) {

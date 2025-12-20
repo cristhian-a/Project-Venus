@@ -36,7 +36,7 @@ public class Loop implements Runnable {
         }
     }
 
-    public void finishGame() {
+    public void gracefullyEnd() {
         running = false;
     }
 
