@@ -25,8 +25,8 @@ public class SpellHandler {
                 "Mercury's Bless!",
                 "arial_30",
                 "white",
-                -75,
-                -25,
+                -91,
+                -41,
                 RenderRequest.Position.CENTERED,
                 240
         );

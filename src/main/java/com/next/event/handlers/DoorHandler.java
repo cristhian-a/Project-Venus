@@ -35,8 +35,8 @@ public class DoorHandler {
                 "First grab a Key!",
                 "arial_30",
                 "white",
-                -75,
-                -25,
+                -91,
+                -41,
                 RenderRequest.Position.CENTERED,
                 240
         );
@@ -55,8 +55,8 @@ public class DoorHandler {
                 "Got a Key!",
                 "arial_30",
                 "white",
-                -32,
-                -25,
+                -65,
+                -41,
                 RenderRequest.Position.CENTERED,
                 240
         );

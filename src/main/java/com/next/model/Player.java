@@ -87,12 +87,4 @@ public class Player extends AnimatedActor {
         spriteId = animator.update();
     }
 
-    @Override
-    public void submitRender(Mailbox mailbox) {
-        super.submitRender(mailbox);
-        for (int i = 0; i < heldKeys.size(); i++) {
-            var key = heldKeys.get(i);
-            mailbox.renderQueue.submit(Layer.UI, 20 + 75 * i, 5, key.getSpriteId());
-        }
-    }
 }

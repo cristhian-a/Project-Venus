@@ -73,7 +73,7 @@ public class Game {
         new SpellHandler(dispatcher, mailbox);
         gameFlowHandler = new GameFlowHandler(dispatcher, mailbox, this);
 
-        ui.setState(new GameplayUIState());
+        ui.setState(new GameplayUIState(scene.player));
     }
 
     public void update(double delta) {
