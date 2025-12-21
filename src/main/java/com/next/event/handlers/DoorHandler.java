@@ -33,6 +33,8 @@ public class DoorHandler {
         mailbox.renderQueue.submit(
                 Layer.UI,
                 "First grab a Key!",
+                "arial_30",
+                "white",
                 -75,
                 -25,
                 RenderRequest.Position.CENTERED,
@@ -51,6 +53,8 @@ public class DoorHandler {
         mailbox.renderQueue.submit(
                 Layer.UI,
                 "Got a Key!",
+                "arial_30",
+                "white",
                 -32,
                 -25,
                 RenderRequest.Position.CENTERED,

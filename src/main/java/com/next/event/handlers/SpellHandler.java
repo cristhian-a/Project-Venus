@@ -23,6 +23,8 @@ public class SpellHandler {
         mailbox.renderQueue.submit(
                 Layer.UI,
                 "Mercury's Bless!",
+                "arial_30",
+                "white",
                 -75,
                 -25,
                 RenderRequest.Position.CENTERED,

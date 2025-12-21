@@ -33,8 +33,12 @@ public final class RenderQueue {
         layers.get(layer).add(new RenderRequest(layer, box));
     }
 
-    public void submit(Layer layer, String message, int x, int y, RenderRequest.Position pos, int frames) {
-        layers.get(layer).add(new RenderRequest(layer, message, x, y, pos, frames));
+    public void submit(Layer layer, String message, String font, String color, int x, int y, RenderRequest.Position pos, int frames) {
+        layers.get(layer).add(new RenderRequest(layer, message, font, color, x, y, pos, frames));
+    }
+
+    public void submit(Layer layer, RenderRequest.Type type) {
+        layers.get(layer).add(new RenderRequest(type, layer));
     }
 
     public List<RenderRequest> getLayer(Layer layer) {

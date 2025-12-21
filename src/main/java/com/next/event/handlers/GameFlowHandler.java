@@ -6,8 +6,7 @@ import com.next.engine.data.Mailbox;
 import com.next.engine.event.EventDispatcher;
 import com.next.engine.event.GracefullyStopEvent;
 import com.next.event.FinishGameEvent;
-import com.next.engine.graphics.Layer;
-import com.next.engine.graphics.RenderRequest;
+import com.next.graphics.FinishUIState;
 import com.next.util.TimeAccumulator;
 
 public class GameFlowHandler {
@@ -29,11 +28,7 @@ public class GameFlowHandler {
         if (game.getGameState() != GameState.RUNNING) return;
         game.setGameState(GameState.FINISHED);
 
-        double delta = accumulator.getDeltaTime();
-        String timeMessage = String.format("%.0f", delta);
-        String finalMessage = "You Win! Final Time: " + timeMessage + "s";
-
-        mailbox.renderQueue.submit(Layer.UI, finalMessage, -150, -25, RenderRequest.Position.CENTERED, 1);
+        game.getUi().setState(new FinishUIState(accumulator.getDeltaTime()));
         dispatcher.dispatch(new GracefullyStopEvent());
     }
 

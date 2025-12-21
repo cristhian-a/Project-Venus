@@ -45,7 +45,10 @@ public class UI {
                 renderSprite(g, r.getSpriteId(), x, y);
             } else if (r.getType() == RenderRequest.Type.TEXT) {
                 // TODO toda a lógica de re-inscrição das mensagens na lista deve ser feita no update!
-                messages.add(new UIMessage(r.getMessage(), x, y, r.getFramesToDie()));
+                messages.add(new UIMessage(r.getMessage(), r.getFont(), r.getColor(), x, y, r.getFramesToDie()));
+            } else if (r.getType() == RenderRequest.Type.OVERLAY) {
+                g.setColor(new Color(0, 0, 0, 100));
+                g.fillRect(x, y, settings.WIDTH, settings.HEIGHT);
             }
         }
 
@@ -81,7 +84,7 @@ public class UI {
     }
 
     private void renderText(Graphics2D g, UIMessage m) {
-        renderText(g, m.text, m.x, m.y, Color.WHITE, assets.getFont("arial_30"));
+        renderText(g, m.text, m.x, m.y, assets.getColor(m.color), assets.getFont(m.font));
     }
 
     private void renderText(Graphics2D g, String text, int x, int y, Color color, Font font) {

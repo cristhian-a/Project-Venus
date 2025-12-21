@@ -18,6 +18,8 @@ import com.next.system.AssetRegistry;
 import com.next.system.Debugger;
 import com.next.system.Input;
 import com.next.system.Settings;
+import com.next.graphics.GameplayUIState;
+import com.next.graphics.UISystem;
 import com.next.world.LevelData;
 import com.next.world.Scene;
 import com.next.world.World;
@@ -29,16 +31,20 @@ import java.io.IOException;
 
 public class Game {
 
+    // Dependencies
     private final Input input;
     private final Mailbox mailbox;
     private final Settings settings;
     private final AssetRegistry assets;
     private final EventDispatcher dispatcher;
-    private final CollisionInspector collisionInspector;
 
-    private final GameFlowHandler gameFlowHandler;
-
+    // Systems
+    @Getter private final UISystem ui = new UISystem();
     private final Physics physics = new Physics();
+    private final CollisionInspector collisionInspector = new CollisionInspector();
+
+    // Handlers
+    private final GameFlowHandler gameFlowHandler;
 
     @Getter @Setter private GameState gameState = GameState.RUNNING;
     @Getter private final Camera camera;
@@ -59,13 +65,15 @@ public class Game {
 
         int tileSize = scene.world.getRules().tileSize();   // Just to adjust the camera following
         camera = new Camera(settings.video.ORIGINAL_WIDTH, settings.video.ORIGINAL_HEIGHT, tileSize, tileSize);
-        collisionInspector = new CollisionInspector();
+
         physics.ruleOver(scene);
         physics.setInspector(collisionInspector);
 
         new DoorHandler(dispatcher, mailbox);
         new SpellHandler(dispatcher, mailbox);
         gameFlowHandler = new GameFlowHandler(dispatcher, mailbox, this);
+
+        ui.setState(new GameplayUIState());
     }
 
     public void update(double delta) {
@@ -91,9 +99,14 @@ public class Game {
         }
         scene.player.submitRender(mailbox);     // player always for last
 
-        camera.follow(scene.player);
+        camera.follow(scene.player);    // the camera follows after events' resolution
 
+        // First handlers, then systems updates
         gameFlowHandler.update(delta);
+        ui.update(delta);
+
+        ui.submit(mailbox.renderQueue);
+
         long end = System.nanoTime();
         Debugger.publish("UPDATE", new Debugger.DebugLong(end - start), 500, 30, Debugger.TYPE.INFO);
     }
