@@ -7,8 +7,7 @@ import com.next.engine.model.AnimatedActor;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.physics.CollisionType;
 import com.next.engine.physics.Movement;
-import com.next.engine.graphics.Layer;
-import com.next.system.Debugger;
+import com.next.engine.system.Debugger;
 import com.next.system.Input;
 import lombok.Getter;
 

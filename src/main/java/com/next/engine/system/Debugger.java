@@ -1,6 +1,7 @@
-package com.next.system;
+package com.next.engine.system;
 
 import com.next.engine.physics.CollisionBox;
+import com.next.system.Input;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -31,6 +32,7 @@ public class Debugger {
             snapshot = Map.copyOf(context);
         }
 
+        context.clear();
         renderQueue = Map.copyOf(snapshot);
     }
 
@@ -45,7 +47,7 @@ public class Debugger {
         INSTANCE.context.put(key, new DebugRenderInstruction(x, y, value, type));
     }
 
-    public static void publishCollision(String key, CollisionBox box) {
+    public static void publish(String key, CollisionBox box) {
         publish(key, new DebugCollision(box), 0, 0, TYPE.COLLISION);
     }
 

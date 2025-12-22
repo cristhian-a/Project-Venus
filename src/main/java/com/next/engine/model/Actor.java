@@ -6,7 +6,7 @@ import com.next.engine.physics.CollisionEvent;
 import com.next.engine.physics.CollisionType;
 import com.next.engine.physics.CollisionResult;
 import com.next.engine.graphics.Layer;
-import com.next.system.Debugger;
+import com.next.engine.system.Debugger;
 import lombok.Getter;
 
 @Getter
@@ -26,7 +26,7 @@ public abstract class Actor {
     }
 
     public void submitRender(Mailbox mailbox) {
-        if (collisionBox != null) Debugger.publishCollision("ACTOR BOX" + this, collisionBox);
+        if (collisionBox != null) Debugger.publish("ACTOR BOX" + this, collisionBox);
         mailbox.renderQueue.submit(Layer.ACTORS, (int) worldX, (int) worldY, spriteId);
     }
 

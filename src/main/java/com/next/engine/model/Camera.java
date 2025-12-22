@@ -1,6 +1,6 @@
 package com.next.engine.model;
 
-import com.next.system.Debugger;
+import com.next.engine.system.Debugger;
 import lombok.Getter;
 
 @Getter

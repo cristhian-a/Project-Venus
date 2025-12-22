@@ -6,7 +6,7 @@ import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
 import com.next.system.AssetRegistry;
-import com.next.system.Debugger;
+import com.next.engine.system.Debugger;
 import com.next.system.Settings.VideoSettings;
 
 import java.awt.*;

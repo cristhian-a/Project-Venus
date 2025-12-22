@@ -17,7 +17,7 @@ import com.next.io.Loader;
 import com.next.model.*;
 import com.next.model.factory.*;
 import com.next.system.AssetRegistry;
-import com.next.system.Debugger;
+import com.next.engine.system.Debugger;
 import com.next.system.Input;
 import com.next.system.Settings;
 import com.next.graphics.GameplayUIState;

@@ -8,7 +8,7 @@ import com.next.engine.model.Camera;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.graphics.UIMessage;
 import com.next.system.AssetRegistry;
-import com.next.system.Debugger;
+import com.next.engine.system.Debugger;
 import com.next.system.Settings.VideoSettings;
 
 import java.awt.*;
