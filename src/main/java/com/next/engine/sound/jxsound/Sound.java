@@ -17,13 +17,21 @@ final class Sound {
     }
 
     public void play() {
-        clip.setFramePosition(0);
         clip.start();
     }
 
     public void stop() {
         clip.stop();
         clip.close();
+    }
+
+    public void pause() {
+        clip.stop();
+    }
+
+    public void restart() {
+        clip.setFramePosition(0);
+        play();
     }
 
     public void loop() {

@@ -2,50 +2,91 @@ package com.next.engine.graphics;
 
 import com.next.engine.physics.CollisionBox;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-
 public final class RenderQueue {
 
-    private final EnumMap<Layer, List<RenderRequest>> layers = new EnumMap<>(Layer.class);
+    public enum Type {SPRITE, TEXT, COLLISION, OVERLAY}
 
-    public RenderQueue() {
-        for (Layer l : Layer.values()) {
-            layers.put(l, new ArrayList<>());
-        }
+    private final int DEFAULT_SIZE = 50;
+    private int BUFFER_SIZE = DEFAULT_SIZE;
+    private int current = 0;
+
+    public Layer[] layer = new Layer[DEFAULT_SIZE];
+    public Type[] type = new Type[DEFAULT_SIZE];
+    public RenderPosition[] position = new RenderPosition[DEFAULT_SIZE];
+    public int[] sprite = new int[DEFAULT_SIZE];
+    public int[] x = new int[DEFAULT_SIZE];
+    public int[] y = new int[DEFAULT_SIZE];
+    public int[] frames = new int[DEFAULT_SIZE];
+    public String[] message = new String[DEFAULT_SIZE];
+    public String[] font = new String[DEFAULT_SIZE];
+    public String[] color = new String[DEFAULT_SIZE];
+    public CollisionBox[] box = new CollisionBox[DEFAULT_SIZE];
+
+    private void advance() {
+        current++;
+        if (current >= DEFAULT_SIZE) throw new RuntimeException("Render queue is full!");
     }
 
-    /**
-     * Submits a render request to the renderer.
-     * ONLY HERE TO SUPPORT {@code RenderRequest} CHILDREN
-     * @param request a {@link RenderRequest} to be made to the renderer
-     */
-    public void submit(RenderRequest request) {
-        layers.get(request.getLayer()).add(request);
+    public int size() {
+        return current;
     }
 
-    public void submit(Layer layer, int x, int y, int spriteId) {
-        layers.get(layer).add(new RenderRequest(layer, x, y, spriteId));
-    }
-
-    public void submit(Layer layer, CollisionBox box) {
-        layers.get(layer).add(new RenderRequest(layer, box));
-    }
-
-    public void submit(Layer layer, String message, String font, String color, int x, int y, RenderRequest.Position pos, int frames) {
-        layers.get(layer).add(new RenderRequest(layer, message, font, color, x, y, pos, frames));
-    }
-
-    public void submit(Layer layer, RenderRequest.Type type) {
-        layers.get(layer).add(new RenderRequest(type, layer));
-    }
-
-    public List<RenderRequest> getLayer(Layer layer) {
-        return layers.get(layer);
+    public int capacity() {
+        return BUFFER_SIZE;
     }
 
     public void clear() {
-        layers.values().forEach(List::clear);
+        current = 0;
     }
+
+    public void allocate(int size) {
+        BUFFER_SIZE = size;
+        current = 0;
+        clear();
+
+        layer = new Layer[BUFFER_SIZE];
+        type = new Type[BUFFER_SIZE];
+        position = new RenderPosition[BUFFER_SIZE];
+        sprite = new int[BUFFER_SIZE];
+        x = new int[BUFFER_SIZE];
+        y = new int[BUFFER_SIZE];
+        frames = new int[BUFFER_SIZE];
+        message = new String[BUFFER_SIZE];
+        font = new String[BUFFER_SIZE];
+        color = new String[BUFFER_SIZE];
+        box = new CollisionBox[BUFFER_SIZE];
+    }
+
+    public void submit(Layer layer, Type type, RenderPosition position, int sprite, int x, int y, int frames, String message,
+                       String font, String color, CollisionBox box) {
+        this.layer[current] = layer;
+        this.type[current] = type;
+        this.position[current] = position;
+        this.sprite[current] = sprite;
+        this.x[current] = x;
+        this.y[current] = y;
+        this.frames[current] = frames;
+        this.message[current] = message;
+        this.font[current] = font;
+        this.color[current] = color;
+        this.box[current] = box;
+        advance();
+    }
+
+    public void submit(Layer layer, int x, int y, int spriteId) {
+        submit(layer, Type.SPRITE, RenderPosition.AXIS, spriteId, x, y, 0, null, null, null, null);
+    }
+
+    public void submit(Layer layer, CollisionBox box) {
+        submit(layer, Type.COLLISION, RenderPosition.COLLISION, 0, 0, 0, 0, null, null, null, box);
+    }
+
+    public void submit(Layer layer, String message, String font, String color, int x, int y, RenderPosition pos, int frames) {
+        submit(layer, Type.TEXT, pos, 0, x, y, frames, message, font, color, null);
+    }
+
+    public void submit(Layer layer, RenderRequest.Type type) {
+        submit(layer, Type.OVERLAY, RenderPosition.AXIS, 0, 0, 0, 0, null, null, null, null);
+    }
+
 }

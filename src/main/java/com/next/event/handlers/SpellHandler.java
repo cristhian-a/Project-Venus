@@ -2,6 +2,7 @@ package com.next.event.handlers;
 
 import com.next.engine.data.Mailbox;
 import com.next.engine.event.EventDispatcher;
+import com.next.engine.graphics.RenderPosition;
 import com.next.engine.sound.PlaySound;
 import com.next.engine.sound.SetVolume;
 import com.next.engine.sound.SoundChannel;
@@ -33,7 +34,7 @@ public class SpellHandler {
                 "white",
                 -91,
                 -41,
-                RenderRequest.Position.CENTERED,
+                RenderPosition.CENTERED,
                 240
         );
 

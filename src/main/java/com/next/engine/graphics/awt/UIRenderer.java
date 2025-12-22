@@ -1,12 +1,9 @@
 package com.next.engine.graphics.awt;
 
+import com.next.engine.graphics.*;
 import com.next.engine.model.AABB;
-import com.next.engine.graphics.Layer;
-import com.next.engine.graphics.RenderQueue;
-import com.next.engine.graphics.RenderRequest;
 import com.next.engine.model.Camera;
 import com.next.engine.physics.CollisionBox;
-import com.next.engine.graphics.UIMessage;
 import com.next.system.AssetRegistry;
 import com.next.engine.system.Debugger;
 import com.next.system.Settings.VideoSettings;
@@ -15,48 +12,41 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UI {
+public class UIRenderer {
 
     private final AssetRegistry assets;
     private final VideoSettings settings;
 
     private final List<UIMessage> messages;
 
-    public UI(AssetRegistry assets, VideoSettings settings) {
+    public UIRenderer(AssetRegistry assets, VideoSettings settings) {
         this.assets = assets;
         this.settings = settings;
 
         messages = new ArrayList<>();
     }
 
-    public void render(Graphics2D g, RenderQueue queue, Camera camera) {
-        var requests = queue.getLayer(Layer.UI);
+    public void render(Graphics2D g, RenderQueue queue, int current, Camera camera) {
+        int x = queue.x[current];
+        int y = queue.y[current];
 
-        for (var r : requests) {
-            int x = r.getX();
-            int y = r.getY();
-
-            if (r.getPosition() == RenderRequest.Position.CENTERED) {
-                x += settings.WIDTH / 2;
-                y += settings.HEIGHT / 2;
-            }
-
-            if (r.getType() == RenderRequest.Type.SPRITE) {
-                renderSprite(g, r.getSpriteId(), x, y);
-            } else if (r.getType() == RenderRequest.Type.TEXT) {
-                // TODO toda a lógica de re-inscrição das mensagens na lista deve ser feita no update!
-                messages.add(new UIMessage(r.getMessage(), r.getFont(), r.getColor(), x, y, r.getFramesToDie()));
-            } else if (r.getType() == RenderRequest.Type.OVERLAY) {
-                g.setColor(new Color(0, 0, 0, 100));
-                g.fillRect(x, y, settings.WIDTH, settings.HEIGHT);
-            }
+        if (queue.position[current] == RenderPosition.CENTERED) {
+            x += settings.WIDTH / 2;
+            y += settings.HEIGHT / 2;
         }
 
-        renderMessages(g);
-
-        g.setFont(assets.getFont("arial_30"));
-        g.setColor(Color.GREEN);
-        renderDebugInfo(g, camera);
+        if (queue.type[current] == RenderQueue.Type.SPRITE) {
+            renderSprite(g, queue.sprite[current], x, y);
+        } else if (queue.type[current] == RenderQueue.Type.TEXT) {
+            if (queue.frames[current] > 0) {
+                messages.add(new UIMessage(queue.message[current], queue.font[current], queue.color[current], x, y, queue.frames[current]));
+            } else {
+                renderText(g, queue.message[current], x, y, assets.getColor(queue.color[current]), assets.getFont(queue.font[current]));
+            }
+        } else if (queue.type[current] == RenderQueue.Type.OVERLAY) {
+            g.setColor(new Color(0, 0, 0, 100));
+            g.fillRect(x, y, settings.WIDTH, settings.HEIGHT);
+        }
     }
 
     private void renderSprite(Graphics2D g, int sprite, int x, int y) {
@@ -70,7 +60,7 @@ public class UI {
         );
     }
 
-    private void renderMessages(Graphics2D g) {
+    public void renderMessages(Graphics2D g) {
         for (int i = 0; i < messages.size(); i++) {
             var message = messages.get(i);
             if (message.remainingFrames < 1) {
@@ -95,6 +85,8 @@ public class UI {
 
     public void renderDebugInfo(Graphics2D g, Camera camera) {
         var debug = Debugger.getRenderQueue();
+        g.setFont(assets.getFont("arial_30"));
+        g.setColor(Color.GREEN);
 
         for (String key : debug.keySet()) {
             var renderInfo = debug.get(key);

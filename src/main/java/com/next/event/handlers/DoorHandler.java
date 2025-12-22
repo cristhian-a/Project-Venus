@@ -2,6 +2,7 @@ package com.next.event.handlers;
 
 import com.next.engine.data.Mailbox;
 import com.next.engine.event.EventDispatcher;
+import com.next.engine.graphics.RenderPosition;
 import com.next.engine.sound.PlaySound;
 import com.next.engine.sound.SoundChannel;
 import com.next.event.DoorUnlockedEvent;
@@ -42,9 +43,9 @@ public class DoorHandler {
                 "First grab a Key!",
                 "arial_30",
                 "white",
-                -91,
+                -100,
                 -41,
-                RenderRequest.Position.CENTERED,
+                RenderPosition.CENTERED,
                 240
         );
     }
@@ -64,7 +65,7 @@ public class DoorHandler {
                 "white",
                 -65,
                 -41,
-                RenderRequest.Position.CENTERED,
+                RenderPosition.CENTERED,
                 240
         );
 

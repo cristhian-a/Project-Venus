@@ -1,6 +1,7 @@
 package com.next;
 
-import com.next.engine.GameState;
+import com.next.event.PauseEvent;
+import com.next.util.GameState;
 import com.next.engine.data.Mailbox;
 import com.next.engine.event.EventDispatcher;
 import com.next.engine.model.Actor;
@@ -79,7 +80,9 @@ public class Game {
         physics.ruleOver(scene);
         physics.setInspector(collisionInspector);
 
-        ui.setState(new GameplayUIState(scene.player));
+        var gameplayUIState = new GameplayUIState(scene.player);
+        gameFlowHandler.setGameplayUIState(gameplayUIState);
+        ui.setState(gameplayUIState);
 
         dispatcher.dispatch(new PlaySound(Sounds.WIND, SoundChannel.MUSIC, true));
     }
@@ -87,19 +90,26 @@ public class Game {
     public void update(double delta) {
         long start = System.nanoTime();
 
-        scene.player.update(delta, input, mailbox);
-        for (int i = 0; i < scene.actors.length; i++) {
-            var actor = scene.actors[i];
-            actor.update(delta, mailbox);
+        mailbox.renderQueue.clear();    // TODO we should move this to another place
+        processInputs();
+
+        if (gameState == GameState.RUNNING) {
+            // TODO this is very incomplete
+
+            scene.player.update(delta, input, mailbox);
+            for (int i = 0; i < scene.actors.length; i++) {
+                var actor = scene.actors[i];
+                actor.update(delta, mailbox);
+            }
+
+            physics.apply(delta, mailbox); // always after update
+
+            dispatcher.dispatch(mailbox);   // for now, this should happen after physics
+
+            //
+            // render portion
+            scene.dismissDisposedActors();   // PLEASE, dismiss before rendering
         }
-
-        physics.apply(delta, mailbox); // always after update
-
-        dispatcher.dispatch(mailbox);   // for now, this should happen after physics
-
-        //
-        // render portion
-        scene.dismissDisposedActors();   // PLEASE, dismiss before rendering
 
         for (int i = 0; i < scene.actors.length; i++) {
             var actor = scene.actors[i];
@@ -128,5 +138,11 @@ public class Game {
         Player player = new PlayerFactory(world, level).create();
 
         return new Scene(world, player, objects);
+    }
+
+    public void processInputs() {
+        if (input.isPressed(Input.Action.PAUSE)) {
+            dispatcher.dispatch(new PauseEvent());
+        }
     }
 }

@@ -2,7 +2,6 @@ package com.next.engine.graphics.awt;
 
 import com.next.Game;
 import com.next.engine.data.Mailbox;
-import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
 import com.next.system.AssetRegistry;
@@ -13,7 +12,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 public class Renderer {
-    private final UI ui;
+    private final UIRenderer uiRenderer;
     private final Game game;
     private final Mailbox mailbox;
     private final AssetRegistry assets;
@@ -26,7 +25,7 @@ public class Renderer {
         this.assets = assets;
         this.settings = settings;
 
-        this.ui = new UI(assets, settings);
+        this.uiRenderer = new UIRenderer(assets, settings);
         this.tileRenderer = new TileRenderer(assets, game.getScene().world);
     }
 
@@ -40,35 +39,53 @@ public class Renderer {
 
         AffineTransform oldScale = g.getTransform();
         g.scale(settings.SCALE, settings.SCALE);
+        AffineTransform newScale = g.getTransform();
+
+        // RENDERING START (preserve order)
+        tileRenderer.render(g, camera); // First, rendering the world (check if this will stay like that)
+
+        for (int i = 0; i < queue.size(); i++) {
+            switch (queue.layer[i]) {
+                case BACKGROUND -> {}
+                case WORLD -> {}
+                case ACTORS -> {
+                    g.setTransform(newScale);   // up-scaling
+                    renderSprite(queue, i, g, camera);
+                }
+                case UI -> {
+                    g.setTransform(oldScale);   // de-scaling
+                    uiRenderer.render(g, queue, i, camera);
+                }
+                case DEBUG -> {}
+            }
+        }
+
+        g.setTransform(oldScale);
+        uiRenderer.renderMessages(g);
+        uiRenderer.renderDebugInfo(g, camera);
 
 //        render(Layer.BACKGROUND, queue, g, camera);
-
-        tileRenderer.render(g, camera);
 //        render(Layer.WORLD, queue, g, camera);
 
-        render(Layer.ACTORS, queue, g, camera);
+//        render(Layer.ACTORS, queue, g, camera);
 
-        g.setTransform(oldScale);   // de-scaling
-        ui.render(g, queue, camera);   // always last, damn it
+//        g.setTransform(oldScale);   // de-scaling
+//        uiRenderer.render(g, queue, camera);   // always last, damn it
 
 //        render(Layer.UI, queue, g, camera);
 //        render(Layer.DEBUG, g, camera);
 
-        queue.clear();
-
+//        queue.clear();
         long end = System.nanoTime();
         Debugger.publish("RENDER", new Debugger.DebugLong(end - start), 200, 30, Debugger.TYPE.INFO);
     }
 
-    private void render(Layer layer, RenderQueue queue, Graphics2D g, Camera camera) {
-        var instructions = queue.getLayer(layer);
-        for (var instruction : instructions) {
-            g.drawImage(
-                    assets.getSpriteSheet("world").getSprite(instruction.getSpriteId()),
-                    camera.worldToScreenX(instruction.getX()),
-                    camera.worldToScreenY(instruction.getY()),
-                    null
-            );
-        }
+    private void renderSprite(RenderQueue queue, int current, Graphics2D g, Camera camera) {
+        g.drawImage(
+                assets.getSpriteSheet("world").getSprite(queue.sprite[current]),
+                camera.worldToScreenX(queue.x[current]),
+                camera.worldToScreenY(queue.y[current]),
+                null
+        );
     }
 }

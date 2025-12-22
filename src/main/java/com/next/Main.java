@@ -49,6 +49,8 @@ public class Main {
         centralDispatcher.register(PlaySound.class, sound::fire);
         centralDispatcher.register(StopSound.class, sound::fire);
         centralDispatcher.register(SetVolume.class, sound::fire);
+        centralDispatcher.register(PauseSound.class, sound::fire);
+        centralDispatcher.register(RestartSound.class, sound::fire);
 
         gameLoop.start();   // loop start should always happen last, to guarantee that listeners are properly set up
     }

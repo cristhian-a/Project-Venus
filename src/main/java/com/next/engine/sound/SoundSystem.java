@@ -13,6 +13,8 @@ public class SoundSystem {
             case PlaySound p -> backend.play(p.clip(), p.channel(), p.loop());
             case StopSound s -> backend.stop(s.clip());
             case SetVolume v -> backend.setVolume(v.volume(), v.channel());
+            case PauseSound p -> backend.pause(p.clip());
+            case RestartSound r -> backend.restart(r.clip());
         }
     }
 }

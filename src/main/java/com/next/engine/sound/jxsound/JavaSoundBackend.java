@@ -51,6 +51,26 @@ public class JavaSoundBackend implements AudioBackend {
     }
 
     @Override
+    public void pause(SoundClip clip) {
+        var sounds = playing.get(clip);
+        if (sounds == null) return;
+
+        for (Sound s : sounds) {
+            s.pause();
+        }
+    }
+
+    @Override
+    public void restart(SoundClip clip) {
+        var sounds = playing.get(clip);
+        if (sounds == null) return;
+
+        for (Sound s : sounds) {
+            s.restart();
+        }
+    }
+
+    @Override
     public void setVolume(float volume, SoundChannel channel) {
         volumes.put(channel, volume);
         List<SoundClip> clips = tracksByChannel.get(channel);
