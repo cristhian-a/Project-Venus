@@ -1,6 +1,6 @@
 package com.next.system;
 
-import com.next.io.InputReader;
+import com.next.engine.io.InputReader;
 
 import java.util.*;
 

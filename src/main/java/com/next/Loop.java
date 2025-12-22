@@ -23,6 +23,7 @@ public class Loop implements Runnable {
         running = true;
         mainThread = new Thread(this, "Main Game Thread");
 
+        game.start();
         panel.openWindow();
         mainThread.start();
     }

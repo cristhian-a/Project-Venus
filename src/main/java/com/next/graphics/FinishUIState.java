@@ -27,6 +27,6 @@ public class FinishUIState implements UIState {
         queue.submit(Layer.UI, RenderRequest.Type.OVERLAY);
         queue.submit(Layer.UI, congratsMsg, "arial_80b", "orange", -310, -125, RenderRequest.Position.CENTERED, 1);
         queue.submit(Layer.UI, finalMessage, "arial_30", "white", -60, 60, RenderRequest.Position.CENTERED, 1);
-        queue.submit(Layer.UI, timeMessage, "arial_30", "white", -100, 100, RenderRequest.Position.CENTERED, 1);
+        queue.submit(Layer.UI, timeMessage, "arial_30", "white", -115, 100, RenderRequest.Position.CENTERED, 1);
     }
 }

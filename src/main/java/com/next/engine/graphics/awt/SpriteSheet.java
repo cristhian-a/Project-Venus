@@ -1,10 +1,9 @@
 package com.next.engine.graphics.awt;
 
-import com.next.io.FileReader;
+import com.next.engine.io.FileReader;
 import lombok.Getter;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 

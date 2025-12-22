@@ -19,7 +19,7 @@ public class Player extends AnimatedActor {
 
     @Getter private final List<Key> heldKeys = new ArrayList<>();
 
-    private float speed = 60f;
+    private float speed = 1;
 
     public Player(int spriteId, float worldX, float worldY,
                   Animation upAnim, Animation downAnim, Animation leftAnim, Animation rightAnim
@@ -51,7 +51,7 @@ public class Player extends AnimatedActor {
 
         animationState = AnimationState.IDLE;
 
-        float speed = (float) (this.speed * delta);
+//        float speed = (float) (this.speed * delta);
 
         if (input.isDown(Input.Action.UP)) {
             dy -= speed;
@@ -78,7 +78,7 @@ public class Player extends AnimatedActor {
     }
 
     public void boostSpeed(float boost) {
-        speed *= boost;
+        speed += boost;
     }
 
     @Override

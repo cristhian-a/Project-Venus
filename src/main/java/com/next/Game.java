@@ -8,6 +8,8 @@ import com.next.engine.model.Camera;
 import com.next.engine.model.Prop;
 import com.next.engine.physics.CollisionInspector;
 import com.next.engine.physics.Physics;
+import com.next.engine.sound.PlaySound;
+import com.next.engine.sound.SoundChannel;
 import com.next.event.handlers.DoorHandler;
 import com.next.event.handlers.GameFlowHandler;
 import com.next.event.handlers.SpellHandler;
@@ -20,6 +22,7 @@ import com.next.system.Input;
 import com.next.system.Settings;
 import com.next.graphics.GameplayUIState;
 import com.next.graphics.UISystem;
+import com.next.util.Sounds;
 import com.next.world.LevelData;
 import com.next.world.Scene;
 import com.next.world.World;
@@ -47,7 +50,7 @@ public class Game {
     private final GameFlowHandler gameFlowHandler;
 
     @Getter @Setter private GameState gameState = GameState.RUNNING;
-    @Getter private final Camera camera;
+    @Getter private Camera camera;
     @Getter private Scene scene;
 
     public Game(Input input, Mailbox mailbox, Settings settings, AssetRegistry assets, EventDispatcher dispatcher) {
@@ -57,23 +60,28 @@ public class Game {
         this.settings = settings;
         this.dispatcher = dispatcher;
 
+        // TODO this should be moved to start(), but can't until I fix the renderer queueing world render
         try {
             scene = loadScene("world_1.json", "level_1.json", "map_01");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+        new DoorHandler(dispatcher, mailbox);
+        new SpellHandler(dispatcher, mailbox);
+        gameFlowHandler = new GameFlowHandler(dispatcher, mailbox, this);
+    }
+
+    public void start() {
         int tileSize = scene.world.getRules().tileSize();   // Just to adjust the camera following
         camera = new Camera(settings.video.ORIGINAL_WIDTH, settings.video.ORIGINAL_HEIGHT, tileSize, tileSize);
 
         physics.ruleOver(scene);
         physics.setInspector(collisionInspector);
 
-        new DoorHandler(dispatcher, mailbox);
-        new SpellHandler(dispatcher, mailbox);
-        gameFlowHandler = new GameFlowHandler(dispatcher, mailbox, this);
-
         ui.setState(new GameplayUIState(scene.player));
+
+        dispatcher.dispatch(new PlaySound(Sounds.WIND, SoundChannel.MUSIC, true));
     }
 
     public void update(double delta) {

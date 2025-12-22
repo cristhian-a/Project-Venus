@@ -5,8 +5,12 @@ import com.next.engine.GameState;
 import com.next.engine.data.Mailbox;
 import com.next.engine.event.EventDispatcher;
 import com.next.engine.event.GracefullyStopEvent;
+import com.next.engine.sound.PlaySound;
+import com.next.engine.sound.SoundChannel;
+import com.next.engine.sound.StopSound;
 import com.next.event.FinishGameEvent;
 import com.next.graphics.FinishUIState;
+import com.next.util.Sounds;
 import com.next.util.TimeAccumulator;
 
 public class GameFlowHandler {
@@ -30,6 +34,8 @@ public class GameFlowHandler {
 
         game.getUi().setState(new FinishUIState(accumulator.getDeltaTime()));
         dispatcher.dispatch(new GracefullyStopEvent());
+        dispatcher.dispatch(new StopSound(Sounds.WIND));
+        dispatcher.dispatch(new PlaySound(Sounds.FANFARE, SoundChannel.SFX, false));
     }
 
     public void update(double delta) {

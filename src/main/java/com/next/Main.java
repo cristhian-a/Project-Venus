@@ -1,11 +1,14 @@
 package com.next;
 
 import com.next.engine.data.Mailbox;
+import com.next.engine.data.Registry;
 import com.next.engine.event.EventDispatcher;
 import com.next.engine.event.GracefullyStopEvent;
 import com.next.engine.graphics.GamePanel;
 import com.next.engine.graphics.awt.AwtPanel;
 import com.next.engine.graphics.awt.Renderer;
+import com.next.engine.sound.*;
+import com.next.engine.sound.jxsound.JavaSoundBackend;
 import com.next.io.Loader;
 import com.next.system.AssetRegistry;
 import com.next.system.Input;
@@ -37,9 +40,16 @@ public class Main {
         Loop gameLoop = new Loop(game, panel, input);
 
         // Setting default listeners up
+        Registry.audioTracks.putAll(Loader.Audio.load());
+        AudioBackend audio = new JavaSoundBackend(Registry.audioTracks);
+        SoundSystem sound = new SoundSystem(audio);
+
         GracefullyStopEvent.Handler G = new GracefullyStopEvent.Handler(gameLoop);
         centralDispatcher.register(GracefullyStopEvent.class, G::onFire);
+        centralDispatcher.register(PlaySound.class, sound::fire);
+        centralDispatcher.register(StopSound.class, sound::fire);
+        centralDispatcher.register(SetVolume.class, sound::fire);
 
-        gameLoop.start();
+        gameLoop.start();   // loop start should always happen last, to guarantee that listeners are properly set up
     }
 }
