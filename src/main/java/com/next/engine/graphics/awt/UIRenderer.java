@@ -35,15 +35,15 @@ public class UIRenderer {
             y += settings.HEIGHT / 2;
         }
 
-        if (queue.type[current] == RenderQueue.Type.SPRITE) {
+        if (queue.type[current] == RenderType.SPRITE) {
             renderSprite(g, queue.sprite[current], x, y);
-        } else if (queue.type[current] == RenderQueue.Type.TEXT) {
+        } else if (queue.type[current] == RenderType.TEXT) {
             if (queue.frames[current] > 0) {
                 messages.add(new UIMessage(queue.message[current], queue.font[current], queue.color[current], x, y, queue.frames[current]));
             } else {
                 renderText(g, queue.message[current], x, y, assets.getColor(queue.color[current]), assets.getFont(queue.font[current]));
             }
-        } else if (queue.type[current] == RenderQueue.Type.OVERLAY) {
+        } else if (queue.type[current] == RenderType.OVERLAY) {
             g.setColor(new Color(0, 0, 0, 100));
             g.fillRect(x, y, settings.WIDTH, settings.HEIGHT);
         }

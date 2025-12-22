@@ -4,14 +4,12 @@ import com.next.engine.physics.CollisionBox;
 
 public final class RenderQueue {
 
-    public enum Type {SPRITE, TEXT, COLLISION, OVERLAY}
-
     private final int DEFAULT_SIZE = 50;
     private int BUFFER_SIZE = DEFAULT_SIZE;
     private int current = 0;
 
     public Layer[] layer = new Layer[DEFAULT_SIZE];
-    public Type[] type = new Type[DEFAULT_SIZE];
+    public RenderType[] type = new RenderType[DEFAULT_SIZE];
     public RenderPosition[] position = new RenderPosition[DEFAULT_SIZE];
     public int[] sprite = new int[DEFAULT_SIZE];
     public int[] x = new int[DEFAULT_SIZE];
@@ -45,7 +43,7 @@ public final class RenderQueue {
         clear();
 
         layer = new Layer[BUFFER_SIZE];
-        type = new Type[BUFFER_SIZE];
+        type = new RenderType[BUFFER_SIZE];
         position = new RenderPosition[BUFFER_SIZE];
         sprite = new int[BUFFER_SIZE];
         x = new int[BUFFER_SIZE];
@@ -57,7 +55,7 @@ public final class RenderQueue {
         box = new CollisionBox[BUFFER_SIZE];
     }
 
-    public void submit(Layer layer, Type type, RenderPosition position, int sprite, int x, int y, int frames, String message,
+    public void submit(Layer layer, RenderType type, RenderPosition position, int sprite, int x, int y, int frames, String message,
                        String font, String color, CollisionBox box) {
         this.layer[current] = layer;
         this.type[current] = type;
@@ -74,19 +72,19 @@ public final class RenderQueue {
     }
 
     public void submit(Layer layer, int x, int y, int spriteId) {
-        submit(layer, Type.SPRITE, RenderPosition.AXIS, spriteId, x, y, 0, null, null, null, null);
+        submit(layer, RenderType.SPRITE, RenderPosition.AXIS, spriteId, x, y, 0, null, null, null, null);
     }
 
     public void submit(Layer layer, CollisionBox box) {
-        submit(layer, Type.COLLISION, RenderPosition.COLLISION, 0, 0, 0, 0, null, null, null, box);
+        submit(layer, RenderType.COLLISION, RenderPosition.COLLISION, 0, 0, 0, 0, null, null, null, box);
     }
 
     public void submit(Layer layer, String message, String font, String color, int x, int y, RenderPosition pos, int frames) {
-        submit(layer, Type.TEXT, pos, 0, x, y, frames, message, font, color, null);
+        submit(layer, RenderType.TEXT, pos, 0, x, y, frames, message, font, color, null);
     }
 
-    public void submit(Layer layer, RenderRequest.Type type) {
-        submit(layer, Type.OVERLAY, RenderPosition.AXIS, 0, 0, 0, 0, null, null, null, null);
+    public void submit(Layer layer, RenderType type) {
+        submit(layer, type, RenderPosition.AXIS, 0, 0, 0, 0, null, null, null, null);
     }
 
 }
