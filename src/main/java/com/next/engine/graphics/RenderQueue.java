@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-public final class RenderQueue implements Cloneable {
+public final class RenderQueue {
 
     private final EnumMap<Layer, List<RenderRequest>> layers = new EnumMap<>(Layer.class);
 
@@ -47,10 +47,5 @@ public final class RenderQueue implements Cloneable {
 
     public void clear() {
         layers.values().forEach(List::clear);
-    }
-
-    @Override
-    public RenderQueue clone() throws CloneNotSupportedException {
-        return (RenderQueue) super.clone();
     }
 }

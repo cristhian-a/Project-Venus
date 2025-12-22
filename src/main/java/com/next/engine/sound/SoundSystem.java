@@ -1,7 +1,5 @@
 package com.next.engine.sound;
 
-import java.util.EnumMap;
-
 public class SoundSystem {
 
     private final AudioBackend backend;
