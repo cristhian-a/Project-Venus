@@ -8,7 +8,6 @@ import com.next.engine.sound.SetVolume;
 import com.next.engine.sound.SoundChannel;
 import com.next.event.SpellPickedUpEvent;
 import com.next.engine.graphics.Layer;
-import com.next.engine.graphics.RenderRequest;
 import com.next.util.Sounds;
 
 public class SpellHandler {
@@ -27,7 +26,7 @@ public class SpellHandler {
         event.spell().dispose();
         event.player().boostSpeed(3f);
 
-        mailbox.renderQueue.submit(
+        mailbox.render.write().submit(
                 Layer.UI,
                 "Mercury's Bless!",
                 "arial_30",

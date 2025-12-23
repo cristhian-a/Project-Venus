@@ -1,6 +1,7 @@
 package com.next.engine.model;
 
 import com.next.engine.data.Mailbox;
+import com.next.engine.graphics.RenderQueue;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.physics.CollisionEvent;
 import com.next.engine.physics.CollisionType;
@@ -25,9 +26,9 @@ public abstract class Actor {
     public void update(double delta, Mailbox mailbox) {
     }
 
-    public void submitRender(Mailbox mailbox) {
+    public void submitRender(RenderQueue queue) {
         if (collisionBox != null) Debugger.publish("ACTOR BOX" + this, collisionBox);
-        mailbox.renderQueue.submit(Layer.ACTORS, (int) worldX, (int) worldY, spriteId);
+        queue.submit(Layer.ACTORS, (int) worldX, (int) worldY, spriteId);
     }
 
     public void setPosition(float worldX, float worldY) {

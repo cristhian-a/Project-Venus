@@ -1,5 +1,6 @@
 package com.next;
 
+import com.next.engine.graphics.RenderQueue;
 import com.next.event.PauseEvent;
 import com.next.util.GameState;
 import com.next.engine.data.Mailbox;
@@ -90,7 +91,7 @@ public class Game {
     public void update(double delta) {
         long start = System.nanoTime();
 
-        mailbox.renderQueue.clear();    // TODO we should move this to another place
+        RenderQueue writeQueue = mailbox.render.write();
         processInputs();
 
         if (gameState == GameState.RUNNING) {
@@ -113,9 +114,9 @@ public class Game {
 
         for (int i = 0; i < scene.actors.length; i++) {
             var actor = scene.actors[i];
-            actor.submitRender(mailbox);
+            actor.submitRender(writeQueue);
         }
-        scene.player.submitRender(mailbox);     // player always for last
+        scene.player.submitRender(writeQueue);     // player always for last
 
         camera.follow(scene.player);    // the camera follows after events' resolution
 
@@ -123,8 +124,9 @@ public class Game {
         gameFlowHandler.update(delta);
         ui.update(delta);
 
-        ui.submit(mailbox.renderQueue);
+        ui.submit(writeQueue);
 
+        mailbox.swap();
         long end = System.nanoTime();
         Debugger.publish("UPDATE", new Debugger.DebugLong(end - start), 500, 30, Debugger.TYPE.INFO);
     }

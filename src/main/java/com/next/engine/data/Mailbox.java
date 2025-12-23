@@ -3,6 +3,7 @@ package com.next.engine.data;
 import com.next.engine.event.GameEvent;
 import com.next.engine.physics.Movement;
 import com.next.engine.graphics.RenderQueue;
+import com.next.engine.util.DoubleBuffer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +17,20 @@ import java.util.function.Supplier;
 public class Mailbox {
     public final List<Supplier<? extends GameEvent>> eventSuppliers = new ArrayList<>();
     public final List<Movement> moveRequests = new ArrayList<>();
-    public final RenderQueue renderQueue = new RenderQueue();
+
+    public final DoubleBuffer<RenderQueue> render = new DoubleBuffer<>(RenderQueue::new);
 
     public void clearAll() {
         eventSuppliers.clear();
         moveRequests.clear();
-        renderQueue.clear();
     }
+
+    /**
+     * Swaps every double buffer. Should only be called when the update is 100% done.
+     */
+    public void swap() {
+        render.swap();
+        render.write().clear();
+    }
+
 }

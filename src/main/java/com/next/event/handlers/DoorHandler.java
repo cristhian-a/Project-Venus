@@ -38,7 +38,7 @@ public class DoorHandler {
     }
 
     public void onFire(NoKeysEvent event) {
-        mailbox.renderQueue.submit(
+        mailbox.render.write().submit(
                 Layer.UI,
                 "First grab a Key!",
                 "arial_30",
@@ -58,7 +58,7 @@ public class DoorHandler {
         key.dispose();
         IO.println("AAAAAAI CHAVES: " + player.getHeldKeys().size());
 
-        mailbox.renderQueue.submit(
+        mailbox.render.write().submit(
                 Layer.UI,
                 "Got a Key!",
                 "arial_30",

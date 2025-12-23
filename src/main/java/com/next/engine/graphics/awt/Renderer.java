@@ -33,7 +33,7 @@ public class Renderer {
     public void render(Graphics2D g) {
         long start = System.nanoTime();
 
-        RenderQueue queue = mailbox.renderQueue;
+        RenderQueue queue = mailbox.render.read();
         Camera camera = game.getCamera();
 
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
