@@ -132,10 +132,14 @@ public class Game {
 
         var world = new World(rules, assets.getTileMap(map));
         // TODO I might want to change to make player goes inside Actor's array
-        Actor[] objects = new PropFactory(world, level).createScene1Props().toArray(new Prop[0]);
+        Actor[] objects = new PropFactory(world, level).createScene1Props().toArray(new Actor[0]);
         Player player = new PlayerFactory(world, level).create();
+        NpcGhost npc = new NpcFactory().create();
 
-        return new Scene(world, player, objects);
+        Scene s = new Scene(world, player, objects);
+        s.addActor(npc);
+
+        return s;
     }
 
     public void processInputs() {
