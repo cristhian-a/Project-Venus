@@ -10,6 +10,7 @@ public final class Settings {
         public int down;
         public int left;
         public int right;
+        public int pause;
         public int debugMode1;
     }
 

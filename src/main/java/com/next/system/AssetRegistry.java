@@ -1,7 +1,7 @@
 package com.next.system;
 
-import com.next.graphics.awt.SpriteSheet;
-import com.next.io.FileReader;
+import com.next.engine.graphics.awt.SpriteSheet;
+import com.next.engine.io.FileReader;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -18,6 +18,7 @@ public class AssetRegistry {
     // Awt resources (remember that)
     private final Map<String, SpriteSheet> spriteSheets = new HashMap<>();
     private final Map<String, Font> fonts = new HashMap<>();
+    private final Map<String, Color> colors = new HashMap<>();
 
     public void load() {
         try {
@@ -35,6 +36,18 @@ public class AssetRegistry {
 
     private void loadFonts() {
         fonts.put("arial_30", new Font("Arial", Font.PLAIN, 30));
+        fonts.put("arial_80b", new Font("Arial", Font.BOLD, 80));
+
+        colors.put("white", Color.WHITE);
+        colors.put("black", Color.BLACK);
+        colors.put("red", Color.RED);
+        colors.put("green", Color.GREEN);
+        colors.put("blue", Color.BLUE);
+        colors.put("yellow", Color.YELLOW);
+        colors.put("orange", Color.ORANGE);
+        colors.put("pink", Color.PINK);
+        colors.put("gray", Color.GRAY);
+        colors.put("magenta", Color.MAGENTA);
     }
 
     private void loadMaps() throws IOException {
@@ -61,15 +74,8 @@ public class AssetRegistry {
         tileMaps.put("map_01", tileMap);
     }
 
-    public SpriteSheet getSpriteSheet(String name) {
-        return spriteSheets.get(name);
-    }
-
-    public Font getFont(String name) {
-        return fonts.get(name);
-    }
-
-    public Integer[][] getTileMap(String name) {
-        return tileMaps.get(name);
-    }
+    public SpriteSheet getSpriteSheet(String name) { return spriteSheets.get(name); }
+    public Font getFont(String name) { return fonts.get(name); }
+    public Integer[][] getTileMap(String name) { return tileMaps.get(name); }
+    public Color getColor(String name) { return colors.get(name); }
 }

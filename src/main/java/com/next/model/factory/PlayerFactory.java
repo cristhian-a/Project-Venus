@@ -1,6 +1,6 @@
 package com.next.model.factory;
 
-import com.next.core.Animation;
+import com.next.engine.animation.Animation;
 import com.next.model.Player;
 import com.next.world.LevelData;
 import com.next.world.World;

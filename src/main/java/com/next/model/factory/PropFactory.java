@@ -1,6 +1,7 @@
 package com.next.model.factory;
 
-import com.next.core.physics.CollisionType;
+import com.next.engine.model.Prop;
+import com.next.engine.physics.CollisionType;
 import com.next.model.*;
 import com.next.world.LevelData;
 import com.next.world.World;
@@ -19,19 +20,19 @@ public class PropFactory {
     }
 
     public Spell createSpell(int worldX, int worldY) {
-        return new Spell(15, worldX, worldY, CollisionType.TRIGGER);
+        return new Spell(15, worldX, worldY, CollisionType.NONE);
     }
 
     public Door createDoor(int worldX, int worldY) {
-        return new Door(29, worldX, worldY, CollisionType.TRIGGER);
+        return new Door(29, worldX, worldY, CollisionType.SOLID);
     }
 
     public Chest createChest(int worldX, int worldY) {
-        return new Chest(30, worldX, worldY, CollisionType.TRIGGER);
+        return new Chest(30, worldX, worldY, CollisionType.SOLID);
     }
 
     public Key createKey(int worldX, int worldY) {
-        return new Key(31, worldX, worldY, CollisionType.TRIGGER);
+        return new Key(31, worldX, worldY, CollisionType.NONE);
     }
 
     public List<Prop> createScene1Props() {

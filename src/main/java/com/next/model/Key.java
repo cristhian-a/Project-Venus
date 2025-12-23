@@ -1,8 +1,10 @@
 package com.next.model;
 
-import com.next.core.physics.CollisionEvent;
-import com.next.core.physics.CollisionType;
-import com.next.core.physics.CollisionResult;
+import com.next.engine.model.Prop;
+import com.next.engine.physics.CollisionEvent;
+import com.next.engine.physics.CollisionType;
+import com.next.engine.physics.CollisionResult;
+import com.next.event.KeyPickedUpEvent;
 
 public class Key extends Prop {
 
@@ -13,12 +15,16 @@ public class Key extends Prop {
     @Override
     public CollisionResult onCollision(CollisionEvent event) {
         if (event.collider() instanceof Player player) {
-            player.getHeldKeys().add(this);
-            IO.println("AAAAAAI CHAVES: " + player.getHeldKeys().size());
-            this.dispose();
-            return new CollisionResult(CollisionResult.Type.TRIGGER, event.collider(), 0, 0);
+            return new CollisionResult(
+                    this.collisionType,
+                    event.collider(),
+                    0,
+                    0,
+                    () -> new KeyPickedUpEvent(this, player)
+            );
         }
 
         return super.onCollision(event);
     }
+
 }
