@@ -2,6 +2,8 @@ package com.next.system;
 
 import com.next.engine.graphics.awt.SpriteSheet;
 import com.next.engine.io.FileReader;
+import com.next.util.Colors;
+import com.next.util.Fonts;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -35,19 +37,19 @@ public class AssetRegistry {
     }
 
     private void loadFonts() {
-        fonts.put("arial_30", new Font("Arial", Font.PLAIN, 30));
-        fonts.put("arial_80b", new Font("Arial", Font.BOLD, 80));
+        fonts.put(Fonts.ARIAL_30, new Font("Arial", Font.PLAIN, 30));
+        fonts.put(Fonts.ARIAL_80_BOLD, new Font("Arial", Font.BOLD, 80));
 
-        colors.put("white", Color.WHITE);
-        colors.put("black", Color.BLACK);
-        colors.put("red", Color.RED);
-        colors.put("green", Color.GREEN);
-        colors.put("blue", Color.BLUE);
-        colors.put("yellow", Color.YELLOW);
-        colors.put("orange", Color.ORANGE);
-        colors.put("pink", Color.PINK);
-        colors.put("gray", Color.GRAY);
-        colors.put("magenta", Color.MAGENTA);
+        colors.put(Colors.WHITE, Color.WHITE);
+        colors.put(Colors.BLACK, Color.BLACK);
+        colors.put(Colors.RED, Color.RED);
+        colors.put(Colors.GREEN, Color.GREEN);
+        colors.put(Colors.BLUE, Color.BLUE);
+        colors.put(Colors.YELLOW, Color.YELLOW);
+        colors.put(Colors.ORANGE, Color.ORANGE);
+        colors.put(Colors.PINK, Color.PINK);
+        colors.put(Colors.GRAY, Color.GRAY);
+        colors.put(Colors.MAGENTA, Color.MAGENTA);
     }
 
     private void loadMaps() throws IOException {

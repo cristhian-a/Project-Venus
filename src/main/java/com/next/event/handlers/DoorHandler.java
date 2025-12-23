@@ -9,7 +9,8 @@ import com.next.event.DoorUnlockedEvent;
 import com.next.event.KeyPickedUpEvent;
 import com.next.event.NoKeysEvent;
 import com.next.engine.graphics.Layer;
-import com.next.engine.graphics.RenderRequest;
+import com.next.util.Colors;
+import com.next.util.Fonts;
 import com.next.util.Sounds;
 
 public class DoorHandler {
@@ -41,8 +42,8 @@ public class DoorHandler {
         mailbox.render.write().submit(
                 Layer.UI,
                 "First grab a Key!",
-                "arial_30",
-                "white",
+                Fonts.ARIAL_30,
+                Colors.WHITE,
                 -100,
                 -41,
                 RenderPosition.CENTERED,
@@ -61,8 +62,8 @@ public class DoorHandler {
         mailbox.render.write().submit(
                 Layer.UI,
                 "Got a Key!",
-                "arial_30",
-                "white",
+                Fonts.ARIAL_30,
+                Colors.WHITE,
                 -65,
                 -41,
                 RenderPosition.CENTERED,

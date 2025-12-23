@@ -6,13 +6,14 @@ import lombok.Getter;
 
 /**
  * A request to be pushed to the renderer pipeline.
+ * @deprecated Use pure {@link RenderQueue} instead.
  *
  * @value {@code layer}
  * @value {@code worldX}
  * @value {@code worldY}
  * @value {@code spriteId}
  */
-@AllArgsConstructor
+@Deprecated(forRemoval = true)
 public class RenderRequest {
     public enum Type {SPRITE, TEXT, COLLISION, OVERLAY}
     public enum Position {AXIS, CENTERED, COLLISION}
