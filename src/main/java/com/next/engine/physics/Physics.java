@@ -45,16 +45,15 @@ public class Physics {
             return;
         }
 
-        for (int i = 0; i < scene.size(); i++) {
-            Actor other = scene.getActors()[i];
-            if (other == actor) continue;
+        scene.forEachActor((Actor other) -> {
+            if (other == actor) return;
             if (inspector.isColliding(actor, other)) {
                 long key = pairKey(actor, other);
-                if (processedPairs.contains(key)) continue; // pair already handled
+                if (processedPairs.contains(key)) return; // pair already handled
                 processedPairs.add(key);
 
                 CollisionResult response = other.onCollision(new CollisionEvent(actor));
-                if (response == null) continue;
+                if (response == null) return;
 
                 if (response.type() == CollisionType.SOLID) {
                     clampX(movement);
@@ -64,7 +63,28 @@ public class Physics {
                     mailbox.eventSuppliers.add(response.eventFactory());
                 }
             }
-        }
+        });
+
+//        for (int i = 0; i < scene.size(); i++) {
+//            Actor other = scene.getActors()[i];
+//            if (other == actor) continue;
+//            if (inspector.isColliding(actor, other)) {
+//                long key = pairKey(actor, other);
+//                if (processedPairs.contains(key)) continue; // pair already handled
+//                processedPairs.add(key);
+//
+//                CollisionResult response = other.onCollision(new CollisionEvent(actor));
+//                if (response == null) continue;
+//
+//                if (response.type() == CollisionType.SOLID) {
+//                    clampX(movement);
+//                }
+//
+//                if (response.eventFactory() != null) {
+//                    mailbox.eventSuppliers.add(response.eventFactory());
+//                }
+//            }
+//        }
     }
 
     public void moveY(Movement movement, Mailbox mailbox) {
@@ -102,34 +122,30 @@ public class Physics {
         Actor actor = movement.actor();
         var box = actor.getCollisionBox();
 
-        float worldX;
-
-        if (movement.dx() > 0) {
-            int tileCol = (int) (box.getBounds().x + box.getBounds().width) / scene.world.getTileSize();
-            worldX = tileCol * scene.world.getTileSize() - (box.getBounds().width + box.getOffsetX());
-        } else {
-            int tileCol = (int) box.getBounds().x / scene.world.getTileSize();
-            worldX = (tileCol + 1) * scene.world.getTileSize() - box.getOffsetX();
-        }
-
-        actor.setPosition((int) worldX, actor.getWorldY());
+        float clampedX = calculateClamp(movement.dx(), box.getBounds().x, box.getBounds().width, box.getOffsetX());
+        actor.setPosition((int) clampedX, actor.getWorldY());
     }
 
     public void clampY(Movement movement) {
         Actor actor = movement.actor();
         var box = actor.getCollisionBox();
 
-        float worldY;
+        float clampedY = calculateClamp(movement.dy(), box.getBounds().y, box.getBounds().height, box.getOffsetY());
+        actor.setPosition(actor.getWorldX(), (int) clampedY);
+    }
 
-        if (movement.dy() > 0) {
-            int tileRow = (int) (box.getBounds().y + box.getBounds().height) / scene.world.getTileSize();
-            worldY = tileRow * scene.world.getTileSize() - (box.getBounds().height + box.getOffsetY());
+    private float calculateClamp(float dMov, float boxAxisPosition, float boxAxisLength, float boxOffset) {
+        float position;
+
+        if (dMov > 0) {
+            int tilePos = (int) ((boxAxisPosition + boxAxisLength) / scene.world.getTileSize());
+            position = tilePos * scene.world.getTileSize() - (boxAxisLength + boxOffset);
         } else {
-            int tileRow = (int) box.getBounds().y / scene.world.getTileSize();
-            worldY = (tileRow + 1) * scene.world.getTileSize() - box.getOffsetY();
+            int tilePos = (int) (boxAxisPosition / scene.world.getTileSize());
+            position = (tilePos + 1) * scene.world.getTileSize() - boxOffset;
         }
 
-        actor.setPosition(actor.getWorldX(), (int) worldY);
+        return position;
     }
 
     private long pairKey(Actor a, Actor b) {

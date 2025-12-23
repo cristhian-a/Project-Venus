@@ -137,7 +137,7 @@ public class Game {
         NpcGhost npc = new NpcFactory().create();
 
         Scene s = new Scene(world, player, objects);
-        s.addActor(npc);
+//        s.addActor(npc);
 
         return s;
     }
