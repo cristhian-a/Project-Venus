@@ -46,7 +46,10 @@ public class Scene {
         }
     }
 
-    public void dismissDisposedActors() {
+    /**
+     * Destroys all actors that have been marked as disposed.
+     */
+    public void dismissActors() {
         for (int i = 0; i < activeCount; i++) {
             if (actors[i].isDisposed()) {
                 actors[i].onDispose();

@@ -107,7 +107,7 @@ public class Game {
 
             //
             // render portion
-            scene.dismissDisposedActors();   // PLEASE, dismiss before rendering
+            scene.dismissActors();   // PLEASE, dismiss before rendering
         }
 
         scene.submitRender(writeQueue);

@@ -54,9 +54,18 @@ public abstract class Actor {
     }
 
     public CollisionResult onCollision(CollisionEvent event) {
-        return null;
+        return new CollisionResult(
+                collisionType,
+                event.collider(),
+                0,
+                0,
+                null
+        );
     }
 
+    /**
+     * Marks this actor for disposal, but does not dispose it immediately.
+     */
     public final void dispose() {
         this.disposed = true;
     }

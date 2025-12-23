@@ -3,7 +3,6 @@ package com.next.graphics;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderPosition;
 import com.next.engine.graphics.RenderQueue;
-import com.next.engine.graphics.RenderRequest;
 
 public class PausedUIState implements UIState {
 

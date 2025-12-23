@@ -2,6 +2,9 @@ package com.next.engine.graphics;
 
 import com.next.engine.physics.CollisionBox;
 
+/**
+ * A queue of requests to be submitted to the renderer pipeline.
+ */
 public final class RenderQueue {
 
     private final LayerBucket[] buckets;
