@@ -6,7 +6,6 @@ import com.next.engine.data.Mailbox;
 import com.next.engine.model.AnimatedActor;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.physics.CollisionType;
-import com.next.engine.physics.Movement;
 
 import java.util.Map;
 
@@ -75,7 +74,7 @@ public class NpcGhost extends AnimatedActor {
             animationState = AnimationState.WALK_DOWN;
         }
 
-        mailbox.moveRequests.add(new Movement(this, dx, dy, 0f));
+        mailbox.motionQueue.submit(this.id, dx, dy, 0f);
         animate();
     }
 

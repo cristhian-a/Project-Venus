@@ -6,7 +6,6 @@ import com.next.engine.data.Mailbox;
 import com.next.engine.model.AnimatedActor;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.physics.CollisionType;
-import com.next.engine.physics.Movement;
 import com.next.engine.system.Debugger;
 import com.next.system.Input;
 import lombok.Getter;
@@ -74,7 +73,7 @@ public class Player extends AnimatedActor {
         }
 
         if (dx != 0 || dy != 0)
-            mailbox.moveRequests.add(new Movement(this, dx, dy, 0f));
+            mailbox.motionQueue.submit(this.id, dx, dy, 0f);
 
         animate();
 

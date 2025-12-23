@@ -9,6 +9,7 @@ import com.next.engine.physics.CollisionResult;
 import com.next.engine.graphics.Layer;
 import com.next.engine.system.Debugger;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public abstract class Actor {
@@ -23,6 +24,7 @@ public abstract class Actor {
 
     protected boolean disposed = false;
     public int lastQueryId = -1;
+    @Setter protected int id;   // TODO check how this should be implemented
 
     public void update(double delta, Mailbox mailbox) {
     }

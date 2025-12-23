@@ -37,12 +37,14 @@ public class Scene {
 
     public void update(double delta, Mailbox mailbox) {
         for (int i = 0; i < activeCount; i++) {
+            actors[i].setId(i);
             actors[i].update(delta, mailbox);
         }
     }
 
     public void submitRender(RenderQueue queue) {
         for (int i = 0; i < activeCount; i++) {
+            actors[i].setId(i);
             actors[i].submitRender(queue);
         }
     }

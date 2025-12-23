@@ -101,7 +101,7 @@ public class Game {
 //            scene.player.update(delta, input, mailbox);
             scene.update(delta, mailbox);
 
-            physics.apply(Global.fixedDelta, mailbox); // always after update
+            physics.apply(Global.fixedDelta, mailbox.motionQueue, mailbox); // always after update
 
             dispatcher.dispatch(mailbox);   // for now, this should happen after physics
 
