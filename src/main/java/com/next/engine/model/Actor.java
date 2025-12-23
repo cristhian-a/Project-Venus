@@ -22,6 +22,7 @@ public abstract class Actor {
     protected CollisionType collisionType = CollisionType.NONE;
 
     protected boolean disposed = false;
+    public int lastQueryId = -1;
 
     public void update(double delta, Mailbox mailbox) {
     }

@@ -10,6 +10,7 @@ import com.next.engine.physics.Movement;
 import com.next.engine.system.Debugger;
 import com.next.system.Input;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +18,9 @@ import java.util.List;
 public class Player extends AnimatedActor {
 
     @Getter private final List<Key> heldKeys = new ArrayList<>();
+    @Setter private Input input;
 
-    private float speed = 3;
+    private float speed = 1;
 
     public Player(int spriteId, float worldX, float worldY,
                   Animation upAnim, Animation downAnim, Animation leftAnim, Animation rightAnim
@@ -36,6 +38,7 @@ public class Player extends AnimatedActor {
 
         animationState = AnimationState.IDLE;
         Animation idle = new Animation(new int[] { spriteId}, 0, false);
+        this.spriteId = spriteId;
 
         animations.put(AnimationState.IDLE, idle);
         animations.put(AnimationState.WALK_UP, upAnim);
@@ -44,7 +47,8 @@ public class Player extends AnimatedActor {
         animations.put(AnimationState.WALK_RIGHT, rightAnim);
     }
 
-    public void update(double delta, Input input, Mailbox mailbox) {
+    @Override
+    public void update(double delta, Mailbox mailbox) {
         float dx = 0;
         float dy = 0;
 
@@ -69,15 +73,13 @@ public class Player extends AnimatedActor {
             animationState = AnimationState.WALK_RIGHT;
         }
 
-        mailbox.moveRequests.add(new Movement(this, dx, dy, 0f));
+        if (dx != 0 || dy != 0)
+            mailbox.moveRequests.add(new Movement(this, dx, dy, 0f));
+
         animate();
 
         Debugger.publish("PLAYER", new Debugger.DebugText("X: " + worldX + ", Y: " + worldY), 10, 90, Debugger.TYPE.INFO);
         Debugger.publish("HITBOX", new Debugger.DebugText("X: " + collisionBox.getBounds().x + ", Y: " + collisionBox.getBounds().y + ", Width: " + collisionBox.getBounds().width + ", Height: " + collisionBox.getBounds().height), 10, 120, Debugger.TYPE.INFO);
-    }
-
-    public void boostSpeed(float boost) {
-        speed += boost;
     }
 
     @Override
@@ -86,4 +88,7 @@ public class Player extends AnimatedActor {
         spriteId = animator.update();
     }
 
+    public void boostSpeed(float boost) {
+        speed += boost;
+    }
 }

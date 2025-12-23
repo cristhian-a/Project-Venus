@@ -20,7 +20,7 @@ public class NpcGhost extends AnimatedActor {
         this.animations.putAll(animations);
         this.collisionType = CollisionType.SOLID;
         this.animationState = AnimationState.IDLE;
-        this.collisionBox = new CollisionBox(0, 0, 16, 16);
+        this.collisionBox = new CollisionBox(3, 0, 9, 14);
 
         this.layer = 1;
         this.collisionMask = 1;
@@ -40,6 +40,7 @@ public class NpcGhost extends AnimatedActor {
         long rng = n % 35;
 
         float dx = 0, dy = 0;
+//        animationState = AnimationState.WALK_UP;
 
         if (movementFrames-- <= 0) {
             movementFrames = 50;

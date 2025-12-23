@@ -12,6 +12,7 @@ public class Physics {
     private final Set<Long> processedPairs = new HashSet<>();
 
     private Scene scene;
+    private SpatialGrid grid;
     private CollisionInspector inspector;
 
     public void setInspector(CollisionInspector inspector) {
@@ -21,10 +22,17 @@ public class Physics {
 
     public void ruleOver(Scene scene) {
         this.scene = scene;
+
+        int width = scene.world.getRules().columns() * scene.world.getTileSize();
+        int height = scene.world.getRules().rows() * scene.world.getTileSize();
+        grid = new SpatialGrid(width, height, scene.world.getTileSize());
         if (inspector != null) inspector.inspecting(scene);
     }
 
     public void apply(double delta, Mailbox mailbox) {
+        grid.clear();
+        scene.forEachActor(grid::insert);
+
         for (Movement m : mailbox.moveRequests) {
             if (m != null) {
                 moveX(m, mailbox);
@@ -45,9 +53,10 @@ public class Physics {
             return;
         }
 
-        scene.forEachActor((Actor other) -> {
-            if (other == actor) return;
+        grid.queryNearby(actor, other -> {
             if (inspector.isColliding(actor, other)) {
+                if (other == actor) return;
+
                 long key = pairKey(actor, other);
                 if (processedPairs.contains(key)) return; // pair already handled
                 processedPairs.add(key);
@@ -56,7 +65,16 @@ public class Physics {
                 if (response == null) return;
 
                 if (response.type() == CollisionType.SOLID) {
-                    clampX(movement);
+                    float cx;
+                    if (movement.dx() > 0) {
+                        // Moving Right: Snap my Right to his Left
+                        cx = other.getCollisionBox().getBounds().x - (actor.getCollisionBox().getBounds().width + actor.getCollisionBox().getOffsetX());
+                    } else {
+                        // Moving Left: Snap my Left to his Right
+                        cx = (other.getCollisionBox().getBounds().x + other.getCollisionBox().getBounds().width) - actor.getCollisionBox().getOffsetX();
+                    }
+
+                    actor.setPosition((int) cx, actor.getWorldY());
                 }
 
                 if (response.eventFactory() != null) {
@@ -65,26 +83,6 @@ public class Physics {
             }
         });
 
-//        for (int i = 0; i < scene.size(); i++) {
-//            Actor other = scene.getActors()[i];
-//            if (other == actor) continue;
-//            if (inspector.isColliding(actor, other)) {
-//                long key = pairKey(actor, other);
-//                if (processedPairs.contains(key)) continue; // pair already handled
-//                processedPairs.add(key);
-//
-//                CollisionResult response = other.onCollision(new CollisionEvent(actor));
-//                if (response == null) continue;
-//
-//                if (response.type() == CollisionType.SOLID) {
-//                    clampX(movement);
-//                }
-//
-//                if (response.eventFactory() != null) {
-//                    mailbox.eventSuppliers.add(response.eventFactory());
-//                }
-//            }
-//        }
     }
 
     public void moveY(Movement movement, Mailbox mailbox) {
@@ -96,26 +94,36 @@ public class Physics {
             return;
         }
 
-        for (int i = 0; i < scene.size(); i++) {
-            Actor other = scene.getActors()[i];
-            if (other == actor) continue;
+        grid.queryNearby(actor, other -> {
             if (inspector.isColliding(actor, other)) {
+                if (other == actor) return;
+
                 long key = pairKey(actor, other);
-                if (processedPairs.contains(key)) continue; // pair already handled
+                if (processedPairs.contains(key)) return; // pair already handled
                 processedPairs.add(key);
 
                 CollisionResult response = other.onCollision(new CollisionEvent(actor));
-                if (response == null) continue;
+                if (response == null) return;
 
                 if (response.type() == CollisionType.SOLID) {
-                    clampY(movement);
+                    float cy;
+                    if (movement.dy() > 0) {
+                        // Moving Right: Snap my Right to his Left
+                        cy = other.getCollisionBox().getBounds().y - (actor.getCollisionBox().getBounds().height + actor.getCollisionBox().getOffsetY());
+                    } else {
+                        // Moving Left: Snap my Left to his Right
+                        cy = (other.getCollisionBox().getBounds().y + other.getCollisionBox().getBounds().height) - actor.getCollisionBox().getOffsetY();
+                    }
+
+                    actor.setPosition(actor.getWorldX(), (int) cy);
                 }
 
                 if (response.eventFactory() != null) {
                     mailbox.eventSuppliers.add(response.eventFactory());
                 }
             }
-        }
+        });
+
     }
 
     public void clampX(Movement movement) {

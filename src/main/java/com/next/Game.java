@@ -98,7 +98,7 @@ public class Game {
         if (gameState == GameState.RUNNING) {
             // TODO this is very incomplete
 
-            scene.player.update(delta, input, mailbox);
+//            scene.player.update(delta, input, mailbox);
             scene.update(delta, mailbox);
 
             physics.apply(Global.fixedDelta, mailbox); // always after update
@@ -111,7 +111,7 @@ public class Game {
         }
 
         scene.submitRender(writeQueue);
-        scene.player.submitRender(writeQueue);     // player always for last
+//        scene.player.submitRender(writeQueue);     // player always for last
 
         camera.follow(scene.player);    // the camera follows after events' resolution
 
@@ -136,8 +136,11 @@ public class Game {
         Player player = new PlayerFactory(world, level).create();
         NpcGhost npc = new NpcFactory().create();
 
+        player.setInput(input); // TODO meh
+
         Scene s = new Scene(world, player, objects);
-//        s.addActor(npc);
+        s.addActor(npc);
+        s.addActor(player);
 
         return s;
     }
