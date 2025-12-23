@@ -26,40 +26,6 @@ public class UIRenderer {
         messages = new ArrayList<>();
     }
 
-    public void render(Graphics2D g, RenderQueue queue, int current, Camera camera) {
-        int x = queue.x[current];
-        int y = queue.y[current];
-
-        if (queue.position[current] == RenderPosition.CENTERED) {
-            x += settings.WIDTH / 2;
-            y += settings.HEIGHT / 2;
-        }
-
-        if (queue.type[current] == RenderType.SPRITE) {
-            renderSprite(g, queue.sprite[current], x, y);
-        } else if (queue.type[current] == RenderType.TEXT) {
-            if (queue.frames[current] > 0) {
-                messages.add(new UIMessage(queue.message[current], queue.font[current], queue.color[current], x, y, queue.frames[current]));
-            } else {
-                renderText(g, queue.message[current], x, y, assets.getColor(queue.color[current]), assets.getFont(queue.font[current]));
-            }
-        } else if (queue.type[current] == RenderType.OVERLAY) {
-            g.setColor(new Color(0, 0, 0, 100));
-            g.fillRect(x, y, settings.WIDTH, settings.HEIGHT);
-        }
-    }
-
-    private void renderSprite(Graphics2D g, int sprite, int x, int y) {
-        g.drawImage(
-                assets.getSpriteSheet("world").getSprite(sprite),
-                x,
-                y,
-                // TODO refactor: these are here just because we need to upscale the sprite
-                16*settings.SCALE, 16*settings.SCALE,
-                null
-        );
-    }
-
     public void renderMessages(Graphics2D g) {
         for (int i = 0; i < messages.size(); i++) {
             var message = messages.get(i);
@@ -81,6 +47,35 @@ public class UIRenderer {
         g.setColor(color);
         g.setFont(font);
         g.drawString(text, x, y);
+    }
+
+    public void renderSpriteTable(Graphics2D g, RenderQueue.SpriteTable table) {
+        for (int i = 0; i < table.count; i++) {
+            g.drawImage(
+                    assets.getSpriteSheet("world").getSprite(table.spriteId[i]),
+                    table.x[i],
+                    table.y[i],
+                    null
+            );
+        }
+    }
+
+    public void renderTextTable(Graphics2D g, RenderQueue.TextTable table) {
+        for (int i = 0; i < table.count; i++) {
+            int x = table.x[i];
+            int y = table.y[i];
+
+            if (table.positions[i] == RenderPosition.CENTERED) {
+                x += settings.WIDTH / 2;
+                y += settings.HEIGHT / 2;
+            }
+
+            if (table.frames[i] > 0) {
+                messages.add(new UIMessage(table.message[i], table.font[i], table.color[i], x, y, table.frames[i]));
+            } else {
+                renderText(g, table.message[i], x, y, assets.getColor(table.color[i]), assets.getFont(table.font[i]));
+            }
+        }
     }
 
     public void renderDebugInfo(Graphics2D g, Camera camera) {

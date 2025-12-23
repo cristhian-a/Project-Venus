@@ -18,7 +18,7 @@ public class Player extends AnimatedActor {
 
     @Getter private final List<Key> heldKeys = new ArrayList<>();
 
-    private float speed = 1;
+    private float speed = 3;
 
     public Player(int spriteId, float worldX, float worldY,
                   Animation upAnim, Animation downAnim, Animation leftAnim, Animation rightAnim

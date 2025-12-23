@@ -4,87 +4,164 @@ import com.next.engine.physics.CollisionBox;
 
 public final class RenderQueue {
 
-    private final int DEFAULT_SIZE = 50;
-    private int BUFFER_SIZE = DEFAULT_SIZE;
-    private int current = 0;
+    private final LayerBucket[] buckets;
 
-    public Layer[] layer = new Layer[DEFAULT_SIZE];
-    public RenderType[] type = new RenderType[DEFAULT_SIZE];
-    public RenderPosition[] position = new RenderPosition[DEFAULT_SIZE];
-    public int[] sprite = new int[DEFAULT_SIZE];
-    public int[] x = new int[DEFAULT_SIZE];
-    public int[] y = new int[DEFAULT_SIZE];
-    public int[] frames = new int[DEFAULT_SIZE];
-    public String[] message = new String[DEFAULT_SIZE];
-    public String[] font = new String[DEFAULT_SIZE];
-    public String[] color = new String[DEFAULT_SIZE];
-    public CollisionBox[] box = new CollisionBox[DEFAULT_SIZE];
-
-    private void advance() {
-        current++;
-        if (current >= DEFAULT_SIZE) throw new RuntimeException("Render queue is full!");
+    public RenderQueue() {
+        int layersCount = Layer.values().length;
+        buckets = new LayerBucket[layersCount];
+        for (int i = 0; i < layersCount; i++) {
+            buckets[i] = new LayerBucket();
+        }
     }
 
-    public int size() {
-        return current;
+    public LayerBucket getBucket(Layer layer) {
+        return buckets[layer.ordinal()];
     }
 
-    public int capacity() {
-        return BUFFER_SIZE;
+    private void ensureCapacity() {
+//        if (current >= BUFFER_SIZE) {
+//            int newSize = BUFFER_SIZE * 2;
+//            layer = Arrays.copyOf(layer, newSize);
+//            type = Arrays.copyOf(type, newSize);
+//            position = Arrays.copyOf(position, newSize);
+//            sprite = Arrays.copyOf(sprite, newSize);
+//            x = Arrays.copyOf(x, newSize);
+//            y = Arrays.copyOf(y, newSize);
+//            frames = Arrays.copyOf(frames, newSize);
+//            message = Arrays.copyOf(message, newSize);
+//            font = Arrays.copyOf(font, newSize);
+//            color = Arrays.copyOf(color, newSize);
+//            box = Arrays.copyOf(box, newSize);
+//            BUFFER_SIZE = newSize;
+//        }
     }
 
     public void clear() {
-        current = 0;
-    }
-
-    public void allocate(int size) {
-        BUFFER_SIZE = size;
-        current = 0;
-        clear();
-
-        layer = new Layer[BUFFER_SIZE];
-        type = new RenderType[BUFFER_SIZE];
-        position = new RenderPosition[BUFFER_SIZE];
-        sprite = new int[BUFFER_SIZE];
-        x = new int[BUFFER_SIZE];
-        y = new int[BUFFER_SIZE];
-        frames = new int[BUFFER_SIZE];
-        message = new String[BUFFER_SIZE];
-        font = new String[BUFFER_SIZE];
-        color = new String[BUFFER_SIZE];
-        box = new CollisionBox[BUFFER_SIZE];
-    }
-
-    public void submit(Layer layer, RenderType type, RenderPosition position, int sprite, int x, int y, int frames, String message,
-                       String font, String color, CollisionBox box) {
-        this.layer[current] = layer;
-        this.type[current] = type;
-        this.position[current] = position;
-        this.sprite[current] = sprite;
-        this.x[current] = x;
-        this.y[current] = y;
-        this.frames[current] = frames;
-        this.message[current] = message;
-        this.font[current] = font;
-        this.color[current] = color;
-        this.box[current] = box;
-        advance();
+        for (LayerBucket bucket : buckets) {
+            bucket.clear();
+        }
     }
 
     public void submit(Layer layer, int x, int y, int spriteId) {
-        submit(layer, RenderType.SPRITE, RenderPosition.AXIS, spriteId, x, y, 0, null, null, null, null);
+        buckets[layer.ordinal()].sprites.add(x, y, spriteId);
     }
 
     public void submit(Layer layer, CollisionBox box) {
-        submit(layer, RenderType.COLLISION, RenderPosition.COLLISION, 0, 0, 0, 0, null, null, null, box);
+        buckets[layer.ordinal()].collisions.add(box);
     }
 
     public void submit(Layer layer, String message, String font, String color, int x, int y, RenderPosition pos, int frames) {
-        submit(layer, RenderType.TEXT, pos, 0, x, y, frames, message, font, color, null);
+        buckets[layer.ordinal()].texts.add(message, font, color, x, y, frames, pos);
     }
 
     public void submit(Layer layer, RenderType type) {
-        submit(layer, type, RenderPosition.AXIS, 0, 0, 0, 0, null, null, null, null);
+        buckets[layer.ordinal()].overlays.add(0, 0);
+    }
+
+    public static final class LayerBucket {
+        public final TextTable texts = new TextTable(100);
+        public final SpriteTable sprites = new SpriteTable(100);
+        public final OverlayTable overlays = new OverlayTable(2);
+        public final CollisionTable collisions = new CollisionTable(100);
+
+        public void clear() {
+            texts.clear();
+            sprites.clear();
+            overlays.clear();
+            collisions.clear();
+        }
+    }
+
+    public static final class SpriteTable {
+        public int[] x, y, spriteId;
+        public int count = 0;
+
+        public SpriteTable(int capacity) {
+            x = new int[capacity];
+            y = new int[capacity];
+            spriteId = new int[capacity];
+        }
+
+        public void add(int x, int y, int spriteId) {
+            this.x[count] = x;
+            this.y[count] = y;
+            this.spriteId[count] = spriteId;
+            count++;
+        }
+
+        public void clear() {
+            count = 0;
+        }
+    }
+
+    public static final class TextTable {
+        public String[] message, font, color;
+        public RenderPosition[] positions;
+        public int[] x, y, frames;
+        public int count = 0;
+
+        public TextTable(int capacity) {
+            positions = new RenderPosition[capacity];
+            message = new String[capacity];
+            font = new String[capacity];
+            color = new String[capacity];
+            x = new int[capacity];
+            y = new int[capacity];
+            frames = new int[capacity];
+        }
+
+        public void add(String message, String font, String color, int x, int y, int frames, RenderPosition pos) {
+            this.message[count] = message;
+            this.font[count] = font;
+            this.color[count] = color;
+            this.x[count] = x;
+            this.y[count] = y;
+            this.frames[count] = frames;
+            this.positions[count] = pos;
+            count++;
+        }
+
+        public void clear() {
+            count = 0;
+        }
+    }
+
+    public static final class CollisionTable {
+        public CollisionBox[] boxes;
+        public int count = 0;
+
+        public CollisionTable(int capacity) {
+            boxes = new CollisionBox[capacity];
+        }
+
+        public void add(CollisionBox box) {
+            boxes[count] = box;
+            count++;
+        }
+
+        public void clear() {
+            count = 0;
+        }
+    }
+
+    public static final class OverlayTable {
+        public int[] x, y;
+        public int count;
+
+        public OverlayTable(int capacity) {
+            x = new int[capacity];
+            y = new int[capacity];
+        }
+
+        public void add(int x, int y) {
+            this.x[count] = x;
+            this.y[count] = y;
+            count++;
+        }
+
+        public void clear() {
+            count = 0;
+        }
     }
 
 }

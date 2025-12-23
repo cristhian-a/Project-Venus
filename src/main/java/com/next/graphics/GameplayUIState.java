@@ -20,7 +20,7 @@ public class GameplayUIState implements UIState {
     public void submitRender(RenderQueue queue) {
         for (int i = 0; i < player.getHeldKeys().size(); i++) {
             var key = player.getHeldKeys().get(i);
-            queue.submit(Layer.UI, 20 + 75 * i, 5, key.getSpriteId());
+            queue.submit(Layer.UI, 5 + 20 * i, 0, key.getSpriteId());
         }
     }
 }

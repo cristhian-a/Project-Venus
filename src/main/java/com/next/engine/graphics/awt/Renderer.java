@@ -2,6 +2,7 @@ package com.next.engine.graphics.awt;
 
 import com.next.Game;
 import com.next.engine.data.Mailbox;
+import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
 import com.next.system.AssetRegistry;
@@ -36,56 +37,55 @@ public class Renderer {
         Camera camera = game.getCamera();
 
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-
         AffineTransform oldScale = g.getTransform();
         g.scale(settings.SCALE, settings.SCALE);
-        AffineTransform newScale = g.getTransform();
 
-        // RENDERING START (preserve order)
-        tileRenderer.render(g, camera); // First, rendering the world (check if this will stay like that)
+        // RENDERING START (very important: preserve order)
+        // 1. Background
+        renderSpriteTable(g, camera, queue.getBucket(Layer.BACKGROUND).sprites);
 
-        for (int i = 0; i < queue.size(); i++) {
-            switch (queue.layer[i]) {
-                case BACKGROUND -> {}
-                case WORLD -> {}
-                case ACTORS -> {
-                    g.setTransform(newScale);   // up-scaling
-                    renderSprite(queue, i, g, camera);
-                }
-                case UI -> {
-                    g.setTransform(oldScale);   // de-scaling
-                    uiRenderer.render(g, queue, i, camera);
-                }
-                case DEBUG -> {}
-            }
-        }
+        // 2. World
+        tileRenderer.render(g, camera);
+        renderSpriteTable(g, camera, queue.getBucket(Layer.WORLD).sprites);
 
+        // 3. Actors
+        renderSpriteTable(g, camera, queue.getBucket(Layer.ACTORS).sprites);
+
+        // 4. UI
+        uiRenderer.renderSpriteTable(g, queue.getBucket(Layer.UI).sprites);
         g.setTransform(oldScale);
+        renderOverlayTable(g, queue.getBucket(Layer.UI).overlays);
+        uiRenderer.renderTextTable(g, queue.getBucket(Layer.UI).texts);
         uiRenderer.renderMessages(g);
-        uiRenderer.renderDebugInfo(g, camera);
 
-//        render(Layer.BACKGROUND, queue, g, camera);
-//        render(Layer.WORLD, queue, g, camera);
+        // 5. DEBUG
+        uiRenderer.renderDebugInfo(g, camera);  // TODO also
 
-//        render(Layer.ACTORS, queue, g, camera);
-
-//        g.setTransform(oldScale);   // de-scaling
-//        uiRenderer.render(g, queue, camera);   // always last, damn it
-
-//        render(Layer.UI, queue, g, camera);
-//        render(Layer.DEBUG, g, camera);
-
-//        queue.clear();
         long end = System.nanoTime();
         Debugger.publish("RENDER", new Debugger.DebugLong(end - start), 200, 30, Debugger.TYPE.INFO);
     }
 
-    private void renderSprite(RenderQueue queue, int current, Graphics2D g, Camera camera) {
-        g.drawImage(
-                assets.getSpriteSheet("world").getSprite(queue.sprite[current]),
-                camera.worldToScreenX(queue.x[current]),
-                camera.worldToScreenY(queue.y[current]),
-                null
-        );
+    private void renderSpriteTable(Graphics2D g, Camera camera, RenderQueue.SpriteTable table) {
+        for (int i = 0; i < table.count; i++) {
+            g.drawImage(
+                    assets.getSpriteSheet("world").getSprite(table.spriteId[i]),
+                    camera.worldToScreenX(table.x[i]),
+                    camera.worldToScreenY(table.y[i]),
+                    null
+            );
+        }
+    }
+
+    private void renderTextTable(Graphics2D g, RenderQueue.TextTable table) {
+        for (int i = 0; i < table.count; i++) {
+            // TODO
+        }
+    }
+
+    private void renderOverlayTable(Graphics2D g, RenderQueue.OverlayTable table) {
+        for (int i = 0; i < table.count; i++) {
+            g.setColor(new Color(0, 0, 0, 100));
+            g.fillRect(table.x[i], table.y[i], settings.WIDTH, settings.HEIGHT);
+        }
     }
 }

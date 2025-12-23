@@ -46,11 +46,11 @@ public class Main {
 
         GracefullyStopEvent.Handler G = new GracefullyStopEvent.Handler(gameLoop);
         centralDispatcher.register(GracefullyStopEvent.class, G::onFire);
-        centralDispatcher.register(PlaySound.class, sound::fire);
-        centralDispatcher.register(StopSound.class, sound::fire);
-        centralDispatcher.register(SetVolume.class, sound::fire);
-        centralDispatcher.register(PauseSound.class, sound::fire);
-        centralDispatcher.register(RestartSound.class, sound::fire);
+//        centralDispatcher.register(PlaySound.class, sound::fire);
+//        centralDispatcher.register(StopSound.class, sound::fire);
+//        centralDispatcher.register(SetVolume.class, sound::fire);
+//        centralDispatcher.register(PauseSound.class, sound::fire);
+//        centralDispatcher.register(RestartSound.class, sound::fire);
 
         gameLoop.start();   // loop start should always happen last, to guarantee that listeners are properly set up
     }
