@@ -59,12 +59,11 @@ public abstract class Actor {
 
     public final void dispose() {
         this.disposed = true;
-        onDispose();
     }
 
     /**
-     * Always called after {@code dispose()}. By default, it does nothing. Override it with any behavior upon disposing
-     * is needed.
+     * Should be called when effectively discarded. By default, it does nothing. Override it whenever any behavior upon
+     * disposing is needed.
      */
     public void onDispose() {}
 }

@@ -1,4 +1,4 @@
-package com.next.util;
+package com.next.engine.util;
 
 public class Stopwatch {
 

@@ -15,7 +15,7 @@ import com.next.engine.sound.StopSound;
 import com.next.event.FinishGameEvent;
 import com.next.graphics.FinishUIState;
 import com.next.util.Sounds;
-import com.next.util.TimeAccumulator;
+import com.next.engine.util.TimeAccumulator;
 import lombok.Setter;
 
 public class GameFlowHandler {

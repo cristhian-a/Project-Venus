@@ -1,5 +1,6 @@
 package com.next;
 
+import com.next.engine.Global;
 import com.next.engine.graphics.RenderQueue;
 import com.next.event.PauseEvent;
 import com.next.util.GameState;
@@ -98,12 +99,9 @@ public class Game {
             // TODO this is very incomplete
 
             scene.player.update(delta, input, mailbox);
-            for (int i = 0; i < scene.actors.length; i++) {
-                var actor = scene.actors[i];
-                actor.update(delta, mailbox);
-            }
+            scene.update(delta, mailbox);
 
-            physics.apply(delta, mailbox); // always after update
+            physics.apply(Global.fixedDelta, mailbox); // always after update
 
             dispatcher.dispatch(mailbox);   // for now, this should happen after physics
 
@@ -112,10 +110,7 @@ public class Game {
             scene.dismissDisposedActors();   // PLEASE, dismiss before rendering
         }
 
-        for (int i = 0; i < scene.actors.length; i++) {
-            var actor = scene.actors[i];
-            actor.submitRender(writeQueue);
-        }
+        scene.submitRender(writeQueue);
         scene.player.submitRender(writeQueue);     // player always for last
 
         camera.follow(scene.player);    // the camera follows after events' resolution
@@ -136,6 +131,7 @@ public class Game {
         LevelData level = Loader.Level.load(levelFile);
 
         var world = new World(rules, assets.getTileMap(map));
+        // TODO I might want to change to make player goes inside Actor's array
         Actor[] objects = new PropFactory(world, level).createScene1Props().toArray(new Prop[0]);
         Player player = new PlayerFactory(world, level).create();
 

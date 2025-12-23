@@ -45,7 +45,8 @@ public class Physics {
             return;
         }
 
-        for (Actor other: scene.actors) {
+        for (int i = 0; i < scene.size(); i++) {
+            Actor other = scene.getActors()[i];
             if (other == actor) continue;
             if (inspector.isColliding(actor, other)) {
                 long key = pairKey(actor, other);
@@ -75,7 +76,8 @@ public class Physics {
             return;
         }
 
-        for (Actor other: scene.actors) {
+        for (int i = 0; i < scene.size(); i++) {
+            Actor other = scene.getActors()[i];
             if (other == actor) continue;
             if (inspector.isColliding(actor, other)) {
                 long key = pairKey(actor, other);
