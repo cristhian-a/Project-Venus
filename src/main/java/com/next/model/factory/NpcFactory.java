@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class NpcFactory {
 
-    public NpcGhost create() {
+    public NpcGhost createGhost() {
         Map<AnimationState, Animation> animations = new EnumMap<>(AnimationState.class);
 
         Animation walk = new Animation();

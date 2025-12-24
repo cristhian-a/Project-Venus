@@ -133,7 +133,7 @@ public class Game {
         // TODO I might want to change to make player goes inside Actor's array
         Actor[] objects = new PropFactory(world, level).createScene1Props().toArray(new Actor[0]);
         Player player = new PlayerFactory(world, level).create();
-        NpcGhost npc = new NpcFactory().create();
+        NpcGhost npc = new NpcFactory().createGhost();
 
         player.setInput(input); // TODO meh
 
