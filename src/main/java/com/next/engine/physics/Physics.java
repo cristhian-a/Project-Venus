@@ -34,8 +34,8 @@ public class Physics {
         scene.forEachActor(grid::insert);
 
         for (int i = 0; i < queue.size(); i++) {
-            moveX(delta, queue.actorId[i], queue.deltaX[i], mailbox);
-            moveY(delta, queue.actorId[i], queue.deltaY[i], mailbox);
+            moveX(delta, queue.actorIds[i], queue.deltaX[i], mailbox);
+            moveY(delta, queue.actorIds[i], queue.deltaY[i], mailbox);
         }
 
         processedPairs.clear();
@@ -63,11 +63,15 @@ public class Physics {
                 if (response == null) return;
 
                 if (response.type() == CollisionType.SOLID) {
-                    float cx = calculateClamp(dx,
-                            actor.getCollisionBox().getBounds().width, actor.getCollisionBox().getOffsetX(),
-                            other.getCollisionBox().getBounds().x, other.getCollisionBox().getBounds().width
+                    float rx = computeAxisSeparationPosition(
+                            dx,
+                            actor.getCollisionBox().getBounds().width,
+                            actor.getCollisionBox().getOffsetX(),
+                            other.getCollisionBox().getBounds().x,
+                            other.getCollisionBox().getBounds().width
                     );
-                    actor.setPosition((int) cx, actor.getWorldY());
+
+                    actor.setPosition((int) rx, actor.getWorldY());
                 }
 
                 if (response.eventFactory() != null) {
@@ -98,12 +102,15 @@ public class Physics {
                 if (response == null) return;
 
                 if (response.type() == CollisionType.SOLID) {
-                    float cy = calculateClamp(dy,
-                            actor.getCollisionBox().getBounds().height, actor.getCollisionBox().getOffsetY(),
-                            other.getCollisionBox().getBounds().y, other.getCollisionBox().getBounds().height
+                    float ry = computeAxisSeparationPosition(
+                            dy,
+                            actor.getCollisionBox().getBounds().height,
+                            actor.getCollisionBox().getOffsetY(),
+                            other.getCollisionBox().getBounds().y,
+                            other.getCollisionBox().getBounds().height
                     );
 
-                    actor.setPosition(actor.getWorldX(), (int) cy);
+                    actor.setPosition(actor.getWorldX(), (int) ry);
                 }
 
                 if (response.eventFactory() != null) {
@@ -116,45 +123,39 @@ public class Physics {
     private void clampX(Actor actor, float dx) {
         var box = actor.getCollisionBox();
 
-        float clampedX = calculateTileClamp(dx, box.getBounds().x, box.getBounds().width, box.getOffsetX());
+        float clampedX = computeTileSeparationPosition(dx, box.getBounds().x, box.getBounds().width, box.getOffsetX());
         actor.setPosition((int) clampedX, actor.getWorldY());
     }
 
     private void clampY(Actor actor, float dy) {
         var box = actor.getCollisionBox();
 
-        float clampedY = calculateTileClamp(dy, box.getBounds().y, box.getBounds().height, box.getOffsetY());
+        float clampedY = computeTileSeparationPosition(dy, box.getBounds().y, box.getBounds().height, box.getOffsetY());
         actor.setPosition(actor.getWorldX(), (int) clampedY);
     }
 
-    private float calculateTileClamp(float dMov, float boxAxisPosition, float boxAxisLength, float boxOffset) {
-        float position;
-
-        if (dMov > 0) {
-            int tilePos = (int) ((boxAxisPosition + boxAxisLength) / scene.world.getTileSize());
-            position = tilePos * scene.world.getTileSize() - (boxAxisLength + boxOffset);
+    private float computeTileSeparationPosition(
+            float movementDelta, float actorMin, float actorSize, float actorOffset
+    ) {
+        if (movementDelta > 0) {
+            int tilePos = (int) ((actorMin + actorSize) / scene.world.getTileSize());
+            return tilePos * scene.world.getTileSize() - (actorSize + actorOffset);
         } else {
-            int tilePos = (int) (boxAxisPosition / scene.world.getTileSize());
-            position = (tilePos + 1) * scene.world.getTileSize() - boxOffset;
+            int tilePos = (int) (actorMin / scene.world.getTileSize());
+            return (tilePos + 1) * scene.world.getTileSize() - actorOffset;
         }
-
-        return position;
     }
 
-    // TODO my dude, I gotta check these names
-    private float calculateClamp(float delta,
-                                 float actorBoxLength, float boxOffset,
-                                 float otherPosition, float otherBoxLength
+    private float computeAxisSeparationPosition(
+            float movementDelta,
+            float actorSize, float actorOffset,
+            float otherMin, float otherSize
     ) {
-        float position;
-
-        if (delta > 0) {
-            position = otherPosition - (actorBoxLength + boxOffset);
+        if (movementDelta > 0) {
+            return otherMin - (actorSize + actorOffset);
         } else {
-            position = (otherPosition + otherBoxLength) - boxOffset;
+            return  (otherMin + otherSize) - actorOffset;
         }
-
-        return position;
     }
 
     private long pairKey(Actor a, Actor b) {

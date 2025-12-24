@@ -11,7 +11,7 @@ public final class MotionQueue {
     private int BUFFER_SIZE = DEFAULT_BUFFER;
     private int count = 0;
 
-    public int[] actorId = new int[DEFAULT_BUFFER];
+    public int[] actorIds = new int[DEFAULT_BUFFER];
     public float[] deltaX = new float[DEFAULT_BUFFER];
     public float[] deltaY = new float[DEFAULT_BUFFER];
     public float[] deltaZ = new float[DEFAULT_BUFFER];
@@ -27,7 +27,7 @@ public final class MotionQueue {
     private void ensureCapacity() {
         if (count >= BUFFER_SIZE) {
             BUFFER_SIZE *= 2;
-            actorId = Arrays.copyOf(actorId, BUFFER_SIZE);
+            actorIds = Arrays.copyOf(actorIds, BUFFER_SIZE);
             deltaX = Arrays.copyOf(deltaX, BUFFER_SIZE);
             deltaY = Arrays.copyOf(deltaY, BUFFER_SIZE);
             deltaZ = Arrays.copyOf(deltaZ, BUFFER_SIZE);
@@ -36,7 +36,7 @@ public final class MotionQueue {
 
     public void submit(int actorId, float deltaX, float deltaY, float deltaZ) {
         ensureCapacity();
-        this.actorId[count] = actorId;
+        this.actorIds[count] = actorId;
         this.deltaX[count] = deltaX;
         this.deltaY[count] = deltaY;
         this.deltaZ[count] = deltaZ;

@@ -50,24 +50,6 @@ public class SpatialGrid {
         }
     }
 
-    public List<Actor> getPotentialColliders(Actor actor) {
-        List<Actor> potentials = new ArrayList<>();
-
-        AABB box = actor.getCollisionBox().getBounds();
-        int left    = Math.max(0, (int) (box.x / cellSize));
-        int right   = Math.min(cols - 1, (int) ((box.x + box.width) / cellSize));
-        int top     = Math.max(0, (int) (box.y / cellSize));
-        int bottom  = Math.min(rows - 1, (int) ((box.y + box.height) / cellSize));
-
-        for (int row = top; row <= bottom; row++) {
-            for (int col = left; col <= right; col++) {
-                potentials.addAll(cells[col][row]);
-            }
-        }
-
-        return potentials;
-    }
-
     public void queryNearby(Actor actor, Consumer<Actor> action) {
         queryCounter++;
 
