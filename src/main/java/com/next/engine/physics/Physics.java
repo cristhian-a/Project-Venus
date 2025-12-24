@@ -1,7 +1,6 @@
 package com.next.engine.physics;
 
 import com.next.engine.data.Mailbox;
-import com.next.engine.event.EventDispatcher;
 import com.next.engine.model.Actor;
 import com.next.world.Scene;
 
@@ -64,15 +63,10 @@ public class Physics {
                 if (response == null) return;
 
                 if (response.type() == CollisionType.SOLID) {
-                    float cx;
-                    if (dx > 0) {
-                        // Moving Right: Snap my Right to his Left
-                        cx = other.getCollisionBox().getBounds().x - (actor.getCollisionBox().getBounds().width + actor.getCollisionBox().getOffsetX());
-                    } else {
-                        // Moving Left: Snap my Left to his Right
-                        cx = (other.getCollisionBox().getBounds().x + other.getCollisionBox().getBounds().width) - actor.getCollisionBox().getOffsetX();
-                    }
-
+                    float cx = calculateClamp(dx,
+                            actor.getCollisionBox().getBounds().width, actor.getCollisionBox().getOffsetX(),
+                            other.getCollisionBox().getBounds().x, other.getCollisionBox().getBounds().width
+                    );
                     actor.setPosition((int) cx, actor.getWorldY());
                 }
 
@@ -104,14 +98,10 @@ public class Physics {
                 if (response == null) return;
 
                 if (response.type() == CollisionType.SOLID) {
-                    float cy;
-                    if (dy > 0) {
-                        // Moving Right: Snap my Right to his Left
-                        cy = other.getCollisionBox().getBounds().y - (actor.getCollisionBox().getBounds().height + actor.getCollisionBox().getOffsetY());
-                    } else {
-                        // Moving Left: Snap my Left to his Right
-                        cy = (other.getCollisionBox().getBounds().y + other.getCollisionBox().getBounds().height) - actor.getCollisionBox().getOffsetY();
-                    }
+                    float cy = calculateClamp(dy,
+                            actor.getCollisionBox().getBounds().height, actor.getCollisionBox().getOffsetY(),
+                            other.getCollisionBox().getBounds().y, other.getCollisionBox().getBounds().height
+                    );
 
                     actor.setPosition(actor.getWorldX(), (int) cy);
                 }
@@ -126,18 +116,18 @@ public class Physics {
     private void clampX(Actor actor, float dx) {
         var box = actor.getCollisionBox();
 
-        float clampedX = calculateClamp(dx, box.getBounds().x, box.getBounds().width, box.getOffsetX());
+        float clampedX = calculateTileClamp(dx, box.getBounds().x, box.getBounds().width, box.getOffsetX());
         actor.setPosition((int) clampedX, actor.getWorldY());
     }
 
     private void clampY(Actor actor, float dy) {
         var box = actor.getCollisionBox();
 
-        float clampedY = calculateClamp(dy, box.getBounds().y, box.getBounds().height, box.getOffsetY());
+        float clampedY = calculateTileClamp(dy, box.getBounds().y, box.getBounds().height, box.getOffsetY());
         actor.setPosition(actor.getWorldX(), (int) clampedY);
     }
 
-    private float calculateClamp(float dMov, float boxAxisPosition, float boxAxisLength, float boxOffset) {
+    private float calculateTileClamp(float dMov, float boxAxisPosition, float boxAxisLength, float boxOffset) {
         float position;
 
         if (dMov > 0) {
@@ -146,6 +136,22 @@ public class Physics {
         } else {
             int tilePos = (int) (boxAxisPosition / scene.world.getTileSize());
             position = (tilePos + 1) * scene.world.getTileSize() - boxOffset;
+        }
+
+        return position;
+    }
+
+    // TODO my dude, I gotta check these names
+    private float calculateClamp(float delta,
+                                 float actorBoxLength, float boxOffset,
+                                 float otherPosition, float otherBoxLength
+    ) {
+        float position;
+
+        if (delta > 0) {
+            position = otherPosition - (actorBoxLength + boxOffset);
+        } else {
+            position = (otherPosition + otherBoxLength) - boxOffset;
         }
 
         return position;
