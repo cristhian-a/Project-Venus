@@ -3,7 +3,6 @@ package com.next.engine.model;
 import com.next.engine.data.Mailbox;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.physics.CollisionBox;
-import com.next.engine.physics.CollisionEvent;
 import com.next.engine.physics.CollisionType;
 import com.next.engine.physics.CollisionResult;
 import com.next.engine.graphics.Layer;
@@ -25,6 +24,27 @@ public abstract class Actor {
     protected boolean disposed = false;
     public int lastQueryId = -1;
     @Setter protected int id;   // TODO check how this should be implemented
+
+    // TODO shall be removed once I figure a place to put the mass related physics properties
+    protected float mass = 1f;
+    public float vx;
+    public float vy;
+
+    @Deprecated
+    public void setVelocity(float vx, float vy) {
+        this.vx = vx;
+        this.vy = vy;
+    }
+
+    @Deprecated
+    public boolean isImmovable() {
+        return mass <= 0f;
+    }
+
+    @Deprecated
+    public float invMass() {
+        return isImmovable() ? 0f : 1f / mass;
+    }
 
     public void update(double delta, Mailbox mailbox) {
     }
@@ -56,14 +76,8 @@ public abstract class Actor {
         collisionBox.update(worldX, worldY);
     }
 
-    public CollisionResult onCollision(CollisionEvent event) {
-        return new CollisionResult(
-                collisionType,
-                event.collider(),
-                0,
-                0,
-                null
-        );
+    public CollisionResult onCollision(Actor other) {
+        return null;
     }
 
     /**

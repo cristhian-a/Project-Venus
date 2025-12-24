@@ -15,5 +15,9 @@ public abstract class AnimatedActor extends Actor {
     protected Animator animator = new Animator();
     protected Map<AnimationState, Animation> animations = new EnumMap<>(AnimationState.class);
 
+    public AnimatedActor() {
+        super();
+    }
+
     public abstract void animate();
 }

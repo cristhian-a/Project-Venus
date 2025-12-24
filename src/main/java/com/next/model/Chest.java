@@ -1,7 +1,7 @@
 package com.next.model;
 
+import com.next.engine.model.Actor;
 import com.next.engine.model.Prop;
-import com.next.engine.physics.CollisionEvent;
 import com.next.engine.physics.CollisionType;
 import com.next.engine.physics.CollisionResult;
 import com.next.event.FinishGameEvent;
@@ -13,10 +13,7 @@ public class Chest extends Prop {
     }
 
     @Override
-    public CollisionResult onCollision(CollisionEvent event) {
-        return new CollisionResult(
-                this.collisionType, event.collider(), 0, 0,
-                FinishGameEvent::new
-        );
+    public CollisionResult onCollision(Actor other) {
+        return new CollisionResult(FinishGameEvent::new);
     }
 }

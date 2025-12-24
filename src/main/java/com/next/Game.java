@@ -8,7 +8,6 @@ import com.next.engine.data.Mailbox;
 import com.next.engine.event.EventDispatcher;
 import com.next.engine.model.Actor;
 import com.next.engine.model.Camera;
-import com.next.engine.model.Prop;
 import com.next.engine.physics.CollisionInspector;
 import com.next.engine.physics.Physics;
 import com.next.engine.sound.PlaySound;

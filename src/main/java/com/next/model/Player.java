@@ -29,6 +29,7 @@ public class Player extends AnimatedActor {
 
         layer = 1;
         collisionMask = 1;
+        this.mass = 1f;
 
         collisionBox = new CollisionBox(3, 6, 10, 10);
         this.collisionType = CollisionType.SOLID;

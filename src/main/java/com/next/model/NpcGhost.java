@@ -74,7 +74,7 @@ public class NpcGhost extends AnimatedActor {
             animationState = AnimationState.WALK_DOWN;
         }
 
-//        mailbox.motionQueue.submit(this.id, dx, dy, 0f);
+        mailbox.motionQueue.submit(this.id, dx, dy, 0f);
         animate();
     }
 
