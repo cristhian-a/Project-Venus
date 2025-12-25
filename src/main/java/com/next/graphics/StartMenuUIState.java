@@ -19,7 +19,7 @@ public class StartMenuUIState implements UIState {
     private final String START = "New";
     private final String LOAD = "Load";
     private final String EXIT = "Quit";
-    private final String CURSOR = ">";
+    private final String CURSOR = "<          >";
 
     private int cursor;
 
@@ -53,9 +53,20 @@ public class StartMenuUIState implements UIState {
     public void submitRender(RenderQueue queue) {
         queue.submit(
                 Layer.UI,
+                CURSOR,
+                Fonts.DEFAULT,
+                Colors.WHITE,
+                0,
+                50 * cursor,
+                RenderPosition.CENTERED,
+                0
+        );
+
+        queue.submit(
+                Layer.UI,
                 NAME,
-                Fonts.ARIAL_80_BOLD,
-                Colors.MAGENTA,
+                Fonts.DEFAULT_80_BOLD,
+                Colors.RED,
                 0,
                 -100,
                 RenderPosition.CENTERED,
@@ -91,17 +102,6 @@ public class StartMenuUIState implements UIState {
                 Colors.WHITE,
                 0,
                 100,
-                RenderPosition.CENTERED,
-                0
-        );
-
-        queue.submit(
-                Layer.UI,
-                CURSOR,
-                Fonts.DEFAULT,
-                Colors.WHITE,
-                -50,
-                50 * cursor,
                 RenderPosition.CENTERED,
                 0
         );

@@ -31,6 +31,7 @@ public class Renderer {
         this.tileRenderer = new TileRenderer(assets);
     }
 
+    // Event Handler    // TODO probably we shouldn't solve it like this
     public void onWorldTransition(WorldTransitionEvent event) {
         tileRenderer.setWorld(event.world());
     }

@@ -2,6 +2,7 @@ package com.next.system;
 
 import com.next.engine.graphics.awt.SpriteSheet;
 import com.next.engine.io.FileReader;
+import com.next.io.Loader;
 import com.next.util.Colors;
 import com.next.util.Fonts;
 
@@ -27,7 +28,7 @@ public class AssetRegistry {
             loadSprites();
             loadFonts();
             loadMaps();
-        } catch (IOException e) {
+        } catch (IOException | FontFormatException e) {
             throw new RuntimeException(e);
         }
     }
@@ -36,9 +37,12 @@ public class AssetRegistry {
         spriteSheets.put("world", new SpriteSheet("/sprites/spritesheet.png", 16, 16));
     }
 
-    private void loadFonts() {
-        fonts.put(Fonts.DEFAULT, new Font("Arial", Font.PLAIN, 30));
-        fonts.put(Fonts.ARIAL_80_BOLD, new Font("Arial", Font.BOLD, 80));
+    private void loadFonts() throws IOException, FontFormatException {
+        try (InputStream is = Loader.Fonts.load()) {
+            var f = Font.createFont(Font.TRUETYPE_FONT, is);
+            fonts.put(Fonts.DEFAULT, f.deriveFont(Font.PLAIN, 32f));
+            fonts.put(Fonts.DEFAULT_80_BOLD, f.deriveFont(Font.BOLD, 80f));
+        }
 
         colors.put(Colors.WHITE, Color.WHITE);
         colors.put(Colors.BLACK, Color.BLACK);

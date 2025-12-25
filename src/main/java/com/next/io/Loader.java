@@ -12,6 +12,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,12 @@ public final class Loader {
                 if (file == null) throw new IOException("Settings file not found");
                 return JsonReader.readObject(file, com.next.system.Settings.class);
             } catch (IOException e) { throw new RuntimeException(e); }
+        }
+    }
+
+    public static class Fonts {
+        public static InputStream load() {
+            return FileReader.getFile("/fonts/x12y16pxMaruMonica.ttf");
         }
     }
 
