@@ -7,7 +7,7 @@ import com.next.system.AssetRegistry;
 
 import java.awt.*;
 
-public class TileRenderer {
+final class TileRenderer {
 
     private final AssetRegistry assets;
     private final World world;

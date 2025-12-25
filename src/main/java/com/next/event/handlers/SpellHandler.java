@@ -8,6 +8,8 @@ import com.next.engine.sound.SetVolume;
 import com.next.engine.sound.SoundChannel;
 import com.next.event.SpellPickedUpEvent;
 import com.next.engine.graphics.Layer;
+import com.next.util.Colors;
+import com.next.util.Fonts;
 import com.next.util.Sounds;
 
 public class SpellHandler {
@@ -29,8 +31,8 @@ public class SpellHandler {
         mailbox.render.write().submit(
                 Layer.UI,
                 "Mercury's Bless!",
-                "arial_30",
-                "white",
+                Fonts.DEFAULT,
+                Colors.WHITE,
                 -91,
                 -41,
                 RenderPosition.CENTERED,

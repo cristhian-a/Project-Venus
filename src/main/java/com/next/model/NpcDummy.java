@@ -6,20 +6,23 @@ import com.next.engine.data.Mailbox;
 import com.next.engine.model.AnimatedActor;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.physics.CollisionType;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
 
-public class NpcGhost extends AnimatedActor {
+public class NpcDummy extends Npc {
 
+    @Getter @Setter private boolean behave = true;
     private int movementFrames = 50;
     private int direction = 0;
 
-    public NpcGhost(float worldX, float worldY, Map<AnimationState, Animation> animations) {
-        this.spriteId = 16;
+    public NpcDummy(float worldX, float worldY, Map<AnimationState, Animation> animations) {
+        this.spriteId = 33;
         this.animations.putAll(animations);
         this.collisionType = CollisionType.SOLID;
         this.animationState = AnimationState.IDLE;
-        this.collisionBox = new CollisionBox(3, 0, 9, 14);
+        this.collisionBox = new CollisionBox(3, 0, 10, 16);
 
         this.layer = 1;
         this.collisionMask = 1;
@@ -29,17 +32,21 @@ public class NpcGhost extends AnimatedActor {
 
     @Override
     public void animate() {
-        animator.set(animations.get(animationState));
-        spriteId = animator.update();
+        super.animate();
     }
 
     @Override
     public void update(double delta, Mailbox mailbox) {
+        if (behave) behave(mailbox);
+
+        animate();
+    }
+
+    private void behave(Mailbox mailbox) {
         long n = System.nanoTime();
         long rng = n % 35;
 
         float dx = 0, dy = 0;
-//        animationState = AnimationState.WALK_UP;
 
         if (movementFrames-- <= 0) {
             movementFrames = 50;
@@ -59,7 +66,7 @@ public class NpcGhost extends AnimatedActor {
 
         float speed = 0.5f;
         if (direction == 0) {
-            animationState =AnimationState.IDLE;
+            animationState = AnimationState.IDLE;
         } else if (direction == 1) {
             dx += speed;
             animationState = AnimationState.WALK_RIGHT;
@@ -75,7 +82,6 @@ public class NpcGhost extends AnimatedActor {
         }
 
         mailbox.motionQueue.submit(this.id, dx, dy, 0f);
-        animate();
     }
 
 }

@@ -52,10 +52,15 @@ public class Renderer {
         renderSpriteTable(g, camera, queue.getBucket(Layer.ACTORS).sprites);
 
         // 4. UI
-        uiRenderer.renderSpriteTable(g, queue.getBucket(Layer.UI).sprites);
+        var uiLayer = queue.getBucket(Layer.UI);
+        uiRenderer.renderSpriteTable(g, uiLayer.sprites);
         g.setTransform(oldScale);
-        renderOverlayTable(g, queue.getBucket(Layer.UI).overlays);
-        uiRenderer.renderTextTable(g, queue.getBucket(Layer.UI).texts);
+        uiRenderer.renderRectangleTable(g, uiLayer.rectangles);
+        uiRenderer.renderFilledRectangleTable(g, uiLayer.filledRectangles);
+        uiRenderer.renderFilledRoundRectangleTable(g, uiLayer.filledRoundRects);
+        uiRenderer.renderRoundedStrokeRectTable(g, uiLayer.roundedStrokeRectTable);
+        renderOverlayTable(g, uiLayer.overlays);
+        uiRenderer.renderTextTable(g, uiLayer.texts);
         uiRenderer.renderMessages(g);
 
         // 5. DEBUG

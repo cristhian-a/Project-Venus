@@ -3,6 +3,7 @@ package com.next;
 import com.next.engine.Global;
 import com.next.engine.graphics.RenderQueue;
 import com.next.event.PauseEvent;
+import com.next.event.handlers.PlayerHandler;
 import com.next.util.GameState;
 import com.next.engine.data.Mailbox;
 import com.next.engine.event.EventDispatcher;
@@ -50,6 +51,10 @@ public class Game {
 
     // Handlers
     private final GameFlowHandler gameFlowHandler;
+    private PlayerHandler playerHandler;
+
+    // States (if needed)
+    private GameplayUIState gameplayUIState;
 
     @Getter @Setter private GameState gameState = GameState.RUNNING;
     @Getter private Camera camera;
@@ -81,7 +86,8 @@ public class Game {
         physics.ruleOver(scene);
         physics.setInspector(collisionInspector);
 
-        var gameplayUIState = new GameplayUIState(scene.player);
+        gameplayUIState = new GameplayUIState(scene.player);
+        playerHandler = new PlayerHandler(dispatcher, gameplayUIState);
         gameFlowHandler.setGameplayUIState(gameplayUIState);
         ui.setState(gameplayUIState);
 
@@ -133,7 +139,7 @@ public class Game {
         // TODO I might want to change to make player goes inside Actor's array
         Actor[] objects = new PropFactory(world, level).createScene1Props().toArray(new Actor[0]);
         Player player = new PlayerFactory(world, level).create();
-        NpcGhost npc = new NpcFactory().createGhost();
+        NpcDummy npc = new NpcFactory().createDummy();
 
         player.setInput(input); // TODO meh
 

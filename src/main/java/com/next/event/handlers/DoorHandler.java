@@ -42,7 +42,7 @@ public class DoorHandler {
         mailbox.render.write().submit(
                 Layer.UI,
                 "First grab a Key!",
-                Fonts.ARIAL_30,
+                Fonts.DEFAULT,
                 Colors.WHITE,
                 -100,
                 -41,
@@ -62,7 +62,7 @@ public class DoorHandler {
         mailbox.render.write().submit(
                 Layer.UI,
                 "Got a Key!",
-                Fonts.ARIAL_30,
+                Fonts.DEFAULT,
                 Colors.WHITE,
                 -65,
                 -41,
