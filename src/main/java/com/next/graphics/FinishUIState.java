@@ -1,6 +1,8 @@
 package com.next.graphics;
 
 import com.next.engine.graphics.*;
+import com.next.util.Colors;
+import com.next.util.Fonts;
 
 public class FinishUIState implements UIState {
 
@@ -23,8 +25,8 @@ public class FinishUIState implements UIState {
         String timeMessage = "Your Time: " + String.format("%.2f", time) + "s";
 
         queue.submit(Layer.UI, RenderType.OVERLAY);
-        queue.submit(Layer.UI, congratsMsg, "arial_80b", "orange", -310, -125, RenderPosition.CENTERED, 1);
-        queue.submit(Layer.UI, finalMessage, "arial_30", "white", -60, 60, RenderPosition.CENTERED, 1);
-        queue.submit(Layer.UI, timeMessage, "arial_30", "white", -115, 100, RenderPosition.CENTERED, 1);
+        queue.submit(Layer.UI, congratsMsg, Fonts.ARIAL_80_BOLD, Colors.ORANGE, -310, -125, RenderPosition.CENTERED, 1);
+        queue.submit(Layer.UI, finalMessage, Fonts.DEFAULT, Colors.WHITE, -60, 60, RenderPosition.CENTERED, 1);
+        queue.submit(Layer.UI, timeMessage, Fonts.DEFAULT, Colors.WHITE, -115, 100, RenderPosition.CENTERED, 1);
     }
 }

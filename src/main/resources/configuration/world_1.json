@@ -1,3 +1,5 @@
 {
-  "tileSize": 16
+  "tileSize": 16,
+  "columns": 50,
+  "rows": 50
 }

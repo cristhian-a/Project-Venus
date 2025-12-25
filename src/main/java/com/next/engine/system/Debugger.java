@@ -37,6 +37,8 @@ public class Debugger {
     }
 
     public static void update(Input input) {
+        ProfilerAssistant.collectMemoryInfo();  // TODO move this to another place please
+
         if (input.isPressed(Input.Action.DEBUG_1))
             INSTANCE.DEBUG_1 = !INSTANCE.DEBUG_1;
 

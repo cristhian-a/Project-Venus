@@ -3,8 +3,12 @@ package com.next.graphics;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderPosition;
 import com.next.engine.graphics.RenderQueue;
+import com.next.util.Colors;
+import com.next.util.Fonts;
 
 public class PausedUIState implements UIState {
+
+    String PAUSED = "PAUSED";
 
     @Override
     public void update(double delta) {
@@ -14,9 +18,9 @@ public class PausedUIState implements UIState {
     public void submitRender(RenderQueue queue) {
         queue.submit(
                 Layer.UI,
-                "PAUSED",
-                "arial_30",
-                "white",
+                PAUSED,
+                Fonts.DEFAULT,
+                Colors.WHITE,
                 10,
                 30,
                 RenderPosition.AXIS,

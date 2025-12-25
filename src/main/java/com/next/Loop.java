@@ -22,9 +22,9 @@ public class Loop implements Runnable {
 
     public void start() {
         running = true;
-        mainThread = new Thread(this, "Main Game Thread");
+        mainThread = new Thread(this, "Maestro - Main Thread");
 
-        game.start();
+        game.boot();
         panel.openWindow();
         mainThread.start();
     }

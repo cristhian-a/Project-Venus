@@ -20,7 +20,7 @@ public class PropFactory {
     }
 
     public Spell createSpell(int worldX, int worldY) {
-        return new Spell(15, worldX, worldY, CollisionType.NONE);
+        return new Spell(15, worldX, worldY, CollisionType.TRIGGER);
     }
 
     public Door createDoor(int worldX, int worldY) {
@@ -32,7 +32,11 @@ public class PropFactory {
     }
 
     public Key createKey(int worldX, int worldY) {
-        return new Key(31, worldX, worldY, CollisionType.NONE);
+        return new Key(31, worldX, worldY, CollisionType.TRIGGER);
+    }
+
+    public Prop createStoneBlock(int worldX, int worldY) {
+        return new Prop(32, worldX, worldY, 1f, CollisionType.SOLID, 2, 2, 12, 12);
     }
 
     public List<Prop> createScene1Props() {
@@ -45,6 +49,7 @@ public class PropFactory {
         props.add(createKey(23 * world.getTileSize(), 40 * world.getTileSize()));
         props.add(createKey(37 * world.getTileSize(), 9 * world.getTileSize()));
         props.add(createSpell(37 * world.getTileSize(), 42 * world.getTileSize()));
+        props.add(createStoneBlock(23 * world.getTileSize(), 23 * world.getTileSize()));
         return props;
     }
 }

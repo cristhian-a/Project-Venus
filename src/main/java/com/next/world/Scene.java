@@ -7,6 +7,7 @@ import com.next.model.Player;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 /**
  * A {@code Scene} holds all the runtime entities relevant to the current game scene.
@@ -36,12 +37,14 @@ public class Scene {
 
     public void update(double delta, Mailbox mailbox) {
         for (int i = 0; i < activeCount; i++) {
+            actors[i].setId(i);
             actors[i].update(delta, mailbox);
         }
     }
 
     public void submitRender(RenderQueue queue) {
         for (int i = 0; i < activeCount; i++) {
+            actors[i].setId(i);
             actors[i].submitRender(queue);
         }
     }
@@ -59,6 +62,12 @@ public class Scene {
                 activeCount--;
                 i--;
             }
+        }
+    }
+
+    public void forEachActor(Consumer<Actor> consumer) {
+        for (int i = 0; i < activeCount; i++) {
+            consumer.accept(actors[i]);
         }
     }
 

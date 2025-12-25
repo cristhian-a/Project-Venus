@@ -3,7 +3,9 @@ package com.next;
 import com.next.engine.data.Mailbox;
 import com.next.engine.data.Registry;
 import com.next.engine.event.EventDispatcher;
+import com.next.engine.event.ExitEvent;
 import com.next.engine.event.GracefullyStopEvent;
+import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.GamePanel;
 import com.next.engine.graphics.awt.AwtPanel;
 import com.next.engine.graphics.awt.Renderer;
@@ -45,7 +47,11 @@ public class Main {
         SoundSystem sound = new SoundSystem(audio);
 
         GracefullyStopEvent.Handler G = new GracefullyStopEvent.Handler(gameLoop);
+        ExitEvent.Handler E = new ExitEvent.Handler();
+
         centralDispatcher.register(GracefullyStopEvent.class, G::onFire);
+        centralDispatcher.register(ExitEvent.class, E::onFire);
+        centralDispatcher.register(WorldTransitionEvent.class, renderer::onWorldTransition);
 //        centralDispatcher.register(PlaySound.class, sound::fire);
 //        centralDispatcher.register(StopSound.class, sound::fire);
 //        centralDispatcher.register(SetVolume.class, sound::fire);

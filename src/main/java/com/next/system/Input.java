@@ -7,7 +7,7 @@ import java.util.*;
 public class Input {
 
     public enum Action {
-        UP, DOWN, LEFT, RIGHT, PAUSE, DEBUG_1
+        UP, DOWN, LEFT, RIGHT, TALK, PAUSE, DEBUG_1
     }
 
     private final List<InputReader> devices;
@@ -55,6 +55,7 @@ public class Input {
         var actionDown = new DeviceMapping(controls.down, device);
         var actionLeft = new DeviceMapping(controls.left, device);
         var actionRight = new DeviceMapping(controls.right, device);
+        var actionTalk = new DeviceMapping(controls.talk, device);
         var pause = new DeviceMapping(controls.pause, device);
         var debug1 = new DeviceMapping(controls.debugMode1, device);
 
@@ -62,6 +63,7 @@ public class Input {
         mappings.computeIfAbsent(Action.DOWN, _ -> new ArrayList<>()).add(actionDown);
         mappings.computeIfAbsent(Action.LEFT, _ -> new ArrayList<>()).add(actionLeft);
         mappings.computeIfAbsent(Action.RIGHT, _ -> new ArrayList<>()).add(actionRight);
+        mappings.computeIfAbsent(Action.TALK, _ -> new ArrayList<>()).add(actionTalk);
         mappings.computeIfAbsent(Action.PAUSE, _ -> new ArrayList<>()).add(pause);
         mappings.computeIfAbsent(Action.DEBUG_1, _ -> new ArrayList<>()).add(debug1);
 

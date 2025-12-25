@@ -34,17 +34,6 @@ public class SpriteSheet {
         return sprites[index];
     }
 
-    public BufferedImage getSprite(int x, int y) {
-        if (x % spriteWidth != 0 && y % spriteHeight != 0)
-            throw new IllegalArgumentException("Sprite coordinates must be divisible by tile size");
-
-        int col = x / spriteWidth;
-        int row = y / spriteHeight;
-
-        int index = row * columns + col;
-        return sprites[index];
-    }
-
     private void splitImages() {
         int y = 0;
         int rowCount = 0;

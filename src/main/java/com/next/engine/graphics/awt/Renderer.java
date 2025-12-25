@@ -2,6 +2,7 @@ package com.next.engine.graphics.awt;
 
 import com.next.Game;
 import com.next.engine.data.Mailbox;
+import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
@@ -27,7 +28,11 @@ public class Renderer {
         this.settings = settings;
 
         this.uiRenderer = new UIRenderer(assets, settings);
-        this.tileRenderer = new TileRenderer(assets, game.getScene().world);
+        this.tileRenderer = new TileRenderer(assets);
+    }
+
+    public void onWorldTransition(WorldTransitionEvent event) {
+        tileRenderer.setWorld(event.world());
     }
 
     public void render(Graphics2D g) {
@@ -52,10 +57,15 @@ public class Renderer {
         renderSpriteTable(g, camera, queue.getBucket(Layer.ACTORS).sprites);
 
         // 4. UI
-        uiRenderer.renderSpriteTable(g, queue.getBucket(Layer.UI).sprites);
+        var uiLayer = queue.getBucket(Layer.UI);
+        uiRenderer.renderSpriteTable(g, uiLayer.sprites);
         g.setTransform(oldScale);
-        renderOverlayTable(g, queue.getBucket(Layer.UI).overlays);
-        uiRenderer.renderTextTable(g, queue.getBucket(Layer.UI).texts);
+        uiRenderer.renderRectangleTable(g, uiLayer.rectangles);
+        uiRenderer.renderFilledRectangleTable(g, uiLayer.filledRectangles);
+        uiRenderer.renderFilledRoundRectangleTable(g, uiLayer.filledRoundRects);
+        uiRenderer.renderRoundedStrokeRectTable(g, uiLayer.roundedStrokeRectTable);
+        renderOverlayTable(g, uiLayer.overlays);
+        uiRenderer.renderTextTable(g, uiLayer.texts);
         uiRenderer.renderMessages(g);
 
         // 5. DEBUG

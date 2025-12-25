@@ -2,19 +2,19 @@ package com.next.model.factory;
 
 import com.next.engine.animation.Animation;
 import com.next.engine.animation.AnimationState;
-import com.next.model.NpcGhost;
+import com.next.model.NpcDummy;
 
 import java.util.EnumMap;
 import java.util.Map;
 
 public class NpcFactory {
 
-    public NpcGhost create() {
+    public NpcDummy createDummy() {
         Map<AnimationState, Animation> animations = new EnumMap<>(AnimationState.class);
 
         Animation walk = new Animation();
-        walk.frameRate = 15;
-        walk.frames = new int[] { 16, 17 };
+        walk.frameRate = 20;
+        walk.frames = new int[] { 34, 35 };
         walk.loop = true;
         animations.put(AnimationState.WALK_UP, walk);
         animations.put(AnimationState.WALK_DOWN, walk);
@@ -23,10 +23,10 @@ public class NpcFactory {
 
         Animation idle = new Animation();
         idle.frameRate = 0;
-        idle.frames = new int[] { 16 };
+        idle.frames = new int[] { 33 };
         idle.loop = false;
         animations.put(AnimationState.IDLE, idle);
 
-        return new NpcGhost(22*16, 21*16, animations);
+        return new NpcDummy(22*16, 21*16, animations);
     }
 }

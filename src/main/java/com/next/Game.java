@@ -1,14 +1,18 @@
 package com.next;
 
 import com.next.engine.Global;
+import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.RenderQueue;
+import com.next.event.FinishGameEvent;
 import com.next.event.PauseEvent;
+import com.next.event.handlers.PlayerHandler;
+import com.next.graphics.StartMenuUIState;
+import com.next.graphics.UIState;
 import com.next.util.GameState;
 import com.next.engine.data.Mailbox;
 import com.next.engine.event.EventDispatcher;
 import com.next.engine.model.Actor;
 import com.next.engine.model.Camera;
-import com.next.engine.model.Prop;
 import com.next.engine.physics.CollisionInspector;
 import com.next.engine.physics.Physics;
 import com.next.engine.sound.PlaySound;
@@ -51,8 +55,12 @@ public class Game {
 
     // Handlers
     private final GameFlowHandler gameFlowHandler;
+    private PlayerHandler playerHandler;
 
-    @Getter @Setter private GameState gameState = GameState.RUNNING;
+    // States (if needed)
+    private GameplayUIState gameplayUIState;
+
+    @Getter @Setter private GameState gameState = GameState.START_MENU;
     @Getter private Camera camera;
     @Getter private Scene scene;
 
@@ -63,6 +71,12 @@ public class Game {
         this.settings = settings;
         this.dispatcher = dispatcher;
 
+        new DoorHandler(dispatcher, mailbox);
+        new SpellHandler(dispatcher, mailbox);
+        gameFlowHandler = new GameFlowHandler(dispatcher, mailbox, input, this);
+    }
+
+    public void boot() {
         // TODO this should be moved to start(), but can't until I fix the renderer queueing world render
         try {
             scene = loadScene("world_1.json", "level_1.json", "map_01");
@@ -70,22 +84,21 @@ public class Game {
             throw new RuntimeException(e);
         }
 
-        new DoorHandler(dispatcher, mailbox);
-        new SpellHandler(dispatcher, mailbox);
-        gameFlowHandler = new GameFlowHandler(dispatcher, mailbox, this);
-    }
-
-    public void start() {
+        // TODO camera should probably not be initialized here, but it is due a problem in my tileRenderer not allowing
+        // null cameras
         int tileSize = scene.world.getRules().tileSize();   // Just to adjust the camera following
         camera = new Camera(settings.video.ORIGINAL_WIDTH, settings.video.ORIGINAL_HEIGHT, tileSize, tileSize);
 
+        ui.setState(new StartMenuUIState(input, dispatcher));
+    }
+
+    public void start(UIState uiState) {
         physics.ruleOver(scene);
         physics.setInspector(collisionInspector);
 
-        var gameplayUIState = new GameplayUIState(scene.player);
-        gameFlowHandler.setGameplayUIState(gameplayUIState);
-        ui.setState(gameplayUIState);
+        playerHandler = new PlayerHandler(dispatcher, (GameplayUIState) uiState);
 
+        dispatcher.dispatch(new WorldTransitionEvent(scene.world));
         dispatcher.dispatch(new PlaySound(Sounds.WIND, SoundChannel.MUSIC, true));
     }
 
@@ -95,30 +108,30 @@ public class Game {
         RenderQueue writeQueue = mailbox.render.write();
         processInputs();
 
-        if (gameState == GameState.RUNNING) {
-            // TODO this is very incomplete
+        // TODO GameFlowHandler and Game are competing as conductors now
+        gameFlowHandler.update(delta);
 
-            scene.player.update(delta, input, mailbox);
-            scene.update(delta, mailbox);
+        // TODO game states are poorly managed right now
+        if (gameState == GameState.START_MENU) {
+            // nothing?
+        } else {
+            if (gameState == GameState.RUNNING) {
+                // TODO this is very incomplete
+                scene.update(delta, mailbox);
 
-            physics.apply(Global.fixedDelta, mailbox); // always after update
+                physics.apply(Global.fixedDelta, mailbox.motionQueue, mailbox); // always after update
 
-            dispatcher.dispatch(mailbox);   // for now, this should happen after physics
+                dispatcher.dispatch(mailbox);   // for now, this should happen after physics
 
-            //
-            // render portion
-            scene.dismissActors();   // PLEASE, dismiss before rendering
+                scene.dismissActors();   // PLEASE, dismiss before rendering
+            }
+
+            scene.submitRender(writeQueue);
+            camera.follow(scene.player);    // the camera follows after events' resolution
+
         }
 
-        scene.submitRender(writeQueue);
-        scene.player.submitRender(writeQueue);     // player always for last
-
-        camera.follow(scene.player);    // the camera follows after events' resolution
-
-        // First handlers, then systems updates
-        gameFlowHandler.update(delta);
         ui.update(delta);
-
         ui.submit(writeQueue);
 
         mailbox.swap();
@@ -134,10 +147,13 @@ public class Game {
         // TODO I might want to change to make player goes inside Actor's array
         Actor[] objects = new PropFactory(world, level).createScene1Props().toArray(new Actor[0]);
         Player player = new PlayerFactory(world, level).create();
-        NpcGhost npc = new NpcFactory().create();
+        NpcDummy npc = new NpcFactory().createDummy();
+
+        player.setInput(input); // TODO meh
 
         Scene s = new Scene(world, player, objects);
         s.addActor(npc);
+        s.addActor(player);
 
         return s;
     }

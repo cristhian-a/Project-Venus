@@ -1,5 +1,7 @@
 package com.next.system;
 
+import java.awt.event.KeyEvent;
+
 public final class Settings {
 
     public ControlSettings controls;
@@ -10,6 +12,7 @@ public final class Settings {
         public int down;
         public int left;
         public int right;
+        public int talk;
         public int pause;
         public int debugMode1;
     }
