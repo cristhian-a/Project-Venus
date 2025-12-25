@@ -24,7 +24,7 @@ public class Loop implements Runnable {
         running = true;
         mainThread = new Thread(this, "Maestro - Main Thread");
 
-        game.start();
+        game.boot();
         panel.openWindow();
         mainThread.start();
     }

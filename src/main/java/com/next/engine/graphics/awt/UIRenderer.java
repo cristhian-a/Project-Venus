@@ -43,12 +43,23 @@ class UIRenderer {
     }
 
     protected void renderText(Graphics2D g, UIMessage m) {
-        renderText(g, m.text, m.x, m.y, assets.getColor(m.color), assets.getFont(m.font));
+        renderText(g, m.text, m.x, m.y, assets.getColor(m.color), assets.getFont(m.font), m.position);
     }
 
-    protected void renderText(Graphics2D g, String text, int x, int y, Color color, Font font) {
+    protected void renderText(Graphics2D g, String text, int x, int y, Color color, Font font, RenderPosition position) {
         g.setColor(color);
         g.setFont(font);
+
+
+        if (position == RenderPosition.CENTERED) {
+            FontMetrics fm = g.getFontMetrics();
+
+            int textWidth = fm.stringWidth(text);
+
+            x += (settings.WIDTH - textWidth) / 2;
+            y += ((settings.HEIGHT - fm.getHeight()) / 2) + fm.getAscent();
+        }
+
         g.drawString(text, x, y);
     }
 
@@ -65,18 +76,10 @@ class UIRenderer {
 
     protected void renderTextTable(Graphics2D g, RenderQueue.TextTable table) {
         for (int i = 0; i < table.count; i++) {
-            int x = table.x[i];
-            int y = table.y[i];
-
-            if (table.positions[i] == RenderPosition.CENTERED) {
-                x += settings.WIDTH / 2;
-                y += settings.HEIGHT / 2;
-            }
-
             if (table.frames[i] > 0) {
-                messages.add(new UIMessage(table.message[i], table.font[i], table.colors[i], x, y, table.frames[i]));
+                messages.add(new UIMessage(table.message[i], table.font[i], table.colors[i], table.x[i], table.y[i], table.positions[i], table.frames[i]));
             } else {
-                renderText(g, table.message[i], x, y, assets.getColor(table.colors[i]), assets.getFont(table.font[i]));
+                renderText(g, table.message[i], table.x[i], table.y[i], assets.getColor(table.colors[i]), assets.getFont(table.font[i]), table.positions[i]);
             }
         }
     }

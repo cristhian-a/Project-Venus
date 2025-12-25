@@ -1,5 +1,5 @@
 package com.next.util;
 
 public enum GameState {
-    RUNNING, PAUSED, FINISHED
+    START_MENU, RUNNING, PAUSED, FINISHED
 }

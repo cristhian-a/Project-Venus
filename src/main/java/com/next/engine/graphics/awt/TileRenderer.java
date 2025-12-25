@@ -10,20 +10,32 @@ import java.awt.*;
 final class TileRenderer {
 
     private final AssetRegistry assets;
-    private final World world;
+    private World world;
 
     private Tile[] tiles;
     private Integer[][] tileMap;
 
-    public TileRenderer(AssetRegistry assets, World world) {
-        this.assets = assets;
-        this.world = world;
+    private boolean render;
 
+    public TileRenderer(AssetRegistry assets) {
+        this.assets = assets;
+    }
+
+    public void setWorld(World world) {
+        this.world = world;
         tiles = world.getTiles();
         tileMap = world.getMap();
+
+        render = true;
+    }
+
+    public void stopRendering() {
+        render = false;
     }
 
     public void render(Graphics2D g, Camera camera) {
+        if (!render) return;
+
         final int TILE_SIZE = world.getTileSize();
         
         int startCol = (int) Math.max(0, camera.getX() / TILE_SIZE);

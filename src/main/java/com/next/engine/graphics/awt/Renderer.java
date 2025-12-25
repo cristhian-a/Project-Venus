@@ -2,6 +2,7 @@ package com.next.engine.graphics.awt;
 
 import com.next.Game;
 import com.next.engine.data.Mailbox;
+import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
@@ -27,7 +28,11 @@ public class Renderer {
         this.settings = settings;
 
         this.uiRenderer = new UIRenderer(assets, settings);
-        this.tileRenderer = new TileRenderer(assets, game.getScene().world);
+        this.tileRenderer = new TileRenderer(assets);
+    }
+
+    public void onWorldTransition(WorldTransitionEvent event) {
+        tileRenderer.setWorld(event.world());
     }
 
     public void render(Graphics2D g) {
