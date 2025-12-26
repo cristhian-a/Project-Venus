@@ -19,32 +19,45 @@ public class Scene {
     @Getter private Actor[] actors;
     private int activeCount;
 
+    private int nextId = 1;
+
     public int size() { return activeCount; }
 
     public Scene(World world, Player player, Actor[] actors) {
         this.world = world;
         this.player = player;
-        this.actors = actors;
-        activeCount = actors.length;
+        this.actors = new Actor[16];
+
+        for (Actor actor : actors) {
+            addActor(actor);
+        }
     }
 
     public void addActor(Actor actor) {
         if (activeCount >= actors.length) {
             actors = Arrays.copyOf(actors, actors.length * 2);
         }
+
+        actor.setId(nextId++);
         actors[activeCount++] = actor;
+        nextId++;
+    }
+
+    public Actor findById(int id) {
+        for (Actor actor : actors) {
+            if (actor.getId() == id) return actor;
+        }
+        return null;
     }
 
     public void update(double delta, Mailbox mailbox) {
         for (int i = 0; i < activeCount; i++) {
-            actors[i].setId(i);
             actors[i].update(delta, mailbox);
         }
     }
 
     public void submitRender(RenderQueue queue) {
         for (int i = 0; i < activeCount; i++) {
-            actors[i].setId(i);
             actors[i].submitRender(queue);
         }
     }

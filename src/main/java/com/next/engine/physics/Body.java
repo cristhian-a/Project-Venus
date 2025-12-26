@@ -9,7 +9,6 @@ import com.next.engine.model.Actor;
 public interface Body {
     float getX();
     float getY();
-    float getZ();
     CollisionBox getCollisionBox();
     CollisionType getCollisionType();
     void setPosition(float x, float y);

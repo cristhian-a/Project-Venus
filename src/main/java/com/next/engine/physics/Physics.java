@@ -5,14 +5,11 @@ import com.next.engine.model.AABB;
 import com.next.engine.model.Actor;
 import com.next.world.Scene;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Physics {
 
-    private final Set<Long> collisionPairs = new HashSet<>();
+    private final CollisionTable collisionTable = new CollisionTable();
 
     private Scene scene;
     private SpatialGrid grid;
@@ -63,9 +60,7 @@ public class Physics {
             Actor actor = scene.getActors()[i];
             grid.forEachNearby(actor, other -> {
                 if (other == actor) return;
-                long pairKey = pairKey(actor.getId(), other.getId());
-                if (collisionPairs.contains(pairKey)) return;
-                collisionPairs.add(pairKey);
+                collisionTable.add(actor, other);
 
                 if (!inspector.isColliding(actor, other)) return;
 
@@ -92,7 +87,7 @@ public class Physics {
                 }
 
                 CollisionResult response = other.onCollision(actor);
-                contacts.put(pairKey, new Contact(actor.getId(), other.getId(), penetration, nx, ny, response));
+                contacts.put(0L, new Contact(actor.getId(), other.getId(), penetration, nx, ny, response));
             });
         }
 
@@ -163,7 +158,7 @@ public class Physics {
             }
         }
 
-        collisionPairs.clear();
+        collisionTable.clear();
         queue.clear();
     }
 
@@ -197,12 +192,9 @@ public class Physics {
             moveY(delta, queue.actorIds[i], queue.deltaY[i]);
         }
 
-        for (Long pair : collisionPairs) {
-            int aIdx = (int) (pair >> 32);
-            int bIdx = (int) (pair & 0xffffffffL);
-
-            Actor actorA = scene.getActors()[aIdx];
-            Actor actorB = scene.getActors()[bIdx];
+        for (int i = 0; i < collisionTable.count; i++) {
+            Actor actorA = collisionTable.actorsA[i];
+            Actor actorB = collisionTable.actorsB[i];
 
             CollisionResult responseA = actorA.onCollision(actorB);
             CollisionResult responseB = actorB.onCollision(actorA);
@@ -214,13 +206,13 @@ public class Physics {
                 mailbox.eventSuppliers.add(responseB.eventFactory());
         }
 
-        collisionPairs.clear();
+        collisionTable.clear();
         queue.clear();
     }
 
     private void moveX(double delta, int actorId, float dx) {
-        Actor actor = scene.getActors()[actorId];
-        actor.moveX(dx);
+        Actor actor = scene.findById(actorId);
+        actor.moveX(dx, delta);
 
         if (inspector.isCollidingWithTile(actor)) {
             clampX(actor, dx);
@@ -237,8 +229,7 @@ public class Physics {
             if (other == actor) return;
 
             if (actor.getCollisionType() != CollisionType.NONE && other.getCollisionType() != CollisionType.NONE) {
-                long key = pairKey(actor.getId(), other.getId());
-                collisionPairs.add(key);
+                collisionTable.add(actor, other);
 
                 if (actor.getCollisionType() == CollisionType.SOLID && other.getCollisionType() == CollisionType.SOLID) {
                     float rx = computeAxisSeparationPosition(
@@ -257,8 +248,8 @@ public class Physics {
     }
 
     private void moveY(double delta, int actorId, float dy) {
-        Actor actor = scene.getActors()[actorId];
-        actor.moveY(dy);
+        Actor actor = scene.findById(actorId);
+        actor.moveY(dy, delta);
 
         if (inspector.isCollidingWithTile(actor)) {
             clampY(actor, dy);
@@ -275,8 +266,7 @@ public class Physics {
             if (other == actor) return;
 
             if (actor.getCollisionType() != CollisionType.NONE && other.getCollisionType() != CollisionType.NONE) {
-                long key = pairKey(actor.getId(), other.getId());
-                collisionPairs.add(key);
+                collisionTable.add(actor, other);
 
                 if (actor.getCollisionType() == CollisionType.SOLID && other.getCollisionType() == CollisionType.SOLID) {
                     float ry = computeAxisSeparationPosition(
@@ -332,12 +322,6 @@ public class Physics {
         }
     }
 
-    private long pairKey(int aId, int bId) {
-        long min = Math.min(aId, bId);
-        long max = Math.max(aId, bId);
-        return (min << 32) | (max & 0xffffffffL);
-    }
-
     // contact describing pair + penetration + normal (axis aligned)
     private static final class Contact {
         final int aIdx, bIdx;
@@ -352,6 +336,40 @@ public class Physics {
             this.nx = nx;
             this.ny = ny;
             this.result = res;
+        }
+    }
+
+    private static final class CollisionTable {
+        long[] keys = new long[256];
+        Actor[] actorsA = new Actor[256];
+        Actor[] actorsB = new Actor[256];
+        int count = 0;
+
+        void clear() {
+            count = 0;
+        }
+
+        void add(Actor a, Actor b) {
+            long pairKey = pairKey(a.getId(), b.getId());
+            add(pairKey, a, b);
+        }
+
+        void add(long pairKey, Actor a, Actor b) {
+            for (int i = 0; i < count; i++) {
+                if (this.keys[i] == pairKey)
+                    return;
+            }
+
+            actorsA[count] = a;
+            actorsB[count] = b;
+            this.keys[count] = pairKey;
+            count++;
+        }
+
+        long pairKey(int aId, int bId) {
+            long min = Math.min(aId, bId);
+            long max = Math.max(aId, bId);
+            return (min << 32) | (max & 0xffffffffL);
         }
     }
 }
