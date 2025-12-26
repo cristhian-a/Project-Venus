@@ -1,10 +1,11 @@
 package com.next.engine.model;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public abstract class Entity {
-    protected int id;
+    @Setter protected int id;
     protected boolean disposed;
     protected float worldX, worldY;
 
@@ -14,4 +15,6 @@ public abstract class Entity {
     public void dispose() {
         this.disposed = true;
     }
+
+    public abstract void onDispose();
 }

@@ -7,6 +7,7 @@ import com.next.engine.model.Actor;
  * considered during {@link Physics} apply.
  */
 public interface Body {
+    int getId();
     float getX();
     float getY();
     CollisionBox getCollisionBox();

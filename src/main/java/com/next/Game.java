@@ -3,7 +3,7 @@ package com.next;
 import com.next.engine.Global;
 import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.RenderQueue;
-import com.next.event.FinishGameEvent;
+import com.next.engine.model.Entity;
 import com.next.event.PauseEvent;
 import com.next.event.handlers.PlayerHandler;
 import com.next.graphics.StartMenuUIState;
@@ -11,7 +11,6 @@ import com.next.graphics.UIState;
 import com.next.util.GameState;
 import com.next.engine.data.Mailbox;
 import com.next.engine.event.EventDispatcher;
-import com.next.engine.model.Actor;
 import com.next.engine.model.Camera;
 import com.next.engine.physics.CollisionInspector;
 import com.next.engine.physics.Physics;
@@ -121,7 +120,7 @@ public class Game {
 
             dispatcher.dispatch(mailbox);   // for now, this should happen after physics
 
-            scene.dismissActors();   // PLEASE, dismiss before rendering
+            scene.dismissDisposed();   // PLEASE, dismiss before rendering
         }
 
         scene.submitRender(writeQueue);
@@ -141,15 +140,16 @@ public class Game {
 
         var world = new World(rules, assets.getTileMap(map));
         // TODO I might want to change to make player goes inside Actor's array
-        Actor[] objects = new PropFactory(world, level).createScene1Props().toArray(new Actor[0]);
+        Entity[] props = new PropFactory(world, level).createScene1Props().toArray(new Entity[0]);
         Player player = new PlayerFactory(world, level).create();
         NpcDummy npc = new NpcFactory().createDummy();
 
         player.setInput(input); // TODO meh
 
-        Scene s = new Scene(world, player, objects);
-        s.addActor(npc);
-        s.addActor(player);
+        Scene s = new Scene(world, player);
+        s.addAll(props);
+        s.add(npc);
+        s.add(player);
 
         return s;
     }

@@ -21,10 +21,6 @@ public abstract class Actor extends Entity implements Body {
 
     public int lastQueryId = -1;
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     // TODO shall be removed once I figure a place to put the mass related physics properties
     protected float mass = 1f;
     public float vx;
@@ -72,6 +68,7 @@ public abstract class Actor extends Entity implements Body {
      * Should be called when effectively discarded. By default, it does nothing. Override it whenever any behavior upon
      * disposing is needed.
      */
+    @Override
     public void onDispose() {}
 
     @Override
