@@ -38,7 +38,7 @@ public class StartMenuUIState implements UIState {
             cursor++;
         }
 
-        cursor = Math.max(0, Math.min(cursor, 2));
+        cursor = Math.clamp(cursor, 0, 2);
 
         if (input.isPressed(Input.Action.TALK)) {
             switch (cursor) {
