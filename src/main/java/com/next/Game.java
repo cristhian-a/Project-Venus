@@ -44,8 +44,8 @@ public class Game {
     // Dependencies
     private final Input input;
     private final Mailbox mailbox;
-    private final Settings settings;
     private final AssetRegistry assets;
+    @Getter private final Settings settings;
     private final EventDispatcher dispatcher;
 
     // Systems

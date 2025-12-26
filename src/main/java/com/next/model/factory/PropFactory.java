@@ -39,6 +39,10 @@ public class PropFactory {
         return new Prop(32, worldX, worldY, 1f, CollisionType.SOLID, 2, 2, 12, 12);
     }
 
+    public DisplayHeart createHeart(int worldX, int worldY) {
+        return new DisplayHeart(36, 37, 38);
+    }
+
     public List<Prop> createScene1Props() {
         var props = new ArrayList<Prop>(8);
         props.add(createChest(10 * world.getTileSize(), 7 * world.getTileSize()));

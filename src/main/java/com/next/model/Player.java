@@ -25,6 +25,8 @@ public class Player extends AnimatedActor {
     @Getter @Setter boolean talking;
 
     private float speed = 1;
+    @Getter @Setter private int maxHp = 6;
+    @Getter @Setter private int health = maxHp;
 
     public Player(int spriteId, float worldX, float worldY,
                   Animation upAnim, Animation downAnim, Animation leftAnim, Animation rightAnim
