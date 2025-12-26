@@ -1,7 +1,6 @@
 package com.next.engine.physics;
 
 import com.next.engine.model.AABB;
-import com.next.engine.model.Actor;
 import com.next.world.Scene;
 import lombok.Getter;
 
@@ -18,7 +17,7 @@ public class CollisionInspector {
         this.tileSize = scene.world.getTileSize();
     }
 
-    public boolean isCollidingWithTile(Actor actor) {
+    public boolean isCollidingWithTile(Body actor) {
         AABB box = actor.getCollisionBox().getBounds();
 
         final float EPSILON = 0.0001f;  // Needed to adjust right and bottom sides to not collide prematurely
@@ -42,7 +41,7 @@ public class CollisionInspector {
         return false;
     }
 
-    public boolean isColliding(Actor actor, Actor other) {
+    public boolean isColliding(Body actor, Body other) {
         if ((actor.getLayer() & other.getCollisionMask()) == 0 && (other.getLayer() & actor.getCollisionMask()) == 0)
             return false;
         return actor.getCollisionBox().intersects(other.getCollisionBox());

@@ -9,6 +9,7 @@ import com.next.engine.physics.CollisionResult;
 import com.next.engine.graphics.Layer;
 import com.next.engine.system.Debugger;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public abstract class Actor extends Entity implements Body {
@@ -19,7 +20,7 @@ public abstract class Actor extends Entity implements Body {
     protected CollisionBox collisionBox;        // TODO: remember to initialize it anytime (or move it to children)
     protected CollisionType collisionType = CollisionType.NONE;
 
-    public int lastQueryId = -1;
+    @Setter public int lastQueryId = -1;
 
     // TODO shall be removed once I figure a place to put the mass related physics properties
     protected float mass = 1f;
@@ -60,7 +61,7 @@ public abstract class Actor extends Entity implements Body {
     }
 
     @Override
-    public CollisionResult onCollision(Actor other) {
+    public CollisionResult onCollision(Body other) {
         return null;
     }
 

@@ -72,9 +72,9 @@ public class Scene {
         }
     }
 
-    public Actor findById(int id) {
-        for (Actor actor : actors) {
-            if (actor.getId() == id) return actor;
+    public Body findBodyById(int id) {
+        for (Body b : bodies) {
+            if (b.getId() == id) return b;
         }
         return null;
     }
@@ -130,6 +130,12 @@ public class Scene {
     public void forEachActor(Consumer<Actor> consumer) {
         for (int i = 0; i < actorCount; i++) {
             consumer.accept(actors[i]);
+        }
+    }
+
+    public void forEachBody(Consumer<Body> consumer) {
+        for (int i = 0; i < bodyCount; i++) {
+            consumer.accept(bodies[i]);
         }
     }
 

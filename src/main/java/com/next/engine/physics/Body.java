@@ -8,12 +8,20 @@ import com.next.engine.model.Actor;
  */
 public interface Body {
     int getId();
+
     float getX();
     float getY();
+
+    int getLayer();
+    int getCollisionMask();
     CollisionBox getCollisionBox();
     CollisionType getCollisionType();
+
     void setPosition(float x, float y);
-    CollisionResult onCollision(Actor other);
+    CollisionResult onCollision(Body other);
+
+    int getLastQueryId();
+    void setLastQueryId(int id);
 
     /**
      * By default, should add dx to the world x of the object.

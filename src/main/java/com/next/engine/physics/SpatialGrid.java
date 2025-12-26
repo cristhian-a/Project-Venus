@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 
 public class SpatialGrid {
     private final int cellSize;
-    private final List<Actor>[][] cells;
+    private final List<Body>[][] cells;
     private final int cols, rows;
 
     private int queryCounter = 0;
@@ -36,8 +36,8 @@ public class SpatialGrid {
         }
     }
 
-    public void insert(Actor actor) {
-        AABB box = actor.getCollisionBox().getBounds();
+    public void insert(Body body) {
+        AABB box = body.getCollisionBox().getBounds();
         int left    = Math.max(0, (int) (box.x / cellSize));
         int right   = Math.min(cols - 1, (int) ((box.x + box.width) / cellSize));
         int top     = Math.max(0, (int) (box.y / cellSize));
@@ -45,15 +45,15 @@ public class SpatialGrid {
 
         for (int row = top; row <= bottom; row++) {
             for (int col = left; col <= right; col++) {
-                cells[col][row].add(actor);
+                cells[col][row].add(body);
             }
         }
     }
 
-    public void forEachNearby(Actor actor, Consumer<Actor> action) {
+    public void forEachNearby(Body body, Consumer<Body> action) {
         queryCounter++;
 
-        AABB box = actor.getCollisionBox().getBounds();
+        AABB box = body.getCollisionBox().getBounds();
         int left    = Math.max(0, (int) (box.x / cellSize));
         int right   = Math.min(cols - 1, (int) ((box.x + box.width) / cellSize));
         int top     = Math.max(0, (int) (box.y / cellSize));
@@ -61,10 +61,10 @@ public class SpatialGrid {
 
         for (int row = top; row <= bottom; row++) {
             for (int col = left; col <= right; col++) {
-                List<Actor> cell = cells[col][row];
-                for (Actor other : cell) {
-                    if (other != actor && other.lastQueryId != queryCounter) {
-                        other.lastQueryId = queryCounter;
+                List<Body> cell = cells[col][row];
+                for (Body other : cell) {
+                    if (other != body && other.getLastQueryId() != queryCounter) {
+                        other.setLastQueryId(queryCounter);
                         action.accept(other);
                     }
                 }
@@ -73,25 +73,4 @@ public class SpatialGrid {
 
     }
 
-    protected void forEachNearby(Actor actor, Physics physics) {
-        queryCounter++;
-
-        AABB box = actor.getCollisionBox().getBounds();
-        int left    = Math.max(0, (int) (box.x / cellSize));
-        int right   = Math.min(cols - 1, (int) ((box.x + box.width) / cellSize));
-        int top     = Math.max(0, (int) (box.y / cellSize));
-        int bottom  = Math.min(rows - 1, (int) ((box.y + box.height) / cellSize));
-
-        for (int row = top; row <= bottom; row++) {
-            for (int col = left; col <= right; col++) {
-                List<Actor> cell = cells[col][row];
-                for (Actor other : cell) {
-                    if (other != actor && other.lastQueryId != queryCounter) {
-                        other.lastQueryId = queryCounter;
-                        physics.resolveMoveY(actor, other, 0f);
-                    }
-                }
-            }
-        }
-    }
 }

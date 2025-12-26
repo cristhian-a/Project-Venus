@@ -5,6 +5,7 @@ import com.next.engine.animation.AnimationState;
 import com.next.engine.data.Mailbox;
 import com.next.engine.model.Actor;
 import com.next.engine.model.AnimatedActor;
+import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.physics.CollisionResult;
 import com.next.engine.physics.CollisionType;
@@ -95,7 +96,7 @@ public class Player extends AnimatedActor {
     }
 
     @Override
-    public CollisionResult onCollision(Actor other) {
+    public CollisionResult onCollision(Body other) {
         if (other instanceof NpcDummy dummy) {
             if (input.isPressed(Input.Action.TALK)) {
                 return new CollisionResult(() -> new DialogueEvent(this, dummy));
