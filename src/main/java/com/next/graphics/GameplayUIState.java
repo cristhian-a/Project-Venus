@@ -3,7 +3,6 @@ package com.next.graphics;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderPosition;
 import com.next.engine.graphics.RenderQueue;
-import com.next.model.DisplayHeart;
 import com.next.model.Player;
 import com.next.system.Settings;
 import com.next.util.Colors;
