@@ -336,9 +336,9 @@ public class Physics {
     }
 
     private static final class CollisionTable {
-        long[] keys = new long[256];
-        Body[] actorsA = new Body[256];
-        Body[] actorsB = new Body[256];
+        long[] keys     = new long[64];     // when a stack overflow happens, we should reconsider our strategy
+        Body[] actorsA  = new Body[64];     // to use hashes instead of linear scanning (when adding)
+        Body[] actorsB  = new Body[64];
         int count = 0;
 
         void clear() {
