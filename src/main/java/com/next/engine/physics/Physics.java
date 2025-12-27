@@ -179,7 +179,7 @@ public class Physics {
 //        }
 //    }
 
-    public void apply(double delta, MotionQueue queue, Mailbox mailbox) {
+    public void apply(double delta, MotionQueue queue, CollisionCollector collector) {
         grid.clear();
         scene.forEachBody(grid::insert);
 
@@ -192,8 +192,8 @@ public class Physics {
             Body a = collisionTable.bodiesA[i];
             Body b = collisionTable.bodiesB[i];
 
-            a.onCollision(b, mailbox);
-            b.onCollision(a, mailbox);
+            a.onCollision(b, collector);
+            b.onCollision(a, collector);
         }
 
         collisionTable.clear();
