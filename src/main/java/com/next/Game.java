@@ -1,19 +1,19 @@
 package com.next;
 
 import com.next.engine.Global;
-import com.next.engine.event.WorldTransitionEvent;
+import com.next.engine.event.*;
 import com.next.engine.graphics.RenderQueue;
-import com.next.event.FinishGameEvent;
+import com.next.engine.model.*;
+import com.next.event.DamageEvent;
 import com.next.event.PauseEvent;
+import com.next.event.PitFallEvent;
 import com.next.event.handlers.PlayerHandler;
 import com.next.graphics.StartMenuUIState;
 import com.next.graphics.UIState;
+import com.next.rules.Actions;
+import com.next.rules.Conditions;
 import com.next.util.GameState;
 import com.next.engine.data.Mailbox;
-import com.next.engine.event.EventDispatcher;
-import com.next.engine.model.Actor;
-import com.next.engine.model.Camera;
-import com.next.engine.physics.CollisionInspector;
 import com.next.engine.physics.Physics;
 import com.next.engine.sound.PlaySound;
 import com.next.engine.sound.SoundChannel;
@@ -44,14 +44,13 @@ public class Game {
     // Dependencies
     private final Input input;
     private final Mailbox mailbox;
-    private final Settings settings;
     private final AssetRegistry assets;
+    @Getter private final Settings settings;
     private final EventDispatcher dispatcher;
 
     // Systems
     @Getter private final UISystem ui = new UISystem();
     private final Physics physics = new Physics();
-    private final CollisionInspector collisionInspector = new CollisionInspector();
 
     // Handlers
     private final GameFlowHandler gameFlowHandler;
@@ -71,6 +70,8 @@ public class Game {
         this.settings = settings;
         this.dispatcher = dispatcher;
 
+        new PitFallEvent.Handler(dispatcher);
+        new DamageEvent.Handler(dispatcher);
         new DoorHandler(dispatcher, mailbox);
         new SpellHandler(dispatcher, mailbox);
         gameFlowHandler = new GameFlowHandler(dispatcher, mailbox, input, this);
@@ -84,17 +85,15 @@ public class Game {
             throw new RuntimeException(e);
         }
 
-        // TODO camera should probably not be initialized here, but it is due a problem in my tileRenderer not allowing
-        // null cameras
-        int tileSize = scene.world.getRules().tileSize();   // Just to adjust the camera following
-        camera = new Camera(settings.video.ORIGINAL_WIDTH, settings.video.ORIGINAL_HEIGHT, tileSize, tileSize);
-
+        camera = new Camera(settings.video.WIDTH, settings.video.HEIGHT, 0, 0);
         ui.setState(new StartMenuUIState(input, dispatcher));
     }
 
     public void start(UIState uiState) {
+        int tileSize = scene.world.getRules().tileSize();   // Just to adjust the camera following
+        camera = new Camera(settings.video.ORIGINAL_WIDTH, settings.video.ORIGINAL_HEIGHT, tileSize, tileSize);
+
         physics.ruleOver(scene);
-        physics.setInspector(collisionInspector);
 
         playerHandler = new PlayerHandler(dispatcher, (GameplayUIState) uiState);
 
@@ -113,23 +112,21 @@ public class Game {
 
         // TODO game states are poorly managed right now
         if (gameState == GameState.START_MENU) {
-            // nothing?
-        } else {
-            if (gameState == GameState.RUNNING) {
-                // TODO this is very incomplete
-                scene.update(delta, mailbox);
-
-                physics.apply(Global.fixedDelta, mailbox.motionQueue, mailbox); // always after update
-
-                dispatcher.dispatch(mailbox);   // for now, this should happen after physics
-
-                scene.dismissActors();   // PLEASE, dismiss before rendering
-            }
-
-            scene.submitRender(writeQueue);
-            camera.follow(scene.player);    // the camera follows after events' resolution
-
+            // Nothing?
         }
+        if (gameState == GameState.RUNNING) {
+            // TODO this is very incomplete
+            scene.update(delta, mailbox);
+
+            physics.apply(Global.fixedDelta, mailbox.motionQueue, mailbox); // always after update
+
+            dispatcher.dispatch(mailbox);   // for now, this should happen after physics
+
+            scene.dismissDisposed();   // PLEASE, dismiss before rendering
+        }
+
+        scene.submitRender(writeQueue);
+        camera.follow(scene.player);    // the camera follows after events' resolution
 
         ui.update(delta);
         ui.submit(writeQueue);
@@ -145,15 +142,32 @@ public class Game {
 
         var world = new World(rules, assets.getTileMap(map));
         // TODO I might want to change to make player goes inside Actor's array
-        Actor[] objects = new PropFactory(world, level).createScene1Props().toArray(new Actor[0]);
+        Entity[] props = new PropFactory(world, level).createScene1Props().toArray(new Entity[0]);
         Player player = new PlayerFactory(world, level).create();
         NpcDummy npc = new NpcFactory().createDummy();
 
         player.setInput(input); // TODO meh
 
-        Scene s = new Scene(world, player, objects);
-        s.addActor(npc);
-        s.addActor(player);
+        Scene s = new Scene(world, player);
+        s.addAll(props);
+        s.add(npc);
+        s.add(player);
+
+        // TODO take care: the same rule, for now, share state within multiple sensors, that means a once-use is REALLY once,
+        // TODO don't matter how many sensors receive that policy instance (TriggerRule)
+        var triggerRule = TriggerRules
+                .when(Conditions.IS_PLAYER)
+                .and((self, other) -> ((Player) other).getHealth() > 0)
+                .then(Actions.damagePlayer(1));
+        triggerRule = Sensors.once(triggerRule);
+
+        Sensor dmg = new Sensor(305, 580, 6, 6, triggerRule);
+        Sensor sus = Sensors.singleUse(400, 596, 6, 6,
+                TriggerRules.when(Conditions.IS_PLAYER).then(Actions.damagePlayer(1))
+        );
+
+        s.add(dmg);
+        s.add(sus);
 
         return s;
     }

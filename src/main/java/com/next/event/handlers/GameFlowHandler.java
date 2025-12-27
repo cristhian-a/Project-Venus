@@ -64,7 +64,7 @@ public class GameFlowHandler {
     }
 
     public void onFire(StartGameEvent event) {
-        gameplayUIState = new GameplayUIState(game.getScene().player);
+        gameplayUIState = new GameplayUIState(game.getScene().player, game.getSettings().video);
         game.start(gameplayUIState);
         game.getUi().setState(gameplayUIState);
         game.setGameState(GameState.RUNNING);

@@ -3,8 +3,9 @@ package com.next.model;
 import com.next.engine.animation.Animation;
 import com.next.engine.animation.AnimationState;
 import com.next.engine.data.Mailbox;
-import com.next.engine.model.AnimatedActor;
+import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
+import com.next.engine.physics.CollisionCollector;
 import com.next.engine.physics.CollisionType;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +41,10 @@ public class NpcDummy extends Npc {
         if (behave) behave(mailbox);
 
         animate();
+    }
+
+    @Override
+    public void onCollision(Body other, CollisionCollector collector) {
     }
 
     private void behave(Mailbox mailbox) {

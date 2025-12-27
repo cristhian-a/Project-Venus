@@ -1,19 +1,25 @@
 package com.next.engine.physics;
 
-import com.next.engine.model.Actor;
-
 /**
  * Interface for objects that want to be subject to the physics engine. Implementing its methods will make it able to be
  * considered during {@link Physics} apply.
  */
 public interface Body {
+    int getId();
+
     float getX();
     float getY();
-    float getZ();
+
+    int getLayer();
+    int getCollisionMask();
     CollisionBox getCollisionBox();
     CollisionType getCollisionType();
+
     void setPosition(float x, float y);
-    CollisionResult onCollision(Actor other);
+    void onCollision(Body other, CollisionCollector collector);
+
+    int getLastQueryId();
+    void setLastQueryId(int id);
 
     /**
      * By default, should add dx to the world x of the object.

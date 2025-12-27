@@ -1,6 +1,8 @@
 package com.next.engine.model;
 
+import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
+import com.next.engine.physics.CollisionCollector;
 import com.next.engine.physics.CollisionType;
 
 public class Prop extends Actor {
@@ -28,5 +30,9 @@ public class Prop extends Actor {
         collisionBox = new CollisionBox(offsetX, offSetY, width, height);
         setPosition(worldX, worldY);
         this.mass = mass;
+    }
+
+    @Override
+    public void onCollision(Body other, CollisionCollector collector) {
     }
 }

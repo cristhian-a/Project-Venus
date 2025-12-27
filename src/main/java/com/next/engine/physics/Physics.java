@@ -1,27 +1,14 @@
 package com.next.engine.physics;
 
-import com.next.engine.data.Mailbox;
-import com.next.engine.model.AABB;
-import com.next.engine.model.Actor;
 import com.next.world.Scene;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class Physics {
 
-    private final Set<Long> collisionPairs = new HashSet<>();
+    private final CollisionTable collisionTable = new CollisionTable();
+    private final CollisionInspector inspector = new CollisionInspector();
 
     private Scene scene;
     private SpatialGrid grid;
-    private CollisionInspector inspector;
-
-    public void setInspector(CollisionInspector inspector) {
-        this.inspector = inspector;
-        if (scene != null) inspector.inspecting(scene);
-    }
 
     public void ruleOver(Scene scene) {
         this.scene = scene;
@@ -29,313 +16,272 @@ public class Physics {
         int width = scene.world.getRules().columns() * scene.world.getTileSize();
         int height = scene.world.getRules().rows() * scene.world.getTileSize();
         grid = new SpatialGrid(width, height, scene.world.getTileSize());
-        if (inspector != null) inspector.inspecting(scene);
+        inspector.inspecting(scene);
     }
+
+//    public void applyNewtonPhysics(double delta, MotionQueue queue, Mailbox mailbox) {
+//        float dt = (float) delta;
+//
+//        // set velocities from motion requests and tentative positions
+//        for (int i = 0; i < queue.size(); i++) {
+//            int id = queue.actorIds[i];
+//            Actor actor = scene.getActors()[id];
+//
+//            float desiredDx = queue.deltaX[i];
+//            float desiredDy = queue.deltaY[i];
+//
+//            actor.setVelocity(desiredDx / dt, desiredDy / dt);
+//            actor.setPosition(actor.getWorldX() + desiredDx, actor.getWorldY() + desiredDy);
+//        }
+//
+//        grid.clear();
+//        scene.forEachActor(grid::insert);
+//
+//        // collect contacts (one contact per pair; choose axis of least penetration and set normal)
+//        Map<Long, Contact> contacts = new HashMap<>();
+//        for (int i = 0; i < scene.size(); i++) {
+//            Actor actor = scene.getActors()[i];
+//            grid.forEachNearby(actor, other -> {
+//                if (other == actor) return;
+//                collisionTable.add(actor, other);
+//
+//                if (!inspector.isColliding(actor, other)) return;
+//
+//                // compute overlaps
+//                float xOverlap = computeAxisOverlap(actor, other, Axis.X);
+//                float yOverlap = computeAxisOverlap(actor, other, Axis.Y);
+//                if (xOverlap <= 0f && yOverlap <= 0f) return;
+//
+//                // choosing axis with the least penetration to compute normal and penetration
+//                boolean useX = (xOverlap > 0f && yOverlap > 0f) ? xOverlap < yOverlap : xOverlap > 0f;
+//                float penetration = useX ? xOverlap : yOverlap;
+//                float nx = 0;
+//                float ny = 0;
+//
+//                if (useX) {
+//                    // normal points from a to b along X
+//                    float aCenter = actor.getCollisionBox().getBounds().x + actor.getCollisionBox().getBounds().width * 0.5f;
+//                    float oCenter = other.getCollisionBox().getBounds().x + other.getCollisionBox().getBounds().width * 0.5f;
+//                    nx = aCenter < oCenter ? -1f : 1f;  // normal direction matters with impulse sign later
+//                } else {
+//                    float aCenter = actor.getCollisionBox().getBounds().y + actor.getCollisionBox().getBounds().height * 0.5f;
+//                    float oCenter = other.getCollisionBox().getBounds().y + other.getCollisionBox().getBounds().height * 0.5f;
+//                    ny = aCenter < oCenter ? -1f : 1f;
+//                }
+//
+//                CollisionResult response = other.onCollision(actor);
+//                contacts.put(0L, new Contact(actor.getId(), other.getId(), penetration, nx, ny, response));
+//            });
+//        }
+//
+//        // Impulse solving (several iteractions) - remove relative velocity along normal
+//        final int IMP_ITER = 6;
+//        final float RESTITUTION = 0f;
+//        for (int it = 0; it < IMP_ITER; it++) {
+//            for (Contact contact : contacts.values()) {
+//                if (contact.result == null) continue;
+//
+//                Actor A = scene.getActors()[contact.aIdx];
+//                Actor B = scene.getActors()[contact.bIdx];
+//
+//                float invA = A.invMass();
+//                float invB = B.invMass();
+//
+//                float rvx = B.vx - A.vx;
+//                float rvy = B.vy - A.vy;
+//                float velAlongNormal = rvx * contact.nx + rvy * contact.ny;
+//                if (velAlongNormal > 0f) continue;  // separating, don't apply impulse
+//
+//                float j = -(1f + RESTITUTION) * velAlongNormal;
+//                float denom = invA + invB;
+//                if (denom <= 0f) continue;
+//                j /= denom;
+//
+//                float impulseX = j * contact.nx;
+//                float impulseY = j * contact.ny;
+//
+//                A.vx -= invA * impulseX;
+//                A.vy -= invA * impulseY;
+//                B.vx += invB * impulseX;
+//                B.vy += invB * impulseY;
+//            }
+//        }
+//
+//        // positional correction (Baumgarte) to remove residual penetration
+//        final float SLOP = 0.01f;
+//        final float CORR = 0.2f;
+//        for (Contact contact : contacts.values()) {
+//            if (contact.result == null) continue;
+//
+//            Actor A = scene.getActors()[contact.aIdx];
+//            Actor B = scene.getActors()[contact.bIdx];
+//
+//            float invA = A.invMass();
+//            float invB = B.invMass();
+//            float denom = invA + invB;
+//            if (denom <= 0f) continue;
+//
+//            float pen = Math.max(contact.penetration - SLOP, 0f);
+//            if (pen <= 0f) continue;
+//
+//            float correction = (pen / denom) * CORR;
+//
+//            float ax = correction * invA * contact.nx;
+//            float ay = correction * invA * contact.ny;
+//            float bx = correction * invB * contact.nx;
+//            float by = correction * invB * contact.ny;
+//
+//            A.setPosition(A.getWorldX() - ax, A.getWorldY() - ay);
+//            B.setPosition(B.getWorldX() + bx, B.getWorldY() + by);
+//        }
+//
+//        for (Contact contact : contacts.values()) {
+//            if (contact.result != null && contact.result.eventFactory() != null) {
+//                mailbox.eventSuppliers.add(contact.result.eventFactory());
+//            }
+//        }
+//
+//        collisionTable.clear();
+//        queue.clear();
+//    }
+//
+//    private float computeAxisOverlap(Actor actor, Actor other, Axis axis) {
+//        AABB A = actor.getCollisionBox().getBounds();
+//        AABB B = other.getCollisionBox().getBounds();
+//
+//        if (axis == Axis.X) {
+//            float aMin = A.x;
+//            float aMax = A.x + A.width;
+//            float bMin = B.x;
+//            float bMax = B.x + B.width;
+//            return Math.min(aMax, bMax) - Math.max(aMin, bMin);
+//        } else if (axis == Axis.Y) {
+//            float aMin = A.y;
+//            float aMax = A.y + A.height;
+//            float bMin = B.y;
+//            float bMax = B.y + B.height;
+//            return Math.min(aMax, bMax) - Math.max(aMin, bMin);
+//        } else {
+//            return 0f;
+//        }
+//    }
 
     /**
-     * This is totally broken right now, but when working, it should let actors push each other around.
+     * Apply the physics rules to the bodies inside the current ruled over {@code Scene}, then let the {@code collector}
+     * collect all events produced during collision resolution.
      *
-     * @param delta   delta time.
-     * @param queue   a buffer with the requested motion deltas to be processed by the physics engine.
-     * @param mailbox a frame context bus.
+     * @param delta     delta time.
+     * @param queue     a buffer with the requested motion deltas to be processed by the physics engine.
+     * @param collector collects all events produced during collision resolution.
      */
-    public void applyNewtonPhysics(double delta, MotionQueue queue, Mailbox mailbox) {
-        float dt = (float) delta;
-
-        // set velocities from motion requests and tentative positions
-        for (int i = 0; i < queue.size(); i++) {
-            int id = queue.actorIds[i];
-            Actor actor = scene.getActors()[id];
-
-            float desiredDx = queue.deltaX[i];
-            float desiredDy = queue.deltaY[i];
-
-            actor.setVelocity(desiredDx / dt, desiredDy / dt);
-            actor.setPosition(actor.getWorldX() + desiredDx, actor.getWorldY() + desiredDy);
-        }
-
+    public void apply(double delta, MotionQueue queue, CollisionCollector collector) {
         grid.clear();
-        scene.forEachActor(grid::insert);
+        scene.forEachBody(grid::insert);
 
-        // collect contacts (one contact per pair; choose axis of least penetration and set normal)
-        Map<Long, Contact> contacts = new HashMap<>();
-        for (int i = 0; i < scene.size(); i++) {
-            Actor actor = scene.getActors()[i];
-            grid.forEachNearby(actor, other -> {
-                if (other == actor) return;
-                long pairKey = pairKey(actor.getId(), other.getId());
-                if (collisionPairs.contains(pairKey)) return;
-                collisionPairs.add(pairKey);
-
-                if (!inspector.isColliding(actor, other)) return;
-
-                // compute overlaps
-                float xOverlap = computeAxisOverlap(actor, other, Axis.X);
-                float yOverlap = computeAxisOverlap(actor, other, Axis.Y);
-                if (xOverlap <= 0f && yOverlap <= 0f) return;
-
-                // choosing axis with the least penetration to compute normal and penetration
-                boolean useX = (xOverlap > 0f && yOverlap > 0f) ? xOverlap < yOverlap : xOverlap > 0f;
-                float penetration = useX ? xOverlap : yOverlap;
-                float nx = 0;
-                float ny = 0;
-
-                if (useX) {
-                    // normal points from a to b along X
-                    float aCenter = actor.getCollisionBox().getBounds().x + actor.getCollisionBox().getBounds().width * 0.5f;
-                    float oCenter = other.getCollisionBox().getBounds().x + other.getCollisionBox().getBounds().width * 0.5f;
-                    nx = aCenter < oCenter ? -1f : 1f;  // normal direction matters with impulse sign later
-                } else {
-                    float aCenter = actor.getCollisionBox().getBounds().y + actor.getCollisionBox().getBounds().height * 0.5f;
-                    float oCenter = other.getCollisionBox().getBounds().y + other.getCollisionBox().getBounds().height * 0.5f;
-                    ny = aCenter < oCenter ? -1f : 1f;
-                }
-
-                CollisionResult response = other.onCollision(actor);
-                contacts.put(pairKey, new Contact(actor.getId(), other.getId(), penetration, nx, ny, response));
-            });
+        for (int i = 0; i < queue.size(); i++) {
+            integrateMotion(Axis.X, delta, queue.actorIds[i], queue.deltaX[i]);
+            integrateMotion(Axis.Y, delta, queue.actorIds[i], queue.deltaY[i]);
         }
 
-        // Impulse solving (several iteractions) - remove relative velocity along normal
-        final int IMP_ITER = 6;
-        final float RESTITUTION = 0f;
-        for (int it = 0; it < IMP_ITER; it++) {
-            for (Contact contact : contacts.values()) {
-                if (contact.result == null) continue;
+        for (int i = 0; i < collisionTable.size; i++) {
+            Body a = collisionTable.bodiesA[i];
+            Body b = collisionTable.bodiesB[i];
 
-                Actor A = scene.getActors()[contact.aIdx];
-                Actor B = scene.getActors()[contact.bIdx];
-
-                float invA = A.invMass();
-                float invB = B.invMass();
-
-                float rvx = B.vx - A.vx;
-                float rvy = B.vy - A.vy;
-                float velAlongNormal = rvx * contact.nx + rvy * contact.ny;
-                if (velAlongNormal > 0f) continue;  // separating, don't apply impulse
-
-                float j = -(1f + RESTITUTION) * velAlongNormal;
-                float denom = invA + invB;
-                if (denom <= 0f) continue;
-                j /= denom;
-
-                float impulseX = j * contact.nx;
-                float impulseY = j * contact.ny;
-
-                A.vx -= invA * impulseX;
-                A.vy -= invA * impulseY;
-                B.vx += invB * impulseX;
-                B.vy += invB * impulseY;
-            }
+            a.onCollision(b, collector);
+            b.onCollision(a, collector);
         }
 
-        // positional correction (Baumgarte) to remove residual penetration
-        final float SLOP = 0.01f;
-        final float CORR = 0.2f;
-        for (Contact contact : contacts.values()) {
-            if (contact.result == null) continue;
-
-            Actor A = scene.getActors()[contact.aIdx];
-            Actor B = scene.getActors()[contact.bIdx];
-
-            float invA = A.invMass();
-            float invB = B.invMass();
-            float denom = invA + invB;
-            if (denom <= 0f) continue;
-
-            float pen = Math.max(contact.penetration - SLOP, 0f);
-            if (pen <= 0f) continue;
-
-            float correction = (pen / denom) * CORR;
-
-            float ax = correction * invA * contact.nx;
-            float ay = correction * invA * contact.ny;
-            float bx = correction * invB * contact.nx;
-            float by = correction * invB * contact.ny;
-
-            A.setPosition(A.getWorldX() - ax, A.getWorldY() - ay);
-            B.setPosition(B.getWorldX() + bx, B.getWorldY() + by);
-        }
-
-        for (Contact contact : contacts.values()) {
-            if (contact.result != null && contact.result.eventFactory() != null) {
-                mailbox.eventSuppliers.add(contact.result.eventFactory());
-            }
-        }
-
-        collisionPairs.clear();
+        collisionTable.clear();
         queue.clear();
     }
 
-    private float computeAxisOverlap(Actor actor, Actor other, Axis axis) {
-        AABB A = actor.getCollisionBox().getBounds();
-        AABB B = other.getCollisionBox().getBounds();
+    private void integrateMotion(Axis axis, double deltaTime, int entityId, float motionDelta) {
+        Body agent = scene.findBodyById(entityId);
+        if (axis == Axis.X) {
+            agent.moveX(motionDelta, deltaTime);
+        } else if (axis == Axis.Y) {
+            agent.moveY(motionDelta, deltaTime);
+        }
+
+        if (inspector.isCollidingWithTile(agent)) {
+            clamp(axis, agent, motionDelta);
+        }
+
+        grid.queryBroadPhase(axis, agent, motionDelta, this);
+    }
+
+    protected void solveNarrowPhase(Axis axis, Body agent, Body other, float motionDelta) {
+        if (inspector.isColliding(agent, other)) {
+            if (other == agent) return;
+
+            if (agent.getCollisionType() != CollisionType.NONE && other.getCollisionType() != CollisionType.NONE) {
+                collisionTable.add(agent, other);
+
+                if (agent.getCollisionType() == CollisionType.SOLID && other.getCollisionType() == CollisionType.SOLID) {
+                    updateAxisPosition(axis, agent, other, motionDelta);
+                }
+            }
+
+        }
+    }
+
+    private void updateAxisPosition(Axis axis, Body agent, Body other, float motionDelta) {
+        if (axis == Axis.X) {
+            float rp = computeAxisSeparationPosition(
+                    motionDelta,
+                    agent.getCollisionBox().getBounds().width,
+                    agent.getCollisionBox().getOffsetX(),
+                    other.getCollisionBox().getBounds().x,
+                    other.getCollisionBox().getBounds().width
+            );
+            agent.setPosition(rp, agent.getY());
+        } else if (axis == Axis.Y) {
+            float rp = computeAxisSeparationPosition(
+                    motionDelta,
+                    agent.getCollisionBox().getBounds().height,
+                    agent.getCollisionBox().getOffsetY(),
+                    other.getCollisionBox().getBounds().y,
+                    other.getCollisionBox().getBounds().height
+            );
+            agent.setPosition(agent.getX(), rp);
+        }
+    }
+
+    private void clamp(Axis axis, Body agent, float motionDelta) {
+        var box = agent.getCollisionBox();
 
         if (axis == Axis.X) {
-            float aMin = A.x;
-            float aMax = A.x + A.width;
-            float bMin = B.x;
-            float bMax = B.x + B.width;
-            return Math.min(aMax, bMax) - Math.max(aMin, bMin);
+            float nx = computeTileSeparationPosition(motionDelta, box.getBounds().x, box.getBounds().width, box.getOffsetX());
+            agent.setPosition(nx, agent.getY());
         } else if (axis == Axis.Y) {
-            float aMin = A.y;
-            float aMax = A.y + A.height;
-            float bMin = B.y;
-            float bMax = B.y + B.height;
-            return Math.min(aMax, bMax) - Math.max(aMin, bMin);
-        } else {
-            return 0f;
+            float ny = computeTileSeparationPosition(motionDelta, box.getBounds().y, box.getBounds().height, box.getOffsetY());
+            agent.setPosition(agent.getX(), ny);
         }
-    }
-
-    public void apply(double delta, MotionQueue queue, Mailbox mailbox) {
-        grid.clear();
-        scene.forEachActor(grid::insert);
-
-        for (int i = 0; i < queue.size(); i++) {
-            moveX(delta, queue.actorIds[i], queue.deltaX[i]);
-            moveY(delta, queue.actorIds[i], queue.deltaY[i]);
-        }
-
-        for (Long pair : collisionPairs) {
-            int aIdx = (int) (pair >> 32);
-            int bIdx = (int) (pair & 0xffffffffL);
-
-            Actor actorA = scene.getActors()[aIdx];
-            Actor actorB = scene.getActors()[bIdx];
-
-            CollisionResult responseA = actorA.onCollision(actorB);
-            CollisionResult responseB = actorB.onCollision(actorA);
-
-            if (responseA != null && responseA.eventFactory() != null)
-                mailbox.eventSuppliers.add(responseA.eventFactory());
-
-            if (responseB != null && responseB.eventFactory() != null)
-                mailbox.eventSuppliers.add(responseB.eventFactory());
-        }
-
-        collisionPairs.clear();
-        queue.clear();
-    }
-
-    private void moveX(double delta, int actorId, float dx) {
-        Actor actor = scene.getActors()[actorId];
-        actor.moveX(dx);
-
-        if (inspector.isCollidingWithTile(actor)) {
-            clampX(actor, dx);
-            return;
-        }
-
-        grid.forEachNearby(actor, other -> {
-            resolveMoveX(actor, other, dx);
-        });
-    }
-
-    protected void resolveMoveX(Actor actor, Actor other, float dx) {
-        if (inspector.isColliding(actor, other)) {
-            if (other == actor) return;
-
-            if (actor.getCollisionType() != CollisionType.NONE && other.getCollisionType() != CollisionType.NONE) {
-                long key = pairKey(actor.getId(), other.getId());
-                collisionPairs.add(key);
-
-                if (actor.getCollisionType() == CollisionType.SOLID && other.getCollisionType() == CollisionType.SOLID) {
-                    float rx = computeAxisSeparationPosition(
-                            dx,
-                            actor.getCollisionBox().getBounds().width,
-                            actor.getCollisionBox().getOffsetX(),
-                            other.getCollisionBox().getBounds().x,
-                            other.getCollisionBox().getBounds().width
-                    );
-
-                    actor.setPosition(rx, actor.getWorldY());
-                }
-            }
-
-        }
-    }
-
-    private void moveY(double delta, int actorId, float dy) {
-        Actor actor = scene.getActors()[actorId];
-        actor.moveY(dy);
-
-        if (inspector.isCollidingWithTile(actor)) {
-            clampY(actor, dy);
-            return;
-        }
-
-        grid.forEachNearby(actor, other -> {
-            resolveMoveY(actor, other, dy);
-        });
-    }
-
-    protected void resolveMoveY(Actor actor, Actor other, float dy) {
-        if (inspector.isColliding(actor, other)) {
-            if (other == actor) return;
-
-            if (actor.getCollisionType() != CollisionType.NONE && other.getCollisionType() != CollisionType.NONE) {
-                long key = pairKey(actor.getId(), other.getId());
-                collisionPairs.add(key);
-
-                if (actor.getCollisionType() == CollisionType.SOLID && other.getCollisionType() == CollisionType.SOLID) {
-                    float ry = computeAxisSeparationPosition(
-                            dy,
-                            actor.getCollisionBox().getBounds().height,
-                            actor.getCollisionBox().getOffsetY(),
-                            other.getCollisionBox().getBounds().y,
-                            other.getCollisionBox().getBounds().height
-                    );
-
-                    actor.setPosition(actor.getWorldX(), ry);
-                }
-            }
-        }
-    }
-
-    private void clampX(Actor actor, float dx) {
-        var box = actor.getCollisionBox();
-
-        float clampedX = computeTileSeparationPosition(dx, box.getBounds().x, box.getBounds().width, box.getOffsetX());
-        actor.setPosition(clampedX, actor.getWorldY());
-    }
-
-    private void clampY(Actor actor, float dy) {
-        var box = actor.getCollisionBox();
-
-        float clampedY = computeTileSeparationPosition(dy, box.getBounds().y, box.getBounds().height, box.getOffsetY());
-        actor.setPosition(actor.getWorldX(), clampedY);
     }
 
     private float computeTileSeparationPosition(
             float movementDelta,
-            float actorMin, float actorSize, float actorOffset
+            float agentMin, float agentSize, float agentOffset
     ) {
         if (movementDelta > 0) {
-            int tilePos = (int) ((actorMin + actorSize) / scene.world.getTileSize());
-            return tilePos * scene.world.getTileSize() - (actorSize + actorOffset);
+            int tilePos = (int) ((agentMin + agentSize) / scene.world.getTileSize());
+            return tilePos * scene.world.getTileSize() - (agentSize + agentOffset);
         } else {
-            int tilePos = (int) (actorMin / scene.world.getTileSize());
-            return (tilePos + 1) * scene.world.getTileSize() - actorOffset;
+            int tilePos = (int) (agentMin / scene.world.getTileSize());
+            return (tilePos + 1) * scene.world.getTileSize() - agentOffset;
         }
     }
 
     private float computeAxisSeparationPosition(
             float movementDelta,
-            float actorSize, float actorOffset,
+            float agentSize, float agentOffset,
             float otherMin, float otherSize
     ) {
         if (movementDelta > 0) {
-            return otherMin - (actorSize + actorOffset);
+            return otherMin - (agentSize + agentOffset);
         } else {
-            return (otherMin + otherSize) - actorOffset;
+            return (otherMin + otherSize) - agentOffset;
         }
-    }
-
-    private long pairKey(int aId, int bId) {
-        long min = Math.min(aId, bId);
-        long max = Math.max(aId, bId);
-        return (min << 32) | (max & 0xffffffffL);
     }
 
     // contact describing pair + penetration + normal (axis aligned)
@@ -352,6 +298,40 @@ public class Physics {
             this.nx = nx;
             this.ny = ny;
             this.result = res;
+        }
+    }
+
+    private static final class CollisionTable {
+        long[] keys     = new long[64];     // when a stack overflow happens, we should reconsider our strategy
+        Body[] bodiesA  = new Body[64];     // to use hashes instead of linear scanning (when adding)
+        Body[] bodiesB  = new Body[64];
+        int size = 0;
+
+        void clear() {
+            size = 0;
+        }
+
+        void add(Body a, Body b) {
+            long pairKey = pairKey(a.getId(), b.getId());
+            add(pairKey, a, b);
+        }
+
+        void add(long pairKey, Body a, Body b) {
+            for (int i = 0; i < size; i++) {
+                if (this.keys[i] == pairKey)
+                    return;
+            }
+
+            bodiesA[size] = a;
+            bodiesB[size] = b;
+            this.keys[size] = pairKey;
+            size++;
+        }
+
+        long pairKey(int aId, int bId) {
+            long min = Math.min(aId, bId);
+            long max = Math.max(aId, bId);
+            return (min << 32) | (max & 0xffffffffL);
         }
     }
 }

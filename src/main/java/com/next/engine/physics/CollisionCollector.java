@@ -4,8 +4,6 @@ import com.next.engine.event.GameEvent;
 
 import java.util.function.Supplier;
 
-@Deprecated
-public record CollisionResult(
-        Supplier<? extends GameEvent> eventFactory
-) {
+public interface CollisionCollector {
+    void post(Supplier<? extends GameEvent> eventFactory);
 }

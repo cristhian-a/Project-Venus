@@ -3,11 +3,8 @@ package com.next.model;
 import com.next.engine.animation.Animation;
 import com.next.engine.animation.AnimationState;
 import com.next.engine.data.Mailbox;
-import com.next.engine.model.Actor;
 import com.next.engine.model.AnimatedActor;
-import com.next.engine.physics.CollisionBox;
-import com.next.engine.physics.CollisionResult;
-import com.next.engine.physics.CollisionType;
+import com.next.engine.physics.*;
 import com.next.engine.system.Debugger;
 import com.next.event.DialogueEvent;
 import com.next.system.Input;
@@ -25,6 +22,8 @@ public class Player extends AnimatedActor {
     @Getter @Setter boolean talking;
 
     private float speed = 1;
+    @Getter @Setter private int maxHp = 6;
+    @Getter @Setter private int health = maxHp;
 
     public Player(int spriteId, float worldX, float worldY,
                   Animation upAnim, Animation downAnim, Animation leftAnim, Animation rightAnim
@@ -36,7 +35,7 @@ public class Player extends AnimatedActor {
         collisionMask = 1;
         this.mass = 1f;
 
-        collisionBox = new CollisionBox(3, 6, 10, 10);
+        collisionBox = new CollisionBox(3, 6, 10, 9);
         this.collisionType = CollisionType.SOLID;
 
         setPosition(worldX, worldY);
@@ -93,13 +92,12 @@ public class Player extends AnimatedActor {
     }
 
     @Override
-    public CollisionResult onCollision(Actor other) {
+    public void onCollision(Body other, CollisionCollector collector) {
         if (other instanceof NpcDummy dummy) {
             if (input.isPressed(Input.Action.TALK)) {
-                return new CollisionResult(() -> new DialogueEvent(this, dummy));
+                collector.post(() -> new DialogueEvent(this, dummy));
             }
         }
-        return super.onCollision(other);
     }
 
     public void boostSpeed(float boost) {

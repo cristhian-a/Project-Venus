@@ -1,7 +1,7 @@
 package com.next.engine.graphics.awt;
 
 import com.next.engine.graphics.*;
-import com.next.engine.model.AABB;
+import com.next.engine.physics.AABB;
 import com.next.engine.model.Camera;
 import com.next.engine.physics.CollisionBox;
 import com.next.system.AssetRegistry;
