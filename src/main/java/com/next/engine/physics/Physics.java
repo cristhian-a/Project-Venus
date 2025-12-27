@@ -184,13 +184,13 @@ public class Physics {
         scene.forEachBody(grid::insert);
 
         for (int i = 0; i < queue.size(); i++) {
-            moveX(delta, queue.actorIds[i], queue.deltaX[i]);
-            moveY(delta, queue.actorIds[i], queue.deltaY[i]);
+            integrateMotion(Axis.X, delta, queue.actorIds[i], queue.deltaX[i]);
+            integrateMotion(Axis.Y, delta, queue.actorIds[i], queue.deltaY[i]);
         }
 
-        for (int i = 0; i < collisionTable.count; i++) {
-            Body a = collisionTable.actorsA[i];
-            Body b = collisionTable.actorsB[i];
+        for (int i = 0; i < collisionTable.size; i++) {
+            Body a = collisionTable.bodiesA[i];
+            Body b = collisionTable.bodiesB[i];
 
             CollisionResult responseA = a.onCollision(b);
             CollisionResult responseB = b.onCollision(a);
@@ -206,115 +206,92 @@ public class Physics {
         queue.clear();
     }
 
-    private void moveX(double delta, int actorId, float dx) {
-        Body actor = scene.findBodyById(actorId);
-        actor.moveX(dx, delta);
-
-        if (inspector.isCollidingWithTile(actor)) {
-            clampX(actor, dx);
-            return;
+    private void integrateMotion(Axis axis, double deltaTime, int entityId, float motionDelta) {
+        Body agent = scene.findBodyById(entityId);
+        if (axis == Axis.X) {
+            agent.moveX(motionDelta, deltaTime);
+        } else if (axis == Axis.Y) {
+            agent.moveY(motionDelta, deltaTime);
         }
 
-        grid.forEachNearby(actor, other -> {
-            resolveMoveX(actor, other, dx);
-        });
+        if (inspector.isCollidingWithTile(agent)) {
+            clamp(axis, agent, motionDelta);
+        }
+
+        grid.queryBroadPhase(axis, agent, motionDelta, this);
     }
 
-    protected void resolveMoveX(Body actor, Body other, float dx) {
-        if (inspector.isColliding(actor, other)) {
-            if (other == actor) return;
+    protected void solveNarrowPhase(Axis axis, Body agent, Body other, float motionDelta) {
+        if (inspector.isColliding(agent, other)) {
+            if (other == agent) return;
 
-            if (actor.getCollisionType() != CollisionType.NONE && other.getCollisionType() != CollisionType.NONE) {
-                collisionTable.add(actor, other);
+            if (agent.getCollisionType() != CollisionType.NONE && other.getCollisionType() != CollisionType.NONE) {
+                collisionTable.add(agent, other);
 
-                if (actor.getCollisionType() == CollisionType.SOLID && other.getCollisionType() == CollisionType.SOLID) {
-                    float rx = computeAxisSeparationPosition(
-                            dx,
-                            actor.getCollisionBox().getBounds().width,
-                            actor.getCollisionBox().getOffsetX(),
-                            other.getCollisionBox().getBounds().x,
-                            other.getCollisionBox().getBounds().width
-                    );
-
-                    actor.setPosition(rx, actor.getY());
+                if (agent.getCollisionType() == CollisionType.SOLID && other.getCollisionType() == CollisionType.SOLID) {
+                    updateAxisPosition(axis, agent, other, motionDelta);
                 }
             }
 
         }
     }
 
-    private void moveY(double delta, int actorId, float dy) {
-        Body actor = scene.findBodyById(actorId);
-        actor.moveY(dy, delta);
-
-        if (inspector.isCollidingWithTile(actor)) {
-            clampY(actor, dy);
-            return;
-        }
-
-        grid.forEachNearby(actor, other -> {
-            resolveMoveY(actor, other, dy);
-        });
-    }
-
-    protected void resolveMoveY(Body actor, Body other, float dy) {
-        if (inspector.isColliding(actor, other)) {
-            if (other == actor) return;
-
-            if (actor.getCollisionType() != CollisionType.NONE && other.getCollisionType() != CollisionType.NONE) {
-                collisionTable.add(actor, other);
-
-                if (actor.getCollisionType() == CollisionType.SOLID && other.getCollisionType() == CollisionType.SOLID) {
-                    float ry = computeAxisSeparationPosition(
-                            dy,
-                            actor.getCollisionBox().getBounds().height,
-                            actor.getCollisionBox().getOffsetY(),
-                            other.getCollisionBox().getBounds().y,
-                            other.getCollisionBox().getBounds().height
-                    );
-
-                    actor.setPosition(actor.getX(), ry);
-                }
-            }
+    private void updateAxisPosition(Axis axis, Body agent, Body other, float motionDelta) {
+        if (axis == Axis.X) {
+            float rp = computeAxisSeparationPosition(
+                    motionDelta,
+                    agent.getCollisionBox().getBounds().width,
+                    agent.getCollisionBox().getOffsetX(),
+                    other.getCollisionBox().getBounds().x,
+                    other.getCollisionBox().getBounds().width
+            );
+            agent.setPosition(rp, agent.getY());
+        } else if (axis == Axis.Y) {
+            float rp = computeAxisSeparationPosition(
+                    motionDelta,
+                    agent.getCollisionBox().getBounds().height,
+                    agent.getCollisionBox().getOffsetY(),
+                    other.getCollisionBox().getBounds().y,
+                    other.getCollisionBox().getBounds().height
+            );
+            agent.setPosition(agent.getX(), rp);
         }
     }
 
-    private void clampX(Body actor, float dx) {
-        var box = actor.getCollisionBox();
+    private void clamp(Axis axis, Body agent, float motionDelta) {
+        var box = agent.getCollisionBox();
 
-        float clampedX = computeTileSeparationPosition(dx, box.getBounds().x, box.getBounds().width, box.getOffsetX());
-        actor.setPosition(clampedX, actor.getY());
-    }
-
-    private void clampY(Body actor, float dy) {
-        var box = actor.getCollisionBox();
-
-        float clampedY = computeTileSeparationPosition(dy, box.getBounds().y, box.getBounds().height, box.getOffsetY());
-        actor.setPosition(actor.getX(), clampedY);
+        if (axis == Axis.X) {
+            float nx = computeTileSeparationPosition(motionDelta, box.getBounds().x, box.getBounds().width, box.getOffsetX());
+            agent.setPosition(nx, agent.getY());
+        } else if (axis == Axis.Y) {
+            float ny = computeTileSeparationPosition(motionDelta, box.getBounds().y, box.getBounds().height, box.getOffsetY());
+            agent.setPosition(agent.getX(), ny);
+        }
     }
 
     private float computeTileSeparationPosition(
             float movementDelta,
-            float actorMin, float actorSize, float actorOffset
+            float agentMin, float agentSize, float agentOffset
     ) {
         if (movementDelta > 0) {
-            int tilePos = (int) ((actorMin + actorSize) / scene.world.getTileSize());
-            return tilePos * scene.world.getTileSize() - (actorSize + actorOffset);
+            int tilePos = (int) ((agentMin + agentSize) / scene.world.getTileSize());
+            return tilePos * scene.world.getTileSize() - (agentSize + agentOffset);
         } else {
-            int tilePos = (int) (actorMin / scene.world.getTileSize());
-            return (tilePos + 1) * scene.world.getTileSize() - actorOffset;
+            int tilePos = (int) (agentMin / scene.world.getTileSize());
+            return (tilePos + 1) * scene.world.getTileSize() - agentOffset;
         }
     }
 
     private float computeAxisSeparationPosition(
             float movementDelta,
-            float actorSize, float actorOffset,
+            float agentSize, float agentOffset,
             float otherMin, float otherSize
     ) {
         if (movementDelta > 0) {
-            return otherMin - (actorSize + actorOffset);
+            return otherMin - (agentSize + agentOffset);
         } else {
-            return (otherMin + otherSize) - actorOffset;
+            return (otherMin + otherSize) - agentOffset;
         }
     }
 
@@ -337,12 +314,12 @@ public class Physics {
 
     private static final class CollisionTable {
         long[] keys     = new long[64];     // when a stack overflow happens, we should reconsider our strategy
-        Body[] actorsA  = new Body[64];     // to use hashes instead of linear scanning (when adding)
-        Body[] actorsB  = new Body[64];
-        int count = 0;
+        Body[] bodiesA  = new Body[64];     // to use hashes instead of linear scanning (when adding)
+        Body[] bodiesB  = new Body[64];
+        int size = 0;
 
         void clear() {
-            count = 0;
+            size = 0;
         }
 
         void add(Body a, Body b) {
@@ -351,15 +328,15 @@ public class Physics {
         }
 
         void add(long pairKey, Body a, Body b) {
-            for (int i = 0; i < count; i++) {
+            for (int i = 0; i < size; i++) {
                 if (this.keys[i] == pairKey)
                     return;
             }
 
-            actorsA[count] = a;
-            actorsB[count] = b;
-            this.keys[count] = pairKey;
-            count++;
+            bodiesA[size] = a;
+            bodiesB[size] = b;
+            this.keys[size] = pairKey;
+            size++;
         }
 
         long pairKey(int aId, int bId) {

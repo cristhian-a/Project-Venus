@@ -19,9 +19,10 @@ public class CollisionInspector {
     public boolean isCollidingWithTile(Body actor) {
         AABB box = actor.getCollisionBox().getBounds();
 
-        final float EPSILON = 0.0001f;  // Needed to adjust right and bottom sides to not collide prematurely
-                                        // in relation to left and top sides.
-                                        // This is needed because the rendering occurs right to left, top to bottom
+        // EPSILON is required to adjust right and bottom sides to not collide prematurely
+        // in relation to the left and top sides.
+        // This is needed because the rendering occurs left to right, top to bottom (as far as I get it)
+        final float EPSILON = 0.0001f;
 
         // grid coordinates (columns)
         int left    = (int) Math.floor(box.x / tileSize);

@@ -2,7 +2,6 @@ package com.next.engine.physics;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class SpatialGrid {
     private final int cellSize;
@@ -47,10 +46,17 @@ public class SpatialGrid {
         }
     }
 
-    public void forEachNearby(Body body, Consumer<Body> action) {
+    /**
+     * Queries for the {@code Body} agent's nearby entities, then performs a visit to the physics' narrow phase solver
+     * @param axis axis to be considered {@link Axis}
+     * @param agent {@link Body} to be queried for nearby entities {@link Body#getCollisionBox()}
+     * @param motionDelta movement delta (i.e., the intended amount of motion to be applied)
+     * @param physics {@link Physics} instance to be visited.
+     */
+    protected void queryBroadPhase(Axis axis, Body agent, float motionDelta, Physics physics) {
         queryCounter++;
 
-        AABB box = body.getCollisionBox().getBounds();
+        AABB box    = agent.getCollisionBox().getBounds();
         int left    = Math.max(0, (int) (box.x / cellSize));
         int right   = Math.min(cols - 1, (int) ((box.x + box.width) / cellSize));
         int top     = Math.max(0, (int) (box.y / cellSize));
@@ -59,15 +65,15 @@ public class SpatialGrid {
         for (int row = top; row <= bottom; row++) {
             for (int col = left; col <= right; col++) {
                 List<Body> cell = cells[col][row];
-                for (Body other : cell) {
-                    if (other != body && other.getLastQueryId() != queryCounter) {
+                for (int i = 0; i < cell.size(); i++) {
+                    Body other = cell.get(i);
+                    if (other != agent && other.getLastQueryId() != queryCounter) {
                         other.setLastQueryId(queryCounter);
-                        action.accept(other);
+                        physics.solveNarrowPhase(axis, agent, other, motionDelta);
                     }
                 }
             }
         }
-
     }
 
 }
