@@ -5,6 +5,9 @@ import com.next.engine.event.TriggerRule;
 import com.next.engine.physics.Body;
 import org.jspecify.annotations.NonNull;
 
+/**
+ * Utility class for creating sensors.
+ */
 public final class Sensors {
 
     private Sensors() {}
@@ -26,7 +29,7 @@ public final class Sensors {
      * This is an idea of an implementation using query building, not done yet.
      * @apiNote It got the problem of shared state across instances that use the same policy.
      * @param base base trigger rule
-     * @return a single use trigger rule
+     * @return a trigger rule that can be fired only once and will dispose its sensor automatically
      */
     public static TriggerRule once(TriggerRule base) {
         return new TriggerRule() {

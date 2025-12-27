@@ -3,7 +3,11 @@ package com.next.engine.physics;
 import com.next.world.Scene;
 import lombok.Getter;
 
-public class CollisionInspector {
+/**
+ * Detects collisions between actors and the world. {@link CollisionInspector#inspecting(Scene)} must be called to set
+ * which world is being inspected.
+ */
+class CollisionInspector {
 
     @Getter private Scene scene;
     private int tileSize;

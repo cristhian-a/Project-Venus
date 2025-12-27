@@ -37,7 +37,7 @@ public final class Cache<K, V> {
         return h & (line.length - 1);
     }
 
-    public V getOrInsertIfNotCached(K key, Supplier<V> action) {
+    public V getOrCache(K key, Supplier<V> action) {
         int i = getIndex(key);
 
         if (keys[i] != null && keys[i].equals(key)) {

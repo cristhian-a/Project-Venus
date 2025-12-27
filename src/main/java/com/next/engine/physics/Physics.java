@@ -1,20 +1,14 @@
 package com.next.engine.physics;
 
-import com.next.engine.data.Mailbox;
 import com.next.world.Scene;
 
 public class Physics {
 
     private final CollisionTable collisionTable = new CollisionTable();
+    private final CollisionInspector inspector = new CollisionInspector();
 
     private Scene scene;
     private SpatialGrid grid;
-    private CollisionInspector inspector;
-
-    public void setInspector(CollisionInspector inspector) {
-        this.inspector = inspector;
-        if (scene != null) inspector.inspecting(scene);
-    }
 
     public void ruleOver(Scene scene) {
         this.scene = scene;
@@ -22,16 +16,9 @@ public class Physics {
         int width = scene.world.getRules().columns() * scene.world.getTileSize();
         int height = scene.world.getRules().rows() * scene.world.getTileSize();
         grid = new SpatialGrid(width, height, scene.world.getTileSize());
-        if (inspector != null) inspector.inspecting(scene);
+        inspector.inspecting(scene);
     }
 
-    /**
-     * This is totally broken right now, but when working, it should let actors push each other around.
-     *
-     * @param delta   delta time.
-     * @param queue   a buffer with the requested motion deltas to be processed by the physics engine.
-     * @param mailbox a frame context bus.
-     */
 //    public void applyNewtonPhysics(double delta, MotionQueue queue, Mailbox mailbox) {
 //        float dt = (float) delta;
 //
@@ -179,6 +166,14 @@ public class Physics {
 //        }
 //    }
 
+    /**
+     * Apply the physics rules to the bodies inside the current ruled over {@code Scene}, then let the {@code collector}
+     * collect all events produced during collision resolution.
+     *
+     * @param delta     delta time.
+     * @param queue     a buffer with the requested motion deltas to be processed by the physics engine.
+     * @param collector collects all events produced during collision resolution.
+     */
     public void apply(double delta, MotionQueue queue, CollisionCollector collector) {
         grid.clear();
         scene.forEachBody(grid::insert);

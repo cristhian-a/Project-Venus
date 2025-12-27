@@ -14,7 +14,6 @@ import com.next.rules.Actions;
 import com.next.rules.Conditions;
 import com.next.util.GameState;
 import com.next.engine.data.Mailbox;
-import com.next.engine.physics.CollisionInspector;
 import com.next.engine.physics.Physics;
 import com.next.engine.sound.PlaySound;
 import com.next.engine.sound.SoundChannel;
@@ -52,7 +51,6 @@ public class Game {
     // Systems
     @Getter private final UISystem ui = new UISystem();
     private final Physics physics = new Physics();
-    private final CollisionInspector collisionInspector = new CollisionInspector();
 
     // Handlers
     private final GameFlowHandler gameFlowHandler;
@@ -96,7 +94,6 @@ public class Game {
         camera = new Camera(settings.video.ORIGINAL_WIDTH, settings.video.ORIGINAL_HEIGHT, tileSize, tileSize);
 
         physics.ruleOver(scene);
-        physics.setInspector(collisionInspector);
 
         playerHandler = new PlayerHandler(dispatcher, (GameplayUIState) uiState);
 

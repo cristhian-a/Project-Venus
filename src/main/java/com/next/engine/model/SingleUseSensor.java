@@ -7,7 +7,7 @@ import com.next.engine.physics.CollisionCollector;
 /**
  * Consider using {@link Sensors#singleUse} instead.
  * This subclass exists mainly for documentation purposes.
- * A single-use sensor is a sensor that fires once and then disappears.
+ * A single-use sensor fires only once and then disappears.
  */
 public class SingleUseSensor extends Sensor {
 
