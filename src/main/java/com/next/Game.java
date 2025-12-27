@@ -6,7 +6,6 @@ import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Entity;
 import com.next.engine.model.Sensor;
 import com.next.engine.model.SingleUseSensor;
-import com.next.engine.physics.Body;
 import com.next.event.PauseEvent;
 import com.next.event.PitFallEvent;
 import com.next.event.handlers.PlayerHandler;
@@ -156,10 +155,10 @@ public class Game {
         s.add(npc);
         s.add(player);
 
-        var triggerRule = TriggerRules.when(
-                (self, other) -> other instanceof Player,
-                (self, other) -> new PitFallEvent(self, (Player) other)
-        );
+        var triggerRule = TriggerRules
+                .when((self, other) -> other instanceof Player)
+                .and((self, other) -> ((Player) other).getHealth() > 0)
+                .then((self, other) -> new PitFallEvent(self, (Player) other));
 
         Sensor dmg = new Sensor(305, 580, 6, 6, triggerRule);
         Sensor nd = new Sensor(422, 596, 6, 6, triggerRule);
