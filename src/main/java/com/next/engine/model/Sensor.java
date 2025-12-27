@@ -1,10 +1,7 @@
 package com.next.engine.model;
 
 import com.next.engine.event.TriggerRule;
-import com.next.engine.physics.Body;
-import com.next.engine.physics.CollisionBox;
-import com.next.engine.physics.CollisionResult;
-import com.next.engine.physics.CollisionType;
+import com.next.engine.physics.*;
 
 public class Sensor extends Entity implements Body {
 
@@ -27,11 +24,9 @@ public class Sensor extends Entity implements Body {
     }
 
     @Override
-    public CollisionResult onCollision(Body other) {
+    public void onCollision(Body other, CollisionCollector collector) {
         if (rule.shouldFire(this, other))
-            return new CollisionResult(() -> rule.getEvent(this, other));
-
-        return null;
+            collector.post(() -> rule.getEvent(this, other));
     }
 
     @Override

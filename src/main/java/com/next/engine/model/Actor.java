@@ -2,12 +2,8 @@ package com.next.engine.model;
 
 import com.next.engine.data.Mailbox;
 import com.next.engine.graphics.RenderQueue;
-import com.next.engine.physics.Body;
-import com.next.engine.physics.CollisionBox;
-import com.next.engine.physics.CollisionType;
-import com.next.engine.physics.CollisionResult;
+import com.next.engine.physics.*;
 import com.next.engine.graphics.Layer;
-import com.next.engine.system.Debugger;
 import lombok.Getter;
 import lombok.Setter;
 import org.jspecify.annotations.NonNull;
@@ -58,11 +54,6 @@ public abstract class Actor extends Entity implements Body {
         if (collisionBox != null) {
             collisionBox.update(worldX, worldY);
         }
-    }
-
-    @Override
-    public CollisionResult onCollision(Body other) {
-        return null;
     }
 
     /**

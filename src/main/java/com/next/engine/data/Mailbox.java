@@ -1,6 +1,7 @@
 package com.next.engine.data;
 
 import com.next.engine.event.GameEvent;
+import com.next.engine.physics.CollisionCollector;
 import com.next.engine.physics.MotionQueue;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.util.DoubleBuffer;
@@ -15,7 +16,7 @@ import java.util.function.Supplier;
  * @value {@code render} is a double buffered queue of requests to be submitted to the renderer pipeline
  *        (see {@link RenderQueue}).
  */
-public class Mailbox {
+public class Mailbox implements CollisionCollector {
     public final List<Supplier<? extends GameEvent>> eventSuppliers = new ArrayList<>();
 
     public final MotionQueue motionQueue = new MotionQueue();
@@ -23,7 +24,6 @@ public class Mailbox {
 
     public void clearAll() {
         eventSuppliers.clear();
-
         motionQueue.clear();
     }
 
@@ -33,6 +33,10 @@ public class Mailbox {
     public void swap() {
         render.swap();
         render.write().clear();
+    }
+
+    public void post(Supplier<? extends GameEvent> supplier) {
+        eventSuppliers.add(supplier);
     }
 
 }

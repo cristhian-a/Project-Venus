@@ -192,14 +192,8 @@ public class Physics {
             Body a = collisionTable.bodiesA[i];
             Body b = collisionTable.bodiesB[i];
 
-            CollisionResult responseA = a.onCollision(b);
-            CollisionResult responseB = b.onCollision(a);
-
-            if (responseA != null && responseA.eventFactory() != null)
-                mailbox.eventSuppliers.add(responseA.eventFactory());
-
-            if (responseB != null && responseB.eventFactory() != null)
-                mailbox.eventSuppliers.add(responseB.eventFactory());
+            a.onCollision(b, mailbox);
+            b.onCollision(a, mailbox);
         }
 
         collisionTable.clear();

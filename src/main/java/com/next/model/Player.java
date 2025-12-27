@@ -3,12 +3,8 @@ package com.next.model;
 import com.next.engine.animation.Animation;
 import com.next.engine.animation.AnimationState;
 import com.next.engine.data.Mailbox;
-import com.next.engine.model.Actor;
 import com.next.engine.model.AnimatedActor;
-import com.next.engine.physics.Body;
-import com.next.engine.physics.CollisionBox;
-import com.next.engine.physics.CollisionResult;
-import com.next.engine.physics.CollisionType;
+import com.next.engine.physics.*;
 import com.next.engine.system.Debugger;
 import com.next.event.DialogueEvent;
 import com.next.system.Input;
@@ -96,13 +92,12 @@ public class Player extends AnimatedActor {
     }
 
     @Override
-    public CollisionResult onCollision(Body other) {
+    public void onCollision(Body other, CollisionCollector collector) {
         if (other instanceof NpcDummy dummy) {
             if (input.isPressed(Input.Action.TALK)) {
-                return new CollisionResult(() -> new DialogueEvent(this, dummy));
+                collector.post(() -> new DialogueEvent(this, dummy));
             }
         }
-        return super.onCollision(other);
     }
 
     public void boostSpeed(float boost) {

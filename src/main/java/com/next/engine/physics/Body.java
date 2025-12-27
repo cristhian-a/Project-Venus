@@ -16,7 +16,7 @@ public interface Body {
     CollisionType getCollisionType();
 
     void setPosition(float x, float y);
-    CollisionResult onCollision(Body other);
+    void onCollision(Body other, CollisionCollector collector);
 
     int getLastQueryId();
     void setLastQueryId(int id);
