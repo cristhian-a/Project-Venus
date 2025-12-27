@@ -5,7 +5,6 @@ import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.physics.CollisionResult;
 import com.next.engine.physics.CollisionType;
-import lombok.Getter;
 
 public class Sensor extends Entity implements Body {
 
@@ -18,7 +17,6 @@ public class Sensor extends Entity implements Body {
     protected final CollisionBox collisionBox;
 
     protected final TriggerRule rule;
-    @Getter protected boolean active = true;
 
     public Sensor(float worldX, float worldY, float width, float height, TriggerRule rule) {
         this.worldX = worldX;
@@ -30,7 +28,7 @@ public class Sensor extends Entity implements Body {
 
     @Override
     public CollisionResult onCollision(Body other) {
-        if (active && rule.shouldFire(this, other))
+        if (rule.shouldFire(this, other))
             return new CollisionResult(() -> rule.getEvent(this, other));
 
         return null;
@@ -85,10 +83,6 @@ public class Sensor extends Entity implements Body {
     @Override
     public void setLastQueryId(int id) {
         lastQueryId = id;
-    }
-
-    public void toggle() {
-        active = !active;
     }
 
 }

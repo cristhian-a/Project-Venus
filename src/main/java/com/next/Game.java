@@ -3,9 +3,7 @@ package com.next;
 import com.next.engine.Global;
 import com.next.engine.event.*;
 import com.next.engine.graphics.RenderQueue;
-import com.next.engine.model.Entity;
-import com.next.engine.model.Sensor;
-import com.next.engine.model.SingleUseSensor;
+import com.next.engine.model.*;
 import com.next.event.DamageEvent;
 import com.next.event.PauseEvent;
 import com.next.event.PitFallEvent;
@@ -16,7 +14,6 @@ import com.next.rules.Actions;
 import com.next.rules.Conditions;
 import com.next.util.GameState;
 import com.next.engine.data.Mailbox;
-import com.next.engine.model.Camera;
 import com.next.engine.physics.CollisionInspector;
 import com.next.engine.physics.Physics;
 import com.next.engine.sound.PlaySound;
@@ -159,17 +156,20 @@ public class Game {
         s.add(npc);
         s.add(player);
 
+        // TODO take care: the same rule, for now, share state within multiple sensors, that means a once-use is REALLY once,
+        // TODO don't matter how many sensors receive that policy instance (TriggerRule)
         var triggerRule = TriggerRules
                 .when(Conditions.IS_PLAYER)
                 .and((self, other) -> ((Player) other).getHealth() > 0)
                 .then(Actions.damagePlayer(1));
+        triggerRule = Sensors.once(triggerRule);
 
         Sensor dmg = new Sensor(305, 580, 6, 6, triggerRule);
-        Sensor nd = new Sensor(422, 596, 6, 6, triggerRule);
-        Sensor sus = new SingleUseSensor(400, 596, 6, 6, triggerRule);
+        Sensor sus = Sensors.singleUse(400, 596, 6, 6,
+                TriggerRules.when(Conditions.IS_PLAYER).then(Actions.damagePlayer(1))
+        );
 
         s.add(dmg);
-        s.add(nd);
         s.add(sus);
 
         return s;
