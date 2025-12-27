@@ -6,11 +6,14 @@ import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Entity;
 import com.next.engine.model.Sensor;
 import com.next.engine.model.SingleUseSensor;
+import com.next.event.DamageEvent;
 import com.next.event.PauseEvent;
 import com.next.event.PitFallEvent;
 import com.next.event.handlers.PlayerHandler;
 import com.next.graphics.StartMenuUIState;
 import com.next.graphics.UIState;
+import com.next.rules.Actions;
+import com.next.rules.Conditions;
 import com.next.util.GameState;
 import com.next.engine.data.Mailbox;
 import com.next.engine.model.Camera;
@@ -73,6 +76,7 @@ public class Game {
         this.dispatcher = dispatcher;
 
         new PitFallEvent.Handler(dispatcher);
+        new DamageEvent.Handler(dispatcher);
         new DoorHandler(dispatcher, mailbox);
         new SpellHandler(dispatcher, mailbox);
         gameFlowHandler = new GameFlowHandler(dispatcher, mailbox, input, this);
@@ -156,9 +160,9 @@ public class Game {
         s.add(player);
 
         var triggerRule = TriggerRules
-                .when((self, other) -> other instanceof Player)
+                .when(Conditions.IS_PLAYER)
                 .and((self, other) -> ((Player) other).getHealth() > 0)
-                .then((self, other) -> new PitFallEvent(self, (Player) other));
+                .then(Actions.damagePlayer(1));
 
         Sensor dmg = new Sensor(305, 580, 6, 6, triggerRule);
         Sensor nd = new Sensor(422, 596, 6, 6, triggerRule);

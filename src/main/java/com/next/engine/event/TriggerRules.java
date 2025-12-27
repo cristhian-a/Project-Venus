@@ -6,6 +6,16 @@ import org.jspecify.annotations.NonNull;
 
 public final class TriggerRules {
 
+    @FunctionalInterface
+    public interface Condition {
+        boolean satisfy(Sensor self, Body other);
+    }
+
+    @FunctionalInterface
+    public interface Action {
+        GameEvent create(Sensor self, Body other);
+    }
+
     private TriggerRules() {}
 
     public static ConditionBuilder when(Condition condition) {
@@ -32,16 +42,6 @@ public final class TriggerRules {
 
     public static Condition not(@NonNull Condition condition) {
         return (self, other) -> !condition.satisfy(self, other);
-    }
-
-    @FunctionalInterface
-    public interface Condition {
-        boolean satisfy(Sensor self, Body other);
-    }
-
-    @FunctionalInterface
-    public interface Action {
-        GameEvent create(Sensor self, Body other);
     }
 
     public static final class ConditionBuilder {
