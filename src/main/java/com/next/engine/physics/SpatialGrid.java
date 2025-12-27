@@ -1,8 +1,5 @@
 package com.next.engine.physics;
 
-import com.next.engine.model.AABB;
-import com.next.engine.model.Actor;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;

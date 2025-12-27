@@ -1,4 +1,4 @@
-package com.next.engine.model;
+package com.next.engine.physics;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

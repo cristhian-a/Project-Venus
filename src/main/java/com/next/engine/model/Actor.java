@@ -10,6 +10,7 @@ import com.next.engine.graphics.Layer;
 import com.next.engine.system.Debugger;
 import lombok.Getter;
 import lombok.Setter;
+import org.jspecify.annotations.NonNull;
 
 @Getter
 public abstract class Actor extends Entity implements Body {
@@ -46,8 +47,7 @@ public abstract class Actor extends Entity implements Body {
     public void update(double delta, Mailbox mailbox) {
     }
 
-    public void submitRender(RenderQueue queue) {
-        if (collisionBox != null) Debugger.publish("ACTOR BOX" + this, collisionBox);
+    public void submitRender(@NonNull RenderQueue queue) {
         queue.submit(Layer.ACTORS, (int) worldX, (int) worldY, spriteId);
     }
 

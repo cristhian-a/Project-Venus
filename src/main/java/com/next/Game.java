@@ -1,16 +1,19 @@
 package com.next;
 
 import com.next.engine.Global;
-import com.next.engine.event.WorldTransitionEvent;
+import com.next.engine.event.*;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Entity;
+import com.next.engine.model.Sensor;
+import com.next.engine.model.SingleUseSensor;
+import com.next.engine.physics.Body;
 import com.next.event.PauseEvent;
+import com.next.event.PitFallEvent;
 import com.next.event.handlers.PlayerHandler;
 import com.next.graphics.StartMenuUIState;
 import com.next.graphics.UIState;
 import com.next.util.GameState;
 import com.next.engine.data.Mailbox;
-import com.next.engine.event.EventDispatcher;
 import com.next.engine.model.Camera;
 import com.next.engine.physics.CollisionInspector;
 import com.next.engine.physics.Physics;
@@ -70,6 +73,7 @@ public class Game {
         this.settings = settings;
         this.dispatcher = dispatcher;
 
+        new PitFallEvent.Handler(dispatcher);
         new DoorHandler(dispatcher, mailbox);
         new SpellHandler(dispatcher, mailbox);
         gameFlowHandler = new GameFlowHandler(dispatcher, mailbox, input, this);
@@ -112,7 +116,8 @@ public class Game {
         // TODO game states are poorly managed right now
         if (gameState == GameState.START_MENU) {
             // Nothing?
-        } if (gameState == GameState.RUNNING) {
+        }
+        if (gameState == GameState.RUNNING) {
             // TODO this is very incomplete
             scene.update(delta, mailbox);
 
@@ -150,6 +155,19 @@ public class Game {
         s.addAll(props);
         s.add(npc);
         s.add(player);
+
+        var triggerRule = TriggerRules.when(
+                (self, other) -> other instanceof Player,
+                (self, other) -> new PitFallEvent(self, (Player) other)
+        );
+
+        Sensor dmg = new Sensor(305, 580, 6, 6, triggerRule);
+        Sensor nd = new Sensor(422, 596, 6, 6, triggerRule);
+        Sensor sus = new SingleUseSensor(400, 596, 6, 6, triggerRule);
+
+        s.add(dmg);
+        s.add(nd);
+        s.add(sus);
 
         return s;
     }

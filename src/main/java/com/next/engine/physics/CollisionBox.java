@@ -1,6 +1,5 @@
 package com.next.engine.physics;
 
-import com.next.engine.model.AABB;
 import lombok.Getter;
 
 public class CollisionBox {
@@ -12,6 +11,12 @@ public class CollisionBox {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         bounds = new AABB(0, 0, width, height);
+    }
+
+    public CollisionBox(float x, float y, float offsetX, float offsetY, float width, float height) {
+        this(offsetX, offsetY, width, height);
+        bounds.x = x + offsetX;
+        bounds.y = y + offsetY;
     }
 
     public void update(float x, float y) {

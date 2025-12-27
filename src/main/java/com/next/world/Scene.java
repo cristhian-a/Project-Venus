@@ -5,6 +5,7 @@ import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Actor;
 import com.next.engine.model.Entity;
 import com.next.engine.physics.Body;
+import com.next.engine.system.Debugger;
 import com.next.model.Player;
 import lombok.Getter;
 
@@ -28,8 +29,6 @@ public class Scene {
     private int bodyCount;
 
     private int nextId = 1;
-
-    public int size() { return actorCount; }
 
     public Scene(World world, Player player) {
         this.world = world;
@@ -127,14 +126,9 @@ public class Scene {
         }
     }
 
-    public void forEachActor(Consumer<Actor> consumer) {
-        for (int i = 0; i < actorCount; i++) {
-            consumer.accept(actors[i]);
-        }
-    }
-
     public void forEachBody(Consumer<Body> consumer) {
         for (int i = 0; i < bodyCount; i++) {
+            Debugger.publish("HITBOX" + bodies[i].getId(), bodies[i].getCollisionBox());
             consumer.accept(bodies[i]);
         }
     }

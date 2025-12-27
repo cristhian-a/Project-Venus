@@ -1,7 +1,5 @@
 package com.next.engine.physics;
 
-import com.next.engine.model.Actor;
-
 /**
  * Interface for objects that want to be subject to the physics engine. Implementing its methods will make it able to be
  * considered during {@link Physics} apply.

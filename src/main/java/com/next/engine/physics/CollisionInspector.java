@@ -1,6 +1,5 @@
 package com.next.engine.physics;
 
-import com.next.engine.model.AABB;
 import com.next.world.Scene;
 import lombok.Getter;
 
