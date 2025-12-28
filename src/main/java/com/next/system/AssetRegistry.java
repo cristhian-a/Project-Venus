@@ -36,7 +36,7 @@ public class AssetRegistry {
 
     private void loadSprites() throws IOException {
         spriteSheets.put("world", new SpriteSheet("/sprites/spritesheet.png", 16, 16));
-        textureSheets.put("light", new SpriteSheet("/textures/textures.png", 16, 16));
+        textureSheets.put("light", new SpriteSheet("/textures/light.png", 16, 16));
     }
 
     private void loadFonts() throws IOException, FontFormatException {

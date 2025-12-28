@@ -17,6 +17,9 @@ class LightningRenderer {
     private final BufferedImage lightMap;
     private float ambient = 0.5f;
 
+    int frame = 0;
+    boolean growing = true;
+
     public LightningRenderer(AssetRegistry assets, Settings.VideoSettings settings) {
         this.assets = assets;
         this.settings = settings;
@@ -37,13 +40,35 @@ class LightningRenderer {
         lg.fillRect(0, 0, lightMap.getWidth(), lightMap.getHeight());
 
         lg.setComposite(AlphaComposite.DstOut);
+        float width = 16f;
+        float height = 16f;
 
-        BufferedImage light = assets.getTextureSheet("light").getSprite(0);
+        if (frame < 60 && growing) {
+            width += (float) (0.2 * frame);
+            height += (float) (0.2 * frame);
+
+            frame++;
+            if (frame == 60) growing = false;
+        } else if (!growing && frame > 1) {
+            width += (float) (0.2 * frame);
+            height += (float) (0.2 * frame);
+            frame--;
+        } else {
+            frame = 0;
+            growing = true;
+        }
+
+        float worldX = 376f;
+        float worldY = 344f;
+        float centerX = worldX - (width * 2);
+        float centerY = worldY - (height * 2);
+
+        BufferedImage light = assets.getTextureSheet("light").getSprite(2);
         lg.drawImage(
                 light,
-                camera.worldToScreenX(368) - 16 / 2,
-                camera.worldToScreenY(336) - 16 / 2,
-                32, 32,
+                camera.worldToScreenX(centerX),
+                camera.worldToScreenY(centerY),
+                (int) (width * 4), (int) (height * 4),
                 null
         );
     }
