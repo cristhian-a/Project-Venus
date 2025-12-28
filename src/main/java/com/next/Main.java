@@ -1,5 +1,6 @@
 package com.next;
 
+import com.next.engine.Loop;
 import com.next.engine.data.Mailbox;
 import com.next.engine.data.Registry;
 import com.next.engine.event.EventDispatcher;

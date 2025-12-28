@@ -1,6 +1,6 @@
-package com.next;
+package com.next.engine;
 
-import com.next.engine.Global;
+import com.next.Game;
 import com.next.engine.graphics.GamePanel;
 import com.next.engine.system.Debugger;
 import com.next.system.Input;
@@ -56,21 +56,32 @@ public class Loop implements Runnable {
         double timer = System.currentTimeMillis();
         int framesLastSecond = 0;
 
+        boolean shouldRender = false;
+
         while (running) {
             double now = System.nanoTime();
             double delta = (now - lastTime) / 1e9;
             lastTime = now;
             accumulator += delta;
 
+            // Accumulating time into Global.time
+            Global.accumulateTime(delta);
+
             while (accumulator >= fixedDelta) {
                 input.poll();
                 Debugger.update(input);
-                game.update(delta);
-                panel.requestRender();
+                game.update(fixedDelta);
 
                 accumulator -= fixedDelta;
+                shouldRender = true;
+
                 frames++;   // Debug info *(frame rate)*
                 Debugger.publish("FPS", new Debugger.DebugInt(framesLastSecond), 10, 30, Debugger.TYPE.INFO);
+            }
+
+            if (shouldRender) {
+                panel.requestRender();
+                shouldRender = false;
             }
 
             // Debug info *(frame rate)*

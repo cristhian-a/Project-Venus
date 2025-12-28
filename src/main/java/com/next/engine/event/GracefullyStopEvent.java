@@ -1,6 +1,6 @@
 package com.next.engine.event;
 
-import com.next.Loop;
+import com.next.engine.Loop;
 
 /**
  * When fired, makes the game loop safely stops after the current update cycle.

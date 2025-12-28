@@ -1,5 +1,6 @@
 package com.next.engine.graphics.awt;
 
+import com.next.engine.Global;
 import com.next.engine.model.Camera;
 import com.next.engine.util.Experimental;
 import com.next.system.AssetRegistry;
@@ -15,10 +16,8 @@ class LightningRenderer {
     private Settings.VideoSettings settings;
 
     private final BufferedImage lightMap;
+    private final Graphics2D lightGraphics;
     private float ambient = 0.5f;
-
-    int frame = 0;
-    boolean growing = true;
 
     public LightningRenderer(AssetRegistry assets, Settings.VideoSettings settings) {
         this.assets = assets;
@@ -29,46 +28,47 @@ class LightningRenderer {
                 settings.HEIGHT / settings.SCALE,
                 BufferedImage.TYPE_INT_ARGB
         );
+
+        lightGraphics = lightMap.createGraphics();
+        // Remove this if a raw light texture is preferred (they look sick)
+        lightGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
     }
 
     @Experimental
     protected void punchLightMap(Camera camera) {
-        Graphics2D lg = lightMap.createGraphics();
+        lightGraphics.setComposite(AlphaComposite.Src);
+        lightGraphics.setColor(new Color(0, 0, 0, (int) (ambient * 255)));
+        lightGraphics.fillRect(0, 0, lightMap.getWidth(), lightMap.getHeight());
 
-        lg.setComposite(AlphaComposite.Src);
-        lg.setColor(new Color(0, 0, 0, (int) (ambient * 255)));
-        lg.fillRect(0, 0, lightMap.getWidth(), lightMap.getHeight());
+        // AlphaComposite.getInstance(AlphaComposite.DST_OUT, 0.8f)
+        // should be used (instead of just getting AlphaComposite.DstOut) to prevent light bleeding in case
+        // many "light holes" are punched together, so we preserve some darkness.
+        lightGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_OUT, 0.8f));
 
-        lg.setComposite(AlphaComposite.DstOut);
-        float width = 16f;
-        float height = 16f;
+        // sign-wave calculation to get the flicker effect's size
+        double t = Global.getTime() * 3d;
+        float pulse = (float) (Math.sin(t) * 0.5f + 0.5f);
 
-        if (frame < 60 && growing) {
-            width += (float) (0.2 * frame);
-            height += (float) (0.2 * frame);
-
-            frame++;
-            if (frame == 60) growing = false;
-        } else if (!growing && frame > 1) {
-            width += (float) (0.2 * frame);
-            height += (float) (0.2 * frame);
-            frame--;
-        } else {
-            frame = 0;
-            growing = true;
-        }
+        float base = 16f;
+        float size = base + pulse * 6f;
 
         float worldX = 376f;
         float worldY = 344f;
-        float centerX = worldX - (width * 2);
-        float centerY = worldY - (height * 2);
 
-        BufferedImage light = assets.getTextureSheet("light").getSprite(2);
-        lg.drawImage(
+        float lightScale = 8;
+        float drawW = size * lightScale;
+        float drawH = size * lightScale;
+
+        float drawX = worldX - (drawW / 2);
+        float drawY = worldY - (drawH / 2);
+
+        BufferedImage light = assets.getTextureSheet("light").getSprite(3);
+        lightGraphics.drawImage(
                 light,
-                camera.worldToScreenX(centerX),
-                camera.worldToScreenY(centerY),
-                (int) (width * 4), (int) (height * 4),
+                camera.worldToScreenX(drawX),
+                camera.worldToScreenY(drawY),
+                (int) (size * lightScale), (int) (size * lightScale),
                 null
         );
     }
