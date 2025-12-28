@@ -20,6 +20,7 @@ public class AssetRegistry {
 
     // Awt resources (remember that)
     private final Map<String, SpriteSheet> spriteSheets = new HashMap<>();
+    private final Map<String, SpriteSheet> textureSheets = new HashMap<>();
     private final Map<String, Font> fonts = new HashMap<>();
     private final Map<Integer, Color> colors = new HashMap<>();
 
@@ -35,6 +36,7 @@ public class AssetRegistry {
 
     private void loadSprites() throws IOException {
         spriteSheets.put("world", new SpriteSheet("/sprites/spritesheet.png", 16, 16));
+        textureSheets.put("light", new SpriteSheet("/textures/textures.png", 16, 16));
     }
 
     private void loadFonts() throws IOException, FontFormatException {
@@ -81,6 +83,7 @@ public class AssetRegistry {
     }
 
     public SpriteSheet getSpriteSheet(String name) { return spriteSheets.get(name); }
+    public SpriteSheet getTextureSheet(String name) { return textureSheets.get(name); }
     public Font getFont(String name) { return fonts.get(name); }
     public Integer[][] getTileMap(String name) { return tileMaps.get(name); }
     public Color getColor(int hex) { return colors.get(hex); }

@@ -1,5 +1,7 @@
 package com.next.engine.data;
 
+import com.next.engine.util.Experimental;
+
 import java.util.function.Supplier;
 
 /**
@@ -7,6 +9,7 @@ import java.util.function.Supplier;
  * @param <K>
  * @param <V>
  */
+@Experimental
 public final class Cache<K, V> {
 
     private V[] line;

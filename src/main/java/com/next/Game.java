@@ -91,7 +91,7 @@ public class Game {
 
     public void start(UIState uiState) {
         int tileSize = scene.world.getRules().tileSize();   // Just to adjust the camera following
-        camera = new Camera(settings.video.ORIGINAL_WIDTH, settings.video.ORIGINAL_HEIGHT, tileSize, tileSize);
+        camera = new Camera(settings.video.UNSCALED_WIDTH, settings.video.UNSCALED_HEIGHT, tileSize, tileSize);
 
         physics.ruleOver(scene);
 

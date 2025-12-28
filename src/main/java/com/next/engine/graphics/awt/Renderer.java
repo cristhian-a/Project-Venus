@@ -20,6 +20,7 @@ public class Renderer {
     private final AssetRegistry assets;
     private final VideoSettings settings;
     private final TileRenderer tileRenderer;
+    private final LightningRenderer lightningRenderer;
 
     public Renderer(Game game, Mailbox mailbox, VideoSettings settings, AssetRegistry assets) {
         this.game = game;
@@ -29,6 +30,7 @@ public class Renderer {
 
         this.uiRenderer = new UIRenderer(assets, settings);
         this.tileRenderer = new TileRenderer(assets);
+        this.lightningRenderer = new LightningRenderer(assets, settings);
     }
 
     // Event Handler    // TODO probably we shouldn't solve it like this
@@ -56,6 +58,9 @@ public class Renderer {
 
         // 3. Actors
         renderSpriteTable(g, camera, queue.getBucket(Layer.ACTORS).sprites);
+
+        // 3.5 Lightning (black magic)
+        lightningRenderer.render(g, camera);
 
         // 4. UI
         var uiLayer = queue.getBucket(Layer.UI);

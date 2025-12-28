@@ -58,8 +58,8 @@ public class AwtPanel extends JPanel implements ComponentListener, GamePanel {
         videoSettings.WIDTH = getWidth();
         videoSettings.HEIGHT = getHeight();
 
-        videoSettings.ORIGINAL_WIDTH = getWidth() / videoSettings.SCALE;
-        videoSettings.ORIGINAL_HEIGHT = getHeight() / videoSettings.SCALE;
+        videoSettings.UNSCALED_WIDTH = getWidth() / videoSettings.SCALE;
+        videoSettings.UNSCALED_HEIGHT = getHeight() / videoSettings.SCALE;
     }
 
     @Override

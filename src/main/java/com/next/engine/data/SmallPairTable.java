@@ -1,10 +1,13 @@
 package com.next.engine.data;
 
+import com.next.engine.util.Experimental;
+
 /**
- * !!!EXPERIMENTAL!!!
+ * {@link Experimental}<br/>
  * A small, linear table for storing unique unordered pairs. Efficient for small sets.
  * Please don't use this for anything larger than 64 entries, this is not intended for large datasets.
  */
+@Experimental
 public class SmallPairTable {
 
     private final long[] keys   = new long[64];
