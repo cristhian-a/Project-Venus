@@ -27,10 +27,10 @@ public class GameplayUIState implements UIState {
 
     public void setDialogueLines() {
         dialogueLines = new String[4];
-        dialogueLines[0] = "Hello, my name is Dummy.";
-        dialogueLines[1] = "I am a test character.";
-        dialogueLines[2] = "It's pretty quiet in here.";
-        dialogueLines[3] = "Have a nice day!";
+        dialogueLines[0] = "Hello, my name is Dummy!";
+        dialogueLines[1] = "I am a test character!";
+        dialogueLines[2] = "What a pretty nice camp we got in here, huh!";
+        dialogueLines[3] = "Have a wonderful night!";
     }
 
     @Override

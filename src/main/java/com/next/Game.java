@@ -145,12 +145,14 @@ public class Game {
         Entity[] props = new PropFactory(world, level).createScene1Props().toArray(new Entity[0]);
         Player player = new PlayerFactory(world, level).create();
         NpcDummy npc = new NpcFactory().createDummy();
+        ObjectFireCamp fc = ObjectFactory.create();
 
         player.setInput(input); // TODO meh
 
         Scene s = new Scene(world, player);
         s.addAll(props);
         s.add(npc);
+        s.add(fc);
         s.add(player);
 
         // TODO take care: the same rule, for now, share state within multiple sensors, that means a once-use is REALLY once,

@@ -1,6 +1,6 @@
 {
   "playerSpawnX": 23,
-  "playerSpawnY": 21,
+  "playerSpawnY": 20,
   "objects": [
     {"type": "chest", "x": 10,  "y": 7},
     {"type": "door",  "x": 10,  "y": 11},
