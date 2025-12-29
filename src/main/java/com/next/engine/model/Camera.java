@@ -12,16 +12,18 @@ public class Camera {
     private final int viewportHeight;
     private final int followOffsetX;
     private final int followOffsetY;
+    private final int scale;
 
-    public Camera(int viewportWidth, int viewportHeight, int followOffsetX, int followOffsetY) {
+    public Camera(int viewportWidth, int viewportHeight, int followOffsetX, int followOffsetY, int scale) {
         this.viewportWidth = viewportWidth;
         this.viewportHeight = viewportHeight;
         this.followOffsetX = followOffsetX;
         this.followOffsetY = followOffsetY;
+        this.scale = scale;
     }
 
-    public void follow(Actor actor) {
-        follow(actor.worldX, actor.worldY);
+    public void follow(Entity e) {
+        follow(e.worldX, e.worldY);
         Debugger.publish("CAMERA", new Debugger.DebugText("X: " + x + ", Y: " + y), 10, 60, Debugger.TYPE.INFO);
     }
 

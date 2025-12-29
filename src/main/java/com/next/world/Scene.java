@@ -4,6 +4,7 @@ import com.next.engine.data.Mailbox;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Actor;
 import com.next.engine.model.Entity;
+import com.next.engine.model.Light;
 import com.next.engine.physics.Body;
 import com.next.engine.system.Debugger;
 import com.next.model.Player;
@@ -28,6 +29,9 @@ public class Scene {
     @Getter private Body[] bodies;  // every subject of physics
     private int bodyCount;
 
+    @Getter private Light[] lights;
+    private int lightCount;
+
     private int nextId = 1;
 
     public Scene(World world, Player player) {
@@ -37,6 +41,7 @@ public class Scene {
         this.entities = new Entity[16];
         this.actors = new Actor[16];
         this.bodies = new Body[16];
+        this.lights = new Light[16];
     }
 
     public void addAll(Entity[] entities) {
@@ -69,6 +74,14 @@ public class Scene {
 
             actors[actorCount++] = actor;
         }
+
+        if (entity instanceof Light light) {
+            if (lightCount >= lights.length) {
+                lights = Arrays.copyOf(lights, lights.length * 2);
+            }
+
+            lights[lightCount++] = light;
+        }
     }
 
     public Body findBodyById(int id) {
@@ -87,6 +100,17 @@ public class Scene {
     public void submitRender(RenderQueue queue) {
         for (int i = 0; i < actorCount; i++) {
             actors[i].submitRender(queue);
+        }
+
+        for (int i = 0; i < lightCount; i++) {
+            queue.punchLight(
+                    lights[i].getWorldX(),
+                    lights[i].getWorldY(),
+                    0f,
+                    lights[i].getRadius(),
+                    lights[i].getIntensity(),
+                    lights[i].getTextureId()
+            );
         }
     }
 

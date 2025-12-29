@@ -1,5 +1,6 @@
 package com.next.io;
 
+import com.next.engine.graphics.awt.SpriteSheet;
 import com.next.engine.io.FileReader;
 import com.next.engine.io.JsonReader;
 import com.next.engine.sound.SoundClip;
@@ -35,14 +36,14 @@ public final class Loader {
         }
     }
 
-    public static class World {
+    public static class Worlds {
         public static WorldRules load(String fileName) throws IOException {
             var file = FileReader.getFile("/configuration/" + fileName);
             return JsonReader.readObject(file, WorldRules.class);
         }
     }
 
-    public static class Level {
+    public static class Levels {
         public static LevelData load(String fileName) throws IOException {
             var file = FileReader.getFile("/configuration/" + fileName);
             return JsonReader.readObject(file, LevelData.class);
@@ -79,6 +80,16 @@ public final class Loader {
             }
 
             return data;
+        }
+    }
+
+    public static final class Textures {
+        public static InputStream load(String fileName) {
+            return FileReader.getFile("/textures/" + fileName);
+        }
+
+        public static SpriteSheet loadSheet(String fileName, int width, int height) throws IOException {
+            return new SpriteSheet("/textures/" + fileName, width, height);
         }
     }
 

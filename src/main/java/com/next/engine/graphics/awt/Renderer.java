@@ -30,7 +30,7 @@ public class Renderer {
 
         this.uiRenderer = new UIRenderer(assets, settings);
         this.tileRenderer = new TileRenderer(assets);
-        this.lightningRenderer = new LightningRenderer(assets, settings);
+        this.lightningRenderer = new LightningRenderer(settings);
     }
 
     // Event Handler    // TODO probably we shouldn't solve it like this
@@ -60,7 +60,7 @@ public class Renderer {
         renderSpriteTable(g, camera, queue.getBucket(Layer.ACTORS).sprites);
 
         // 3.5 Lightning (black magic)
-        lightningRenderer.render(g, camera);
+        lightningRenderer.render(g, camera, queue.getBucket(Layer.LIGHTS));
 
         // 4. UI
         var uiLayer = queue.getBucket(Layer.UI);

@@ -62,12 +62,17 @@ public final class RenderQueue {
         buckets[layer.ordinal()].texts.add(message, font, color, x, y, frames, pos);
     }
 
+    public void punchLight(float x, float y, float color, float radius, float intensity, int texture) {
+        buckets[Layer.LIGHTS.ordinal()].lights.add(x, y, color, radius, intensity, texture);
+    }
+
     public void submit(Layer layer, RenderType type) {
         buckets[layer.ordinal()].overlays.add(0, 0);
     }
 
     public static final class LayerBucket {
         public final TextTable texts = new TextTable(32);
+        public final LightTable lights = new LightTable(16);
         public final SpriteTable sprites = new SpriteTable(32);
         public final OverlayTable overlays = new OverlayTable(1);
         public final RectangleTable rectangles = new RectangleTable(16);
@@ -77,6 +82,7 @@ public final class RenderQueue {
 
         public void clear() {
             texts.clear();
+            lights.clear();
             sprites.clear();
             overlays.clear();
             rectangles.clear();
@@ -370,6 +376,50 @@ public final class RenderQueue {
             ensureCapacity();
             this.x[count] = x;
             this.y[count] = y;
+            count++;
+        }
+
+        public void clear() {
+            count = 0;
+        }
+    }
+
+    public static final class LightTable {
+        public float[] x, y, colors, radius, intensity;
+        public int[] textureIds;
+        public int count;
+        private int capacity;
+
+        public LightTable(int capacity) {
+            this.capacity = capacity;
+            x = new float[capacity];
+            y = new float[capacity];
+            colors = new float[capacity];
+            radius = new float[capacity];
+            textureIds = new int[capacity];
+            intensity = new float[capacity];
+        }
+
+        private void ensureCapacity() {
+            if (count >= capacity) {
+                capacity *= 2;
+                x = Arrays.copyOf(x, capacity);
+                y = Arrays.copyOf(y, capacity);
+                colors = Arrays.copyOf(colors, capacity);
+                radius = Arrays.copyOf(radius, capacity);
+                intensity = Arrays.copyOf(intensity, capacity);
+                textureIds = Arrays.copyOf(textureIds, capacity);
+            }
+        }
+
+        public void add(float x, float y, float color, float radius, float intensity, int texture) {
+            ensureCapacity();
+            this.x[count] = x;
+            this.y[count] = y;
+            this.colors[count] = color;
+            this.radius[count] = radius;
+            this.intensity[count] = intensity;
+            this.textureIds[count] = texture;
             count++;
         }
 

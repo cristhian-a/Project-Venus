@@ -1,6 +1,7 @@
 package com.next;
 
 import com.next.engine.Global;
+import com.next.engine.data.Registry;
 import com.next.engine.event.*;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.*;
@@ -78,20 +79,22 @@ public class Game {
     }
 
     public void boot() {
-        // TODO this should be moved to start(), but can't until I fix the renderer queueing world render
         try {
+            // TODO this should be moved to start(), but can't until I fix the renderer queueing world render
             scene = loadScene("world_1.json", "level_1.json", "map_01");
+
+            Registry.textureSheets.put(0, Loader.Textures.loadSheet("light.png", 16, 16));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        camera = new Camera(settings.video.WIDTH, settings.video.HEIGHT, 0, 0);
+        camera = new Camera(settings.video.WIDTH, settings.video.HEIGHT, 0, 0, settings.video.SCALE);
         ui.setState(new StartMenuUIState(input, dispatcher));
     }
 
     public void start(UIState uiState) {
         int tileSize = scene.world.getRules().tileSize();   // Just to adjust the camera following
-        camera = new Camera(settings.video.UNSCALED_WIDTH, settings.video.UNSCALED_HEIGHT, tileSize, tileSize);
+        camera = new Camera(settings.video.UNSCALED_WIDTH, settings.video.UNSCALED_HEIGHT, tileSize, tileSize, settings.video.SCALE);
 
         physics.ruleOver(scene);
 
@@ -137,22 +140,28 @@ public class Game {
     }
 
     public Scene loadScene(String worldFile, String levelFile, String map) throws IOException {
-        WorldRules rules = Loader.World.load(worldFile);
-        LevelData level = Loader.Level.load(levelFile);
+        // TODO this whole method is a mess soup for testing right now
+        WorldRules rules = Loader.Worlds.load(worldFile);
+        LevelData level = Loader.Levels.load(levelFile);
 
         var world = new World(rules, assets.getTileMap(map));
         // TODO I might want to change to make player goes inside Actor's array
         Entity[] props = new PropFactory(world, level).createScene1Props().toArray(new Entity[0]);
-        Player player = new PlayerFactory(world, level).create();
         NpcDummy npc = new NpcFactory().createDummy();
         ObjectFireCamp fc = ObjectFactory.create();
 
+        Light light = LightFactory.create(376, 346);
+        Light light2 = LightFactory.create(376, 650);
+
+        Player player = new PlayerFactory(world, level).create();
         player.setInput(input); // TODO meh
 
         Scene s = new Scene(world, player);
         s.addAll(props);
         s.add(npc);
         s.add(fc);
+        s.add(light);
+        s.add(light2);
         s.add(player);
 
         // TODO take care: the same rule, for now, share state within multiple sensors, that means a once-use is REALLY once,
