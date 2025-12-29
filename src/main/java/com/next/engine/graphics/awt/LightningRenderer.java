@@ -16,8 +16,10 @@ class LightningRenderer {
     private final Graphics2D lightGraphics;
     private final AffineTransform identity = new AffineTransform();
     private final AlphaComposite[] compositeCache;
+    private final Color[] ambientCache;
 
     private final int COMPOSITE_BUCKETS = 16;
+    private final int AMBIENT_BUCKETS = 16;
 
     private float ambient = 0.8f;
 
@@ -39,6 +41,12 @@ class LightningRenderer {
             float alpha = (float) i / COMPOSITE_BUCKETS;
             compositeCache[i] = AlphaComposite.getInstance(AlphaComposite.DST_OUT, alpha);
         }
+
+        ambientCache = new Color[AMBIENT_BUCKETS + 1];
+        for (int i = 0; i <= AMBIENT_BUCKETS; i++) {
+            float alpha = (float) i / AMBIENT_BUCKETS;
+            ambientCache[i] = new Color(0, 0, 0, (int) (alpha * 255));
+        }
     }
 
     private int alphaToBucket(float alpha) {
@@ -48,12 +56,19 @@ class LightningRenderer {
         return bucket;
     }
 
+    private int ambientToBucket(float ambient) {
+        int bucket = Math.round(ambient * AMBIENT_BUCKETS);
+        if (bucket < 0) bucket = 0;
+        if (bucket > AMBIENT_BUCKETS) bucket = AMBIENT_BUCKETS;
+        return bucket;
+    }
+
     private void punchLightMap(Camera camera, RenderQueue.LightTable lights) {
         lightGraphics.setTransform(identity);
         lightGraphics.setClip(null);
 
         lightGraphics.setComposite(AlphaComposite.Src);
-        lightGraphics.setColor(new Color(0, 0, 0, (int) (ambient * 255)));
+        lightGraphics.setColor(ambientCache[ambientToBucket(ambient)]);
         lightGraphics.fillRect(0, 0, lightMap.getWidth(), lightMap.getHeight());
 
         if (lights.count == 0) return;
