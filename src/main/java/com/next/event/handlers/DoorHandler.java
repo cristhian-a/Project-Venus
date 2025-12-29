@@ -44,8 +44,8 @@ public class DoorHandler {
                 "First grab a Key!",
                 Fonts.DEFAULT,
                 Colors.WHITE,
-                -100,
-                -41,
+                0,
+                -50,
                 RenderPosition.CENTERED,
                 240
         );
@@ -64,8 +64,8 @@ public class DoorHandler {
                 "Got a Key!",
                 Fonts.DEFAULT,
                 Colors.WHITE,
-                -65,
-                -41,
+                0,
+                -50,
                 RenderPosition.CENTERED,
                 240
         );

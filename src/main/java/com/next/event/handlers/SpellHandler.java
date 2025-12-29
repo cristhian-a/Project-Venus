@@ -33,8 +33,8 @@ public class SpellHandler {
                 "Mercury's Bless!",
                 Fonts.DEFAULT,
                 Colors.WHITE,
-                -91,
-                -41,
+                0,
+                -50,
                 RenderPosition.CENTERED,
                 240
         );

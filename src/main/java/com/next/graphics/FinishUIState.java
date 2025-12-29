@@ -21,12 +21,12 @@ public class FinishUIState implements UIState {
     @Override
     public void submitRender(RenderQueue queue) {
         String congratsMsg = "Congratulations!";
-        String finalMessage = "You Win!";
+        String finalMessage = "You are a treasure hunter master!";
         String timeMessage = "Your Time: " + String.format("%.2f", time) + "s";
 
         queue.submit(Layer.UI, RenderType.OVERLAY);
-        queue.submit(Layer.UI, congratsMsg, Fonts.DEFAULT_80_BOLD, Colors.ORANGE, -310, -125, RenderPosition.CENTERED, 1);
-        queue.submit(Layer.UI, finalMessage, Fonts.DEFAULT, Colors.WHITE, -60, 60, RenderPosition.CENTERED, 1);
-        queue.submit(Layer.UI, timeMessage, Fonts.DEFAULT, Colors.WHITE, -115, 100, RenderPosition.CENTERED, 1);
+        queue.submit(Layer.UI, congratsMsg, Fonts.DEFAULT_80_BOLD, Colors.ORANGE, 0, -125, RenderPosition.CENTERED, 1);
+        queue.submit(Layer.UI, finalMessage, Fonts.DEFAULT, Colors.WHITE, 0, 60, RenderPosition.CENTERED, 1);
+        queue.submit(Layer.UI, timeMessage, Fonts.DEFAULT, Colors.WHITE, 0, 100, RenderPosition.CENTERED, 1);
     }
 }
