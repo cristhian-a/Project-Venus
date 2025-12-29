@@ -4,7 +4,6 @@ import com.next.engine.event.GameEvent;
 import com.next.engine.physics.CollisionCollector;
 import com.next.engine.physics.MotionQueue;
 import com.next.engine.graphics.RenderQueue;
-import com.next.engine.util.DoubleBuffer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ public class Mailbox implements CollisionCollector {
     public final List<Supplier<? extends GameEvent>> eventSuppliers = new ArrayList<>();
 
     public final MotionQueue motionQueue = new MotionQueue();
-    public final DoubleBuffer<RenderQueue> render = new DoubleBuffer<>(RenderQueue::new);
+    public final TripleBuffer<RenderQueue> render = new TripleBuffer<>(RenderQueue::new);
 
     public void clearAll() {
         eventSuppliers.clear();
@@ -28,7 +27,7 @@ public class Mailbox implements CollisionCollector {
     }
 
     /**
-     * Swaps every double buffer. Should only be called when the update is 100% done.
+     * Swaps every multi-buffer. Should only be called when the update is 100% done.
      */
     public void swap() {
         render.swap();
