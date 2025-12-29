@@ -4,16 +4,15 @@ import com.next.engine.Global;
 import com.next.engine.data.Registry;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
-import com.next.engine.util.Experimental;
-import com.next.system.Settings;
+import com.next.system.Settings.VideoSettings;
 import com.next.util.Lights;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
-@Experimental
 class LightningRenderer {
+    private final VideoSettings settings;
     private final BufferedImage lightMap;
     private final Graphics2D lightGraphics;
     private final AffineTransform identity = new AffineTransform();
@@ -23,7 +22,9 @@ class LightningRenderer {
 
     private float ambient = 0.5f;
 
-    public LightningRenderer(Settings.VideoSettings settings) {
+    public LightningRenderer(VideoSettings settings) {
+        this.settings = settings;
+
         lightMap = new BufferedImage(
                 settings.WIDTH / settings.SCALE,
                 settings.HEIGHT / settings.SCALE,
@@ -49,7 +50,6 @@ class LightningRenderer {
         return bucket;
     }
 
-    @Experimental
     private void punchLightMap(Camera camera, RenderQueue.LightTable lights) {
         lightGraphics.setTransform(identity);
         lightGraphics.setClip(null);
@@ -58,17 +58,14 @@ class LightningRenderer {
         lightGraphics.setColor(new Color(0, 0, 0, (int) (ambient * 255)));
         lightGraphics.fillRect(0, 0, lightMap.getWidth(), lightMap.getHeight());
 
-        // AlphaComposite.getInstance(AlphaComposite.DST_OUT, 0.8f)
-        // should be used (instead of just getting AlphaComposite.DstOut) to prevent light bleeding in case
-        // many "light holes" are punched together, so we preserve some darkness.
-//        lightGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_OUT, 0.8f));
+        if (lights.count == 0) return;
 
         // sine-wave calculation to get the flicker effect's size
         double t = Global.getTime() * 3d;
         float pulse = (float) (Math.sin(t) * 0.5f + 0.5f);
 
-        float base = 16f;   // TODO 16 is the current tile size. I don't know a good way to get this info right now
-        float flicker = base + pulse * 6f; // 6f is the chosen oscillation amount
+        float strength = 0.2f;
+        float flicker = 1f + pulse * strength;
 
         for (int i = 0; i < lights.count; i++) {
             float x = lights.x[i];
@@ -76,7 +73,7 @@ class LightningRenderer {
             float radius = lights.radius[i];
             float intensity = lights.intensity[i];
 
-            float finalRadius = flicker * radius;
+            float finalRadius = flicker * (radius * settings.SCALE);
             float drawX = x - (finalRadius / 2);
             float drawY = y - (finalRadius / 2);
 
