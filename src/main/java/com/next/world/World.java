@@ -22,8 +22,10 @@ public class World {
         tiles[1] = new Tile(1, true);   // wall
         tiles[2] = new Tile(25, true);  // water
         tiles[3] = new Tile(27, false); // dirt
-        tiles[4] = new Tile(26, true);  // tree
+        tiles[4] = new Tile(43, true);  // tree mid portion
         tiles[5] = new Tile(28, false); // sand
+        tiles[6] = new Tile(42, true);  // tree top
+        tiles[7] = new Tile(44, true); // tree base
     }
 
     public boolean isSolid(int row, int col) {
