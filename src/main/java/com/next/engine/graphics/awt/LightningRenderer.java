@@ -62,7 +62,7 @@ class LightningRenderer {
         double t = Global.getTime() * 3d;
         float pulse = (float) (Math.sin(t) * 0.5f + 0.5f);
 
-        float strength = 0.2f;
+        float strength = 0.25f;
         float flicker = 1f + pulse * strength;
 
         for (int i = 0; i < lights.count; i++) {
