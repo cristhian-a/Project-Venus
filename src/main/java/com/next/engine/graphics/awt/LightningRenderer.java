@@ -5,7 +5,6 @@ import com.next.engine.data.Registry;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
 import com.next.system.Settings.VideoSettings;
-import com.next.util.Lights;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -20,7 +19,7 @@ class LightningRenderer {
 
     private final int COMPOSITE_BUCKETS = 16;
 
-    private float ambient = 0.5f;
+    private float ambient = 0.8f;
 
     public LightningRenderer(VideoSettings settings) {
         this.settings = settings;
@@ -32,7 +31,6 @@ class LightningRenderer {
         );
 
         lightGraphics = lightMap.createGraphics();
-        // Remove this if a raw light texture is preferred (they look sick)
         lightGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
@@ -81,7 +79,7 @@ class LightningRenderer {
             int bucket = alphaToBucket(alpha);
             lightGraphics.setComposite(compositeCache[bucket]);
 
-            BufferedImage light = Registry.textureSheets.get(Lights.DEFAULT_LIGHT_SHEET).getSprite(lights.textureIds[i]);
+            BufferedImage light = Registry.textures.get(lights.textureIds[i]);
             lightGraphics.drawImage(
                     light,
                     camera.worldToScreenX(drawX),

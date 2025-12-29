@@ -9,9 +9,11 @@ import com.next.util.Sounds;
 import com.next.world.LevelData;
 import com.next.world.WorldRules;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -86,6 +88,10 @@ public final class Loader {
     public static final class Textures {
         public static InputStream load(String fileName) {
             return FileReader.getFile("/textures/" + fileName);
+        }
+
+        public static BufferedImage loadImage(String fileName) throws IOException {
+            return ImageIO.read(FileReader.getFile("/textures/" + fileName));
         }
 
         public static SpriteSheet loadSheet(String fileName, int width, int height) throws IOException {

@@ -84,6 +84,9 @@ public class Game {
             scene = loadScene("world_1.json", "level_1.json", "map_01");
 
             Registry.textureSheets.put(0, Loader.Textures.loadSheet("light.png", 16, 16));
+            Registry.textures.put(1, Loader.Textures.loadImage("light-mask-2.png"));
+            Registry.textures.put(2, Loader.Textures.loadImage("light-mask-3.png"));
+            Registry.textures.put(3, Loader.Textures.loadImage("light-mask-4.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
