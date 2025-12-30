@@ -88,6 +88,7 @@ public class Game {
             Registry.textures.put(2, Loader.Textures.loadImage("light-mask-3.png"));
             Registry.textures.put(3, Loader.Textures.loadImage("light-mask-4.png"));
             Registry.textures.put(4, Loader.Textures.loadImage("lmask-64x-halo-strong.png"));
+            Registry.textures.put(5, Loader.Textures.loadImage("lmask_64x_less.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -156,8 +157,10 @@ public class Game {
         NpcDummy npc = new NpcFactory().createDummy();
         ObjectFireCamp fc = ObjectFactory.create();
 
-        Light light = LightFactory.create(376, 346);
-        Light light2 = LightFactory.create(376, 650);
+        Light light = LightFactory.create(376, 344);
+        Light lightB = LightFactory.create(376, 344);
+        Light lightC = LightFactory.create(376, 344);
+        Light light2 = LightFactory.create(300, 344);
 
         Player player = new PlayerFactory(world, level).create();
         player.setInput(input); // TODO meh
@@ -167,6 +170,8 @@ public class Game {
         s.add(npc);
         s.add(fc);
         s.add(light);
+//        s.add(lightB);
+//        s.add(lightC);
         s.add(light2);
         s.add(player);
 
