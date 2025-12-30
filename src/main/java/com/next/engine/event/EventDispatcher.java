@@ -33,8 +33,6 @@ public class EventDispatcher {
             if (event == null) continue;
             dispatch(event);
         }
-
-        mailbox.eventSuppliers.clear();
     }
 
 }

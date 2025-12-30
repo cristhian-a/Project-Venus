@@ -134,8 +134,8 @@ public class Game {
             scene.dismissDisposed();   // PLEASE, dismiss before rendering
         }
 
-        scene.submitRender(writeQueue);
         camera.follow(scene.player);    // the camera follows after events' resolution
+        scene.submitRender(writeQueue);
 
         ui.update(delta);
         ui.submit(writeQueue);

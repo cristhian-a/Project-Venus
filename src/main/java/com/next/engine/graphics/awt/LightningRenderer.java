@@ -23,13 +23,20 @@ class LightningRenderer {
 
     private float ambient = 0.8f;
 
+    private BufferedImage cachedColoredLight;
+
     public LightningRenderer(VideoSettings settings) {
         this.settings = settings;
 
-        lightMap = new BufferedImage(
+        GraphicsConfiguration gc = GraphicsEnvironment
+                .getLocalGraphicsEnvironment()
+                .getDefaultScreenDevice()
+                .getDefaultConfiguration();
+
+        lightMap = gc.createCompatibleImage(
                 settings.WIDTH / settings.SCALE,
                 settings.HEIGHT / settings.SCALE,
-                BufferedImage.TYPE_INT_ARGB
+                Transparency.TRANSLUCENT
         );
 
         lightGraphics = lightMap.createGraphics();
@@ -102,6 +109,19 @@ class LightningRenderer {
                     (int) finalRadius, (int) finalRadius,
                     null
             );
+
+            if (cachedColoredLight == null) {
+                cachedColoredLight = makeColoredLight(light, new Color(255, 100, 255, 150));
+            }
+
+            lightGraphics.setComposite(AlphaComposite.SrcOver);
+            lightGraphics.drawImage(
+                    cachedColoredLight,
+                    camera.worldToScreenX(drawX),
+                    camera.worldToScreenY(drawY),
+                    (int) finalRadius, (int) finalRadius,
+                    null
+            );
         }
     }
 
@@ -110,6 +130,27 @@ class LightningRenderer {
 
         g.setComposite(AlphaComposite.SrcOver);
         g.drawImage(lightMap, 0, 0, null);
+    }
+
+    private BufferedImage makeColoredLight(BufferedImage mask, Color color) {
+        BufferedImage img = new BufferedImage(
+                mask.getWidth(), mask.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+        for (int y = 0; y < mask.getHeight(); y++) {
+            for (int x = 0; x < mask.getWidth(); x++) {
+                int a = (mask.getRGB(x, y) >> 24) & 0xFF;
+                a = (a * color.getAlpha()) / 255;
+
+                int r = (color.getRed() * a) / 255;
+                int g = (color.getGreen() * a) / 255;
+                int b = (color.getBlue() * a) / 255;
+
+                int argb = (a << 24) | (r << 16) | (g << 8) | b;
+                img.setRGB(x, y, argb);
+            }
+        }
+
+        return img;
     }
 
 }

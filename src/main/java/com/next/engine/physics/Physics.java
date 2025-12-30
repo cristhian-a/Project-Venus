@@ -178,6 +178,8 @@ public class Physics {
         grid.clear();
         scene.forEachBody(grid::insert);
 
+        collisionTable.clear();
+
         for (int i = 0; i < queue.size(); i++) {
             integrateMotion(Axis.X, delta, queue.actorIds[i], queue.deltaX[i]);
             integrateMotion(Axis.Y, delta, queue.actorIds[i], queue.deltaY[i]);
@@ -190,9 +192,6 @@ public class Physics {
             a.onCollision(b, collector);
             b.onCollision(a, collector);
         }
-
-        collisionTable.clear();
-        queue.clear();
     }
 
     private void integrateMotion(Axis axis, double deltaTime, int entityId, float motionDelta) {

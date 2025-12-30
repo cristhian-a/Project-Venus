@@ -16,21 +16,18 @@ import java.util.function.Supplier;
  *        (see {@link RenderQueue}).
  */
 public class Mailbox implements CollisionCollector {
-    public final List<Supplier<? extends GameEvent>> eventSuppliers = new ArrayList<>();
 
+    public final List<Supplier<? extends GameEvent>> eventSuppliers = new ArrayList<>();
     public final MotionQueue motionQueue = new MotionQueue();
     private final TripleBuffer<RenderQueue> render = new TripleBuffer<>(RenderQueue::new);
-
-    public void clearAll() {
-        eventSuppliers.clear();
-        motionQueue.clear();
-    }
 
     /**
      * Should be called at the beginning of every frame to clear any buffer's writing queue
      */
     public void beginFrame() {
+        eventSuppliers.clear();
         render.write().clear();
+        motionQueue.clear();
     }
 
     /**
