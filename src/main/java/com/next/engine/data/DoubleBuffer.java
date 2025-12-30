@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 
 public final class DoubleBuffer<T> {
     private volatile T read;
-    private volatile T write;
+    private T write;
 
     public DoubleBuffer(Supplier<T> factory) {
         this.read = factory.get();
@@ -15,8 +15,8 @@ public final class DoubleBuffer<T> {
     public T write() { return write; }
 
     public void swap() {
-        T temp = read;
-        read = write;
-        write = temp;
+        T temp = write;
+        write = read;
+        read = temp;
     }
 }

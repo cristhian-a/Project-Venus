@@ -111,7 +111,9 @@ public class Game {
     public void update(double delta) {
         long start = System.nanoTime();
 
-        RenderQueue writeQueue = mailbox.render.write();
+        mailbox.beginFrame();
+
+        RenderQueue writeQueue = mailbox.postRender();
         processInputs();
 
         // TODO GameFlowHandler and Game are competing as conductors now
@@ -138,7 +140,7 @@ public class Game {
         ui.update(delta);
         ui.submit(writeQueue);
 
-        mailbox.swap();
+        mailbox.publish();
         long end = System.nanoTime();
         Debugger.publish("UPDATE", new Debugger.DebugLong(end - start), 500, 30, Debugger.TYPE.INFO);
     }

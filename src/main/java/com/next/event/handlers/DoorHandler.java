@@ -39,7 +39,7 @@ public class DoorHandler {
     }
 
     public void onFire(NoKeysEvent event) {
-        mailbox.render.write().submit(
+        mailbox.postRender().submit(
                 Layer.UI,
                 "First grab a Key!",
                 Fonts.DEFAULT,
@@ -59,7 +59,7 @@ public class DoorHandler {
         key.dispose();
         IO.println("AAAAAAI CHAVES: " + player.getHeldKeys().size());
 
-        mailbox.render.write().submit(
+        mailbox.postRender().submit(
                 Layer.UI,
                 "Got a Key!",
                 Fonts.DEFAULT,

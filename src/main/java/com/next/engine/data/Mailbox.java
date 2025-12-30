@@ -19,7 +19,7 @@ public class Mailbox implements CollisionCollector {
     public final List<Supplier<? extends GameEvent>> eventSuppliers = new ArrayList<>();
 
     public final MotionQueue motionQueue = new MotionQueue();
-    public final TripleBuffer<RenderQueue> render = new TripleBuffer<>(RenderQueue::new);
+    private final TripleBuffer<RenderQueue> render = new TripleBuffer<>(RenderQueue::new);
 
     public void clearAll() {
         eventSuppliers.clear();
@@ -27,15 +27,37 @@ public class Mailbox implements CollisionCollector {
     }
 
     /**
-     * Swaps every multi-buffer. Should only be called when the update is 100% done.
+     * Should be called at the beginning of every frame to clear any buffer's writing queue
      */
-    public void swap() {
-        render.swap();
+    public void beginFrame() {
         render.write().clear();
+    }
+
+    /**
+     * Sets every posted information in this frame visible. Call it at the end of every frame.
+     */
+    public void publish() {
+        render.swap();
     }
 
     public void post(Supplier<? extends GameEvent> supplier) {
         eventSuppliers.add(supplier);
+    }
+
+    /**
+     * Gets a {@code RenderQueue} to submit render requests to.
+     * @return {@link RenderQueue}
+     */
+    public RenderQueue postRender() {
+        return render.write();
+    }
+
+    /**
+     * DO NOT submit requests to this queue, otherwise race conditions may happen.
+     * @return {@link RenderQueue} with all published information to be read.
+     */
+    public RenderQueue receiveRender() {
+        return render.read();
     }
 
 }

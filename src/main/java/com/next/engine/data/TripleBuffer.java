@@ -4,8 +4,8 @@ import java.util.function.Supplier;
 
 public final class TripleBuffer<T> {
     private volatile T read;
-    private volatile T write;
-    private volatile T spare;
+    private T write;
+    private T spare;
 
     public TripleBuffer(Supplier<T> factory) {
         this.read = factory.get();
@@ -17,9 +17,12 @@ public final class TripleBuffer<T> {
     public T write() { return write; }
 
     public void swap() {
-        T temp = read;
-        read = write;
-        write = spare;
-        spare = temp;
+        T newRead  = write;
+        T newWrite = spare;
+        T newSpare = read;
+
+        write = newWrite;
+        spare = newSpare;
+        read = newRead;
     }
 }

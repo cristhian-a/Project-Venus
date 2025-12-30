@@ -28,7 +28,7 @@ public class SpellHandler {
         event.spell().dispose();
         event.player().boostSpeed(3f);
 
-        mailbox.render.write().submit(
+        mailbox.postRender().submit(
                 Layer.UI,
                 "Mercury's Bless!",
                 Fonts.DEFAULT,
