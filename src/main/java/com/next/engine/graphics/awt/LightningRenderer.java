@@ -111,7 +111,7 @@ class LightningRenderer {
             );
 
             if (cachedColoredLight == null) {
-                cachedColoredLight = makeColoredLight(light, new Color(0, 255, 0));
+                cachedColoredLight = makeColoredLight(light, new Color(0, 255, 255));
             }
 
             lightGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
@@ -138,22 +138,15 @@ class LightningRenderer {
 
         for (int y = 0; y < mask.getHeight(); y++) {
             for (int x = 0; x < mask.getWidth(); x++) {
-//                int a = alphaRemap[(mask.getRGB(x, y) >> 24) & 0xFF];
                 int a = (mask.getRGB(x, y) >> 24) & 0xFF;
+//                a = (int) compressAlpha(a, 0.45f, 2f);
+                a = (int) compressAlpha(a, 0.2f, 0.75f, 0.5f);
 
-                int aOut;
-//                aOut = (int) compressAlphaByDiv(a, 2);
-//                aOut = compressAlphaByClamp(a, 0, 155);
+                int r = color.getRed() * a / 255;
+                int g = color.getGreen() * a / 255;
+                int b = color.getBlue() * a / 255;
 
-//                aOut = (int) (compressAlpha((a / 255f), 0.5f, 2f) * 255);
-//                aOut = (int) (compressAlpha((a / 255f), 0f, 0.6f, 0.5f) * 255);
-                aOut = (int) highCut(a, 0.4f, 1.3f);
-
-                int r = color.getRed() * aOut / 255;
-                int g = color.getGreen() * aOut / 255;
-                int b = color.getBlue() * aOut / 255;
-
-                int argb = (aOut << 24) | (r << 16) | (g << 8) | b;
+                int argb = (a << 24) | (r << 16) | (g << 8) | b;
                 img.setRGB(x, y, argb);
             }
         }
@@ -161,52 +154,33 @@ class LightningRenderer {
         return img;
     }
 
-    private float compressAlpha(float alpha, float minVal, float maxVal, float threshold) {
-        if (alpha < threshold) {
-            // Upward compression: Elevate the "valleys"
-            // Normalizes 0..threshold to 0..1, then maps to minVal..threshold
-            return minVal + (alpha / threshold) * (threshold - minVal);
-        } else {
-            // Downward compression: Cut the "peaks"
-            // Normalizes threshold..1 to 0..1, then maps to threshold..maxVal
-            return (float) (threshold + ((alpha - threshold) / (1.0 - threshold)) * (maxVal - threshold));
-        }
-    }
-
-    private float compressAlpha(float alpha, float threshold, float ratio) {
-        return threshold + (alpha - threshold) / ratio;
-    }
-
-    private float highCut(float alpha, float threshold, float ratio) {
+    private float compressAlpha(float alpha, float lowCut, float ceiling, float threshold) {
         float t = alpha / 255f;
 
-        float knee = 0.1f;
-
         float out;
-        if (t < threshold - knee) {
-            out = t;
-        } else if (t > threshold + knee) {
-            out = threshold + (t - threshold) / ratio;
+        if (t < lowCut) return t;
+        else if (t < threshold) {
+//            out = lowCut + (t / threshold) * (threshold - lowCut);
+            float k = (t - lowCut) / (threshold - lowCut);
+            k = k * k * (3 - 2 * k);
+            out = lowCut + (threshold - lowCut) * k;
         } else {
-            float k = (t - (threshold - knee)) / (2 * knee);
-            float soft = k * k * (3 - 2 * k);
-            float linear = threshold + (t - threshold) / ratio;
-            out = t * (1 - soft) + linear * soft;
+            out = (float) (threshold + ((t - threshold) / (1.0 - threshold)) * (ceiling - threshold));
         }
 
-        // normalize so max still reaches 1.0
-        float maxOut = threshold + (1.0f - threshold) / ratio;
-        out /= maxOut;
-
-        return (int)(out * 255);
+        return out * 255f;
     }
 
-    private int compressAlphaByClamp(long alpha, int min, int max) {
-        return Math.clamp(alpha, min, max);
-    }
+    private int compressAlpha(int alpha, float threshold, float ratio) {
+        // This is the best one so far; however, it leaves a strong transition zone that's unpleasant to see
+        float t = alpha / 255f;
 
-    private float compressAlphaByDiv(float alpha, float div) {
-        return alpha / div;
+        // EPSILON provides better falloffs but a very edgy sharp
+        final float EPSILON = 0.0001f;
+        if (t < EPSILON) return alpha;
+        float out = threshold + (t - threshold) / ratio;
+
+        return (int) (out * 255);
     }
 
 }

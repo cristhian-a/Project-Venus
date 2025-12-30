@@ -172,7 +172,7 @@ public class Game {
         s.add(light);
 //        s.add(lightB);
 //        s.add(lightC);
-        s.add(light2);
+//        s.add(light2);
         s.add(player);
 
         // TODO take care: the same rule, for now, share state within multiple sensors, that means a once-use is REALLY once,
