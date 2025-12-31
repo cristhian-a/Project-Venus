@@ -1,8 +1,0 @@
-{
-  "objects": [
-    {"type": "spell", "sprite": 15},
-    {"type": "door", "sprite": 29},
-    {"type": "chest", "sprite": 30},
-    {"type": "key", "sprite": 31}
-  ]
-}

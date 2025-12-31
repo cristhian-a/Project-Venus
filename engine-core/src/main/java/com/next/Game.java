@@ -1,6 +1,7 @@
 package com.next;
 
 import com.next.engine.Global;
+import com.next.engine.data.Cache;
 import com.next.engine.data.Registry;
 import com.next.engine.event.*;
 import com.next.engine.graphics.RenderQueue;
