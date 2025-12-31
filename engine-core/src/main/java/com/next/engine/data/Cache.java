@@ -1,6 +1,6 @@
 package com.next.engine.data;
 
-import com.next.engine.annotations.Experimental;
+import com.next.engine.annotations.internal.Experimental;
 
 import java.util.function.Supplier;
 

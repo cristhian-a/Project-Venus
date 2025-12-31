@@ -9,6 +9,6 @@ module engine.core {
     requires static lombok;
     requires org.jspecify;
 
-    exports com.next.system to com.fasterxml.jackson.databind;
-    exports com.next.world to com.fasterxml.jackson.databind;
+    opens com.next.system to com.fasterxml.jackson.databind;
+    opens com.next.world to com.fasterxml.jackson.databind;
 }
