@@ -1,6 +1,6 @@
 package com.next.engine.data;
 
-import com.next.engine.util.Experimental;
+import com.next.engine.annotations.Experimental;
 
 @Experimental
 public class RenderBuffer {
