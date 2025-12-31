@@ -1,4 +1,4 @@
-package com.next.engine.util;
+package com.next.engine.annotations.internal;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

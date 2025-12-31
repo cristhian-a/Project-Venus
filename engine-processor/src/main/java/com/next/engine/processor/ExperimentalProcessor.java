@@ -1,6 +1,6 @@
 package com.next.engine.processor;
 
-import com.next.engine.util.Experimental;
+import com.next.engine.annotations.internal.Experimental;
 import com.sun.source.tree.IdentifierTree;
 import com.sun.source.util.TreePath;
 import com.sun.source.util.TreePathScanner;
@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_25)
-@SupportedAnnotationTypes("com.next.engine.util.Experimental")
+@SupportedAnnotationTypes("com.next.engine.annotations.internal.Experimental")
 public class ExperimentalProcessor extends AbstractProcessor {
 
     private Trees trees;
