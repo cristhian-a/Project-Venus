@@ -1,11 +1,18 @@
 package com.next.engine.physics;
 
+import com.next.engine.event.TriggerSystem;
+import com.next.engine.model.Sensor;
 import com.next.world.Scene;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Physics {
 
     private final CollisionTable collisionTable = new CollisionTable();
     private final CollisionInspector inspector = new CollisionInspector();
+
+    private final TriggerSystem triggerSystem = new TriggerSystem();
 
     private Scene scene;
     private SpatialGrid grid;
@@ -167,12 +174,12 @@ public class Physics {
 //    }
 
     /**
-     * Apply the physics rules to the bodies inside the current ruled over {@code Scene}, then let the {@code collector}
+     * Apply the physics rules to the bodies inside the current ruled over {@link Scene}, then let the {@code collector}
      * collect all events produced during collision resolution.
      *
      * @param delta     delta time.
-     * @param queue     a buffer with the requested motion deltas to be processed by the physics engine.
-     * @param collector collects all events produced during collision resolution.
+     * @param queue     a buffer with the requested motion deltas to be processed by the physics engine (see {@link MotionQueue}).
+     * @param collector collects all events produced during collision resolution (see {@link CollisionCollector}).
      */
     public void apply(double delta, MotionQueue queue, CollisionCollector collector) {
         grid.clear();
@@ -192,10 +199,13 @@ public class Physics {
             a.onCollision(b, collector);
             b.onCollision(a, collector);
         }
+
+        triggerSystem.collect(scene, grid);
+        triggerSystem.compute(scene, collector);
     }
 
     private void integrateMotion(Axis axis, double deltaTime, int entityId, float motionDelta) {
-        Body agent = scene.findBodyById(entityId);
+        Body agent = (Body) scene.getEntity(entityId); //scene.findBodyById(entityId);
         if (axis == Axis.X) {
             agent.moveX(motionDelta, deltaTime);
         } else if (axis == Axis.Y) {

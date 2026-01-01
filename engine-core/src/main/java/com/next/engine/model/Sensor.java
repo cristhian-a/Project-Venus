@@ -29,6 +29,14 @@ public class Sensor extends Entity implements Body {
             collector.post(() -> rule.getEvent(this, other));
     }
 
+    public void onEnter(Body other, CollisionCollector collector) {
+        IO.println("Enter: " + other.getId());
+    }
+
+    public void onExit(Body other, CollisionCollector collector) {
+        IO.println("Exit: " + other.getId());
+    }
+
     @Override
     public void onDispose() {
     }

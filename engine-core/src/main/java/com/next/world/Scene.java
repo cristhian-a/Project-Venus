@@ -5,6 +5,7 @@ import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Actor;
 import com.next.engine.model.Entity;
 import com.next.engine.model.Light;
+import com.next.engine.model.Sensor;
 import com.next.engine.physics.Body;
 import com.next.engine.system.Debugger;
 import com.next.model.Player;
@@ -14,7 +15,7 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
- * A {@code Scene} holds all the runtime entities relevant to the current game scene.
+ * A {@code Scene} holds all the runtime entities relevant to the current scene.
  */
 public class Scene {
     public final World world;
@@ -32,7 +33,11 @@ public class Scene {
     @Getter private Light[] lights;
     private int lightCount;
 
-    private int nextId = 1;
+    @Getter private Sensor[] sensors;
+    @Getter private int sensorCount;
+
+    private Entity[] entitiesById;
+    private int nextId = 0;
 
     public Scene(World world, Player player) {
         this.world = world;
@@ -42,6 +47,9 @@ public class Scene {
         this.actors = new Actor[16];
         this.bodies = new Body[16];
         this.lights = new Light[16];
+        this.sensors = new Sensor[16];
+
+        this.entitiesById = new Entity[16];
     }
 
     public void addAll(Entity[] entities) {
@@ -55,9 +63,11 @@ public class Scene {
 
         if (entityCount >= entities.length) {
             entities = Arrays.copyOf(entities, entities.length * 2);
+            entitiesById = Arrays.copyOf(entitiesById, entitiesById.length * 2);
         }
 
         entities[entityCount++] = entity;
+        entitiesById[entity.getId()] = entity;
 
         if (entity instanceof Body body) {
             if (bodyCount >= bodies.length) {
@@ -82,6 +92,14 @@ public class Scene {
 
             lights[lightCount++] = light;
         }
+
+        if (entity instanceof Sensor sensor) {
+            if (sensorCount >= sensors.length) {
+                sensors = Arrays.copyOf(sensors, sensors.length * 2);
+            }
+
+            sensors[sensorCount++] = sensor;
+        }
     }
 
     public Body findBodyById(int id) {
@@ -89,6 +107,10 @@ public class Scene {
             if (b.getId() == id) return b;
         }
         return null;
+    }
+
+    public Entity getEntity(int id) {
+        return entitiesById[id];
     }
 
     public void update(double delta, Mailbox mailbox) {
@@ -122,6 +144,8 @@ public class Scene {
             if (entities[i].isDisposed()) {
                 entities[i].onDispose();
 
+                entitiesById[entities[i].getId()] = null;
+
                 entities[i] = entities[entityCount - 1];
                 entities[entityCount - 1] = null;
                 entityCount--;
@@ -148,12 +172,27 @@ public class Scene {
                 i--;
             }
         }
+
+        for (int i = 0; i < sensorCount; i++) {
+            if (sensors[i].isDisposed()) {
+                sensors[i] = sensors[sensorCount - 1];
+                sensors[sensorCount - 1] = null;
+                sensorCount--;
+                i--;
+            }
+        }
     }
 
     public void forEachBody(Consumer<Body> consumer) {
         for (int i = 0; i < bodyCount; i++) {
             Debugger.publish("HITBOX" + bodies[i].getId(), bodies[i].getCollisionBox());
             consumer.accept(bodies[i]);
+        }
+    }
+
+    public void forEachSensor(Consumer<Sensor> consumer) {
+        for (int i = 0; i < sensorCount; i++) {
+            consumer.accept(sensors[i]);
         }
     }
 

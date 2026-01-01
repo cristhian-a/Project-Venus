@@ -189,8 +189,13 @@ public class Game {
                 TriggerRules.when(Conditions.IS_PLAYER).then(Actions.damagePlayer(1))
         );
 
+        Sensor area = new Sensor(400, 340, 32, 32,
+                TriggerRules.when(Conditions.IS_PLAYER).then((self, other) -> null)
+        );
+
         s.add(dmg);
         s.add(sus);
+        s.add(area);
 
         return s;
     }

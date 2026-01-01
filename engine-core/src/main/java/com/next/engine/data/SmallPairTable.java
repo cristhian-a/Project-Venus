@@ -10,7 +10,7 @@ import com.next.engine.annotations.internal.Experimental;
 @Experimental
 public class SmallPairTable {
 
-    private final long[] keys   = new long[64];
+    public final long[] keys    = new long[64];
     public int[] valuesA        = new  int[64];
     public int[] valuesB        = new  int[64];
     private int size            = 0;

@@ -1,5 +1,6 @@
 package com.next.engine.model;
 
+import com.next.engine.annotations.internal.Experimental;
 import com.next.engine.event.GameEvent;
 import com.next.engine.event.TriggerRule;
 import com.next.engine.physics.Body;
@@ -26,12 +27,14 @@ public final class Sensors {
     }
 
     /**
+     * {@link Experimental}<br/>
      * This is an idea of an implementation using query building, not done yet.
-     * @apiNote It got the problem of shared state across instances that use the same policy.
+     * @apiNote It has the problem of shared state across instances that use the same policy.
      * @param base base trigger rule
      * @return a trigger rule that can be fired only once and will dispose its sensor automatically
      */
-    public static TriggerRule once(TriggerRule base) {
+    @Experimental
+    public static TriggerRule once(@NonNull TriggerRule base) {
         return new TriggerRule() {
             boolean fired = false;
 
