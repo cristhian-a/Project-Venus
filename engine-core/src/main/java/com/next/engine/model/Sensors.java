@@ -57,6 +57,9 @@ public final class Sensors {
         return new SensorBuilder();
     }
 
+    /**
+     * Builder for {@link Sensor}s.
+     */
     public static final class SensorBuilder {
         enum Timing { COLLISION, ENTER, EXIT }
         Timing timing;
@@ -108,7 +111,7 @@ public final class Sensors {
             };
         }
 
-        public Sensor build(float x, float y, float width, float height) {
+        public @NonNull Sensor build(float x, float y, float width, float height) {
             TriggerRule collision = collisionCond == null ? null : ruleFrom(collisionCond, collisionAction);
             TriggerRule enter = enterCond == null ? null : ruleFrom(enterCond, enterAction);
             TriggerRule exit = exitCond == null ? null : ruleFrom(exitCond, exitAction);
