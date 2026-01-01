@@ -44,6 +44,11 @@ public final class TriggerRules {
         return (self, other) -> !condition.satisfy(self, other);
     }
 
+    /**
+     * A builder class for constructing composite conditions and associating them with actions to create trigger rules.
+     * This class is used to sequentially build logical combinations of conditions, such as AND or OR combinations,
+     * and attach an action to them to define the behavior of the resulting trigger rule.
+     */
     public static final class ConditionBuilder {
         private Condition condition;
 

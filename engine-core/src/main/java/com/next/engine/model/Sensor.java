@@ -14,6 +14,8 @@ public class Sensor extends Entity implements Body {
     protected final CollisionBox collisionBox;
 
     protected final TriggerRule rule;
+    protected TriggerRule enterRule;
+    protected TriggerRule exitRule;
 
     public Sensor(float worldX, float worldY, float width, float height, TriggerRule rule) {
         this.worldX = worldX;
@@ -25,16 +27,20 @@ public class Sensor extends Entity implements Body {
 
     @Override
     public void onCollision(Body other, CollisionCollector collector) {
-        if (rule.shouldFire(this, other))
+        if (rule != null && rule.shouldFire(this, other))
             collector.post(() -> rule.getEvent(this, other));
     }
 
     public void onEnter(Body other, CollisionCollector collector) {
-        IO.println("Enter: " + other.getId());
+        if (enterRule != null && enterRule.shouldFire(this, other)) {
+            collector.post(() -> enterRule.getEvent(this, other));
+        }
     }
 
     public void onExit(Body other, CollisionCollector collector) {
-        IO.println("Exit: " + other.getId());
+        if (exitRule != null && exitRule.shouldFire(this, other)) {
+            collector.post(() -> exitRule.getEvent(this, other));
+        }
     }
 
     @Override

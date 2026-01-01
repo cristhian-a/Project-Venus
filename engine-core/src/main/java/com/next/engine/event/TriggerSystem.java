@@ -46,6 +46,11 @@ public class TriggerSystem implements SpatialGridHandler {
         }
     }
 
+    /**
+     * Processes collisions and collects generated events.
+     * @param scene a {@link Scene} containing all the entities in the scene.
+     * @param collector a {@link CollisionCollector} to collect all the generated events.
+     */
     public void compute(Scene scene, CollisionCollector collector) {
         for (int i = 0; i < current.size(); i++) {
             boolean found = false;

@@ -189,13 +189,21 @@ public class Game {
                 TriggerRules.when(Conditions.IS_PLAYER).then(Actions.damagePlayer(1))
         );
 
-        Sensor area = new Sensor(400, 340, 32, 32,
-                TriggerRules.when(Conditions.IS_PLAYER).then((self, other) -> null)
-        );
+        Sensor tracker = Sensors.builder()
+                .onEnter(Conditions.IS_PLAYER).then(Actions.damagePlayer(1))
+                .onCollision(Conditions.IS_PLAYER).then((self, other) -> {
+                    Debugger.publish("test", new Debugger.DebugText("PIT"), 250, 250, Debugger.TYPE.INFO);
+                    return null;
+                })
+                .onExit(Conditions.IS_PLAYER).then((self, other) -> {
+                    IO.println("Exited");
+                    return null;
+                })
+                .build(400, 340, 32, 32);
 
         s.add(dmg);
         s.add(sus);
-        s.add(area);
+        s.add(tracker);
 
         return s;
     }

@@ -1,11 +1,7 @@
 package com.next.engine.physics;
 
 import com.next.engine.event.TriggerSystem;
-import com.next.engine.model.Sensor;
 import com.next.world.Scene;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Physics {
 
