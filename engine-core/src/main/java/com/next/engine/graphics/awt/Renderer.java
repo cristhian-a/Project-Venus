@@ -84,10 +84,11 @@ public class Renderer {
 
     private void renderSpriteTable(Graphics2D g, Camera camera, RenderQueue.SpriteTable table) {
         for (int i = 0; i < table.count; i++) {
+            var sprite = Registry.sprites.get(table.spriteId[i]);
             g.drawImage(
-                    Registry.sprites.get(table.spriteId[i]).texture(),
-                    camera.worldToScreenX(table.x[i]),
-                    camera.worldToScreenY(table.y[i]),
+                    sprite.texture(),
+                    camera.worldToScreenX(table.x[i] - sprite.pivotX()),
+                    camera.worldToScreenY(table.y[i] - sprite.pivotY()),
                     null
             );
         }

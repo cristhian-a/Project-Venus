@@ -9,12 +9,14 @@ import com.next.engine.graphics.Sprite;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-public class TextureMapper {
+public class AtlasImporter {
 
     public static void register(BufferedImage sheet, TextureMetadata metadata) {
         if (sheet == null || metadata == null) {
             throw new IllegalArgumentException("Sheet or metadata cannot be null");
         }
+
+        Registry.textures.put(99, sheet);   // Never actually queried, just here for safety
 
         List<Frame> frames = metadata.getFrames();
         for (int i = 0; i < frames.size(); i++) {
@@ -24,8 +26,8 @@ public class TextureMapper {
             Point pivot = frame.getPivot();
             float pivotX = 0, pivotY = 0;
             if (pivot != null) {
-                if (pivot.x > 0) pivotX = coordinates.width * frame.getPivot().x;
-                if (pivot.y > 0) pivotY = coordinates.height * frame.getPivot().y;
+                pivotX = coordinates.width * frame.getPivot().x;
+                pivotY = coordinates.height * frame.getPivot().y;
             }
 
             var subImage = sheet.getSubimage(coordinates.x, coordinates.y, coordinates.width, coordinates.height);

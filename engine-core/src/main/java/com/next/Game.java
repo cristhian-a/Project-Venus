@@ -2,7 +2,7 @@ package com.next;
 
 import com.next.engine.Global;
 import com.next.engine.data.Registry;
-import com.next.engine.data.TextureMapper;
+import com.next.engine.data.AtlasImporter;
 import com.next.engine.event.*;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.*;
@@ -88,7 +88,7 @@ public class Game {
 
             var sheetMetadata = Loader.Textures.loadMetadata("sprites.json");
             var sheet = Loader.Textures.loadImage("sprites.png");
-            TextureMapper.register(sheet, sheetMetadata);
+            AtlasImporter.register(sheet, sheetMetadata);
 
             // TODO this should be moved to start(), but can't until I fix the renderer queueing world render
             scene = loadScene("world_1.json", "level_1.json", "map_01");

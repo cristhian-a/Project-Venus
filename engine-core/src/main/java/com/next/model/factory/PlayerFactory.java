@@ -1,10 +1,14 @@
 package com.next.model.factory;
 
 import com.next.engine.animation.Animation;
+import com.next.engine.animation.AnimationState;
 import com.next.engine.data.Registry;
 import com.next.model.Player;
 import com.next.world.LevelData;
 import com.next.world.World;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlayerFactory {
 
@@ -31,6 +35,14 @@ public class PlayerFactory {
         int idleLeft    = Registry.textureIds.get("char-10.png");
         int walkLeft1   = Registry.textureIds.get("char-11.png");
         int walkLeft2   = Registry.textureIds.get("char-12.png");
+        int atkFront1   = Registry.textureIds.get("char-atk-1.png");
+        int atkFront2   = Registry.textureIds.get("char-atk-2.png");
+        int atkBack1    = Registry.textureIds.get("char-atk-3.png");
+        int atkBack2    = Registry.textureIds.get("char-atk-4.png");
+        int atkRight1   = Registry.textureIds.get("char-atk-5.png");
+        int atkRight2   = Registry.textureIds.get("char-atk-6.png");
+        int atkLeft1    = Registry.textureIds.get("char-atk-7.png");
+        int atkLeft2    = Registry.textureIds.get("char-atk-8.png");
 
         animBuilder.frames(new int[] { walkDown1, walkDown2 });
         var downAnimation = animBuilder.build();
@@ -44,10 +56,35 @@ public class PlayerFactory {
         animBuilder.frames(new int[] { walkLeft1, walkLeft2 });
         var leftAnimation = animBuilder.build();
 
+        animBuilder.frames(new int[] { atkFront1, atkFront2 });
+        var atkFrontAnimation = animBuilder.build();
+
+        animBuilder.frames(new int[] { atkBack1, atkBack2 });
+        var atkBackAnimation = animBuilder.build();
+
+        animBuilder.frames(new int[] { atkRight1, atkRight2 });
+        var atkRightAnimation = animBuilder.build();
+
+        animBuilder.frames(new int[] { atkLeft1, atkLeft2 });
+        var atkLeftAnimation = animBuilder.build();
+
+        var idle = new Animation(new int[]{idleFront}, 0, false);
+
+        Map<AnimationState, Animation> animations = new HashMap<>();
+        animations.put(AnimationState.IDLE, idle);
+        animations.put(AnimationState.WALK_DOWN, downAnimation);
+        animations.put(AnimationState.WALK_UP, upAnimation);
+        animations.put(AnimationState.WALK_RIGHT, rightAnimation);
+        animations.put(AnimationState.WALK_LEFT, leftAnimation);
+        animations.put(AnimationState.ATTACK_UP, atkBackAnimation);
+        animations.put(AnimationState.ATTACK_DOWN, atkFrontAnimation);
+        animations.put(AnimationState.ATTACK_LEFT, atkLeftAnimation);
+        animations.put(AnimationState.ATTACK_RIGHT, atkRightAnimation);
+
         int spawnX = world.getTileSize() * level.playerSpawnX();
         int spawnY = world.getTileSize() * level.playerSpawnY();
 
-        return new Player(idleFront, spawnX, spawnY, upAnimation, downAnimation, leftAnimation, rightAnimation);
+        return new Player(spawnX, spawnY, animations);
     }
 
 }

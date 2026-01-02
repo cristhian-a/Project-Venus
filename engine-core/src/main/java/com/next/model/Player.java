@@ -13,8 +13,13 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Player extends AnimatedActor {
+
+    private enum Orientation {
+        UP, DOWN, LEFT, RIGHT
+    }
 
     @Getter private final List<Key> heldKeys = new ArrayList<>();
     @Setter private Input input;
@@ -24,9 +29,10 @@ public class Player extends AnimatedActor {
     private float speed = 1;
     @Getter @Setter private int maxHp = 6;
     @Getter @Setter private int health = maxHp;
+    private Orientation orientation = Orientation.DOWN;
 
-    public Player(int spriteId, float worldX, float worldY,
-                  Animation upAnim, Animation downAnim, Animation leftAnim, Animation rightAnim
+    public Player(float worldX, float worldY,
+                  Map<AnimationState, Animation> animations
     ) {
         this.worldX = worldX;
         this.worldY = worldY;
@@ -40,15 +46,7 @@ public class Player extends AnimatedActor {
 
         setPosition(worldX, worldY);
 
-        animationState = AnimationState.IDLE;
-        Animation idle = new Animation(new int[]{spriteId}, 0, false);
-        this.spriteId = spriteId;
-
-        animations.put(AnimationState.IDLE, idle);
-        animations.put(AnimationState.WALK_UP, upAnim);
-        animations.put(AnimationState.WALK_DOWN, downAnim);
-        animations.put(AnimationState.WALK_LEFT, leftAnim);
-        animations.put(AnimationState.WALK_RIGHT, rightAnim);
+        this.animations = animations;
     }
 
     @Override
@@ -60,19 +58,32 @@ public class Player extends AnimatedActor {
 
 //        float speed = (float) (this.speed * delta);
 
-        if (!talking) {
+        if (input.isDown(Input.Action.TALK) && !talking) {
+            switch (orientation) {
+                case UP -> animationState = AnimationState.ATTACK_UP;
+                case DOWN -> animationState = AnimationState.ATTACK_DOWN;
+                case LEFT -> animationState = AnimationState.ATTACK_LEFT;
+                case RIGHT -> animationState = AnimationState.ATTACK_RIGHT;
+            }
+        } else if (!talking) {
+            orientation = Orientation.DOWN;
+
             if (input.isDown(Input.Action.UP)) {
                 dy -= speed;
                 animationState = AnimationState.WALK_UP;
+                orientation = Orientation.UP;
             } else if (input.isDown(Input.Action.DOWN)) {
                 dy += speed;
                 animationState = AnimationState.WALK_DOWN;
+                orientation = Orientation.DOWN;
             } else if (input.isDown(Input.Action.LEFT)) {
                 dx -= speed;
                 animationState = AnimationState.WALK_LEFT;
+                orientation = Orientation.LEFT;
             } else if (input.isDown(Input.Action.RIGHT)) {
                 dx += speed;
                 animationState = AnimationState.WALK_RIGHT;
+                orientation = Orientation.RIGHT;
             }
         }
 
