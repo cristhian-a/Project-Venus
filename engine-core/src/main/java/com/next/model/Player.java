@@ -31,8 +31,10 @@ public class Player extends AnimatedActor {
     @Getter @Setter private int health = maxHp;
     private Orientation orientation = Orientation.DOWN;
 
-    public Player(float worldX, float worldY,
-                  Map<AnimationState, Animation> animations
+    private int invincibilityFrames = 0;
+    private boolean invincible = false;
+
+    public Player(float worldX, float worldY, Map<AnimationState, Animation> animations, CollisionBox collisionBox
     ) {
         this.worldX = worldX;
         this.worldY = worldY;
@@ -41,7 +43,7 @@ public class Player extends AnimatedActor {
         collisionMask = 1;
         this.mass = 1f;
 
-        collisionBox = new CollisionBox(3, 6, 10, 9);
+        this.collisionBox = collisionBox;
         this.collisionType = CollisionType.SOLID;
 
         setPosition(worldX, worldY);
@@ -55,6 +57,8 @@ public class Player extends AnimatedActor {
         float dy = 0;
 
         animationState = AnimationState.IDLE;
+        if (invincible) invincibilityFrames--;
+        invincible = invincibilityFrames > 0;
 
 //        float speed = (float) (this.speed * delta);
 
@@ -113,5 +117,14 @@ public class Player extends AnimatedActor {
 
     public void boostSpeed(float boost) {
         speed += boost;
+    }
+
+    public void takeDamage(int damage) {
+        if (invincible) return;
+
+        damage = Math.clamp(damage, 0, health);
+        health -= damage;
+        invincible = true;
+        invincibilityFrames = 60;
     }
 }

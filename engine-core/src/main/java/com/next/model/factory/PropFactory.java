@@ -37,7 +37,7 @@ public class PropFactory {
     }
 
     public Prop createStoneBlock(int worldX, int worldY) {
-        return new Prop(Registry.textureIds.get("stone-block-1.png"), worldX, worldY, 1f, CollisionType.SOLID, 2, 2, 12, 12);
+        return new Prop(Registry.textureIds.get("stone-block-1.png"), worldX, worldY, 1f, CollisionType.SOLID, -6, -6, 12, 12);
     }
 
     public DisplayHeart createHeart(int worldX, int worldY) {
@@ -49,15 +49,17 @@ public class PropFactory {
 
     public List<Prop> createScene1Props() {
         var props = new ArrayList<Prop>(8);
-        props.add(createChest(10 * world.getTileSize(), 7 * world.getTileSize()));
-        props.add(createDoor(10 * world.getTileSize(), 11 * world.getTileSize()));
-        props.add(createDoor(8 * world.getTileSize(), 28 * world.getTileSize()));
-        props.add(createDoor(12 * world.getTileSize(), 22 * world.getTileSize()));
-        props.add(createKey(23 * world.getTileSize(), 7 * world.getTileSize()));
-        props.add(createKey(23 * world.getTileSize(), 40 * world.getTileSize()));
-        props.add(createKey(37 * world.getTileSize(), 9 * world.getTileSize()));
-        props.add(createSpell(37 * world.getTileSize(), 42 * world.getTileSize()));
-        props.add(createStoneBlock(23 * world.getTileSize(), 23 * world.getTileSize()));
+        int pivot = 8; // offset in relation to the pivot
+
+        props.add(createChest(10 * world.getTileSize() + pivot, 7 * world.getTileSize() + pivot));
+        props.add(createDoor(10 * world.getTileSize() + pivot, 11 * world.getTileSize() + pivot));
+        props.add(createDoor(8 * world.getTileSize() + pivot, 28 * world.getTileSize() + pivot));
+        props.add(createDoor(12 * world.getTileSize() + pivot, 22 * world.getTileSize() + pivot));
+        props.add(createKey(23 * world.getTileSize() + pivot, 7 * world.getTileSize() + pivot));
+        props.add(createKey(23 * world.getTileSize() + pivot, 40 * world.getTileSize() + pivot));
+        props.add(createKey(37 * world.getTileSize() + pivot, 9 * world.getTileSize() + pivot));
+        props.add(createSpell(37 * world.getTileSize() + pivot, 42 * world.getTileSize() + pivot));
+        props.add(createStoneBlock(23 * world.getTileSize() + pivot, 23 * world.getTileSize() + pivot));
         return props;
     }
 }

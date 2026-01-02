@@ -7,14 +7,14 @@ import com.next.engine.physics.CollisionType;
 
 public class Prop extends Actor {
 
-    public Prop(int spriteId, float worldX, float worldY, CollisionType collisionType) {
+    public Prop(int spriteId, float worldX, float worldY, CollisionType collisionType, CollisionBox collisionBox) {
         this.spriteId = spriteId;
         this.collisionType = collisionType;
 
         this.layer = 1;
         this.collisionMask = 0;
 
-        collisionBox = new CollisionBox(0, 0, 16, 16);
+        this.collisionBox = collisionBox;
         setPosition(worldX, worldY);
     }
 

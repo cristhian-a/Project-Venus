@@ -3,6 +3,7 @@ package com.next.model.factory;
 import com.next.engine.animation.Animation;
 import com.next.engine.animation.AnimationState;
 import com.next.engine.data.Registry;
+import com.next.engine.physics.CollisionBox;
 import com.next.model.Player;
 import com.next.world.LevelData;
 import com.next.world.World;
@@ -81,10 +82,16 @@ public class PlayerFactory {
         animations.put(AnimationState.ATTACK_LEFT, atkLeftAnimation);
         animations.put(AnimationState.ATTACK_RIGHT, atkRightAnimation);
 
-        int spawnX = world.getTileSize() * level.playerSpawnX();
-        int spawnY = world.getTileSize() * level.playerSpawnY();
+        int spawnX = world.getTileSize() * level.playerSpawnX() + 8;
+        int spawnY = world.getTileSize() * level.playerSpawnY() + 8;
 
-        return new Player(spawnX, spawnY, animations);
+        float offsetX = -5;
+        float offsetY = -2;
+        float width = 10;
+        float height = 9;
+        CollisionBox box = new CollisionBox(spawnX, spawnY, offsetX, offsetY, width, height);
+
+        return new Player(spawnX, spawnY, animations, box);
     }
 
 }

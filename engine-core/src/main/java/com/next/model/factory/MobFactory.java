@@ -20,6 +20,9 @@ public class MobFactory {
         animation.frames = new int[] { mob1, mob2 };
 
         Map<AnimationState, Animation> animations = Map.of(AnimationState.IDLE, animation);
-        return new Mob(animations, x, y, 10, 14, 3, 0);
+        int pivot = 8;
+        int offsetX = 3 - pivot;
+        int offsetY = -pivot;
+        return new Mob(animations, x + pivot, y + pivot, 10, 14, offsetX, offsetY);
     }
 }

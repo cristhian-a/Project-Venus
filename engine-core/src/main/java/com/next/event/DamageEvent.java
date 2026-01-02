@@ -14,10 +14,7 @@ public record DamageEvent(Player player, int damage) implements GameEvent {
 
         public void onFire(DamageEvent event) {
             int damage = event.damage();
-            int hp = event.player().getHealth() - damage;
-
-            int newHp = Math.clamp(hp, 0, event.player().getHealth());
-            event.player().setHealth(newHp);
+            event.player().takeDamage(damage);
         }
     }
 }

@@ -16,6 +16,9 @@ public class ObjectFactory {
         animation.frameRate = 10;
         animation.frames = new int[] { fire2, fire1, fire3, fire1 };
         animation.loop = true;
-        return new ObjectFireCamp(animation, 23 * 16, 21 * 16, 16, 16, 0, 0);
+        int offset = 8;
+        int x = 23 * 16 + offset;
+        int y = 21 * 16 + offset;
+        return new ObjectFireCamp(animation, x, y, 16, 16, -offset, -offset);
     }
 }

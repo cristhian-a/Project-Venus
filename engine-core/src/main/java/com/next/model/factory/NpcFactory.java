@@ -32,6 +32,6 @@ public class NpcFactory {
         idle.loop = false;
         animations.put(AnimationState.IDLE, idle);
 
-        return new NpcDummy(22*16, 21*16, animations);
+        return new NpcDummy(22*16+8, 21*16+8, animations);
     }
 }
