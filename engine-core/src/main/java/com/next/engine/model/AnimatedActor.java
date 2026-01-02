@@ -19,5 +19,8 @@ public abstract class AnimatedActor extends Actor {
         super();
     }
 
-    public abstract void animate();
+    public void animate() {
+        animator.set(animations.get(animationState));
+        this.spriteId = animator.update();
+    }
 }

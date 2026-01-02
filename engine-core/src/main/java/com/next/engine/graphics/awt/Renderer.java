@@ -2,6 +2,7 @@ package com.next.engine.graphics.awt;
 
 import com.next.Game;
 import com.next.engine.data.Mailbox;
+import com.next.engine.data.Registry;
 import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
@@ -29,7 +30,7 @@ public class Renderer {
         this.settings = settings;
 
         this.uiRenderer = new UIRenderer(assets, settings);
-        this.tileRenderer = new TileRenderer(assets);
+        this.tileRenderer = new TileRenderer();
         this.lightningRenderer = new LightningRenderer(settings);
     }
 
@@ -84,7 +85,7 @@ public class Renderer {
     private void renderSpriteTable(Graphics2D g, Camera camera, RenderQueue.SpriteTable table) {
         for (int i = 0; i < table.count; i++) {
             g.drawImage(
-                    assets.getSpriteSheet("world").getSprite(table.spriteId[i]),
+                    Registry.sprites.get(table.spriteId[i]).texture(),
                     camera.worldToScreenX(table.x[i]),
                     camera.worldToScreenY(table.y[i]),
                     null

@@ -1,4 +1,4 @@
-package com.next.graphics;
+package com.next.ui;
 
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderPosition;

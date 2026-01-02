@@ -1,5 +1,6 @@
 package com.next.model.factory;
 
+import com.next.engine.data.Registry;
 import com.next.engine.model.Prop;
 import com.next.engine.physics.CollisionType;
 import com.next.model.*;
@@ -20,27 +21,30 @@ public class PropFactory {
     }
 
     public Spell createSpell(int worldX, int worldY) {
-        return new Spell(15, worldX, worldY, CollisionType.TRIGGER);
+        return new Spell(Registry.textureIds.get("spell.png"), worldX, worldY, CollisionType.TRIGGER);
     }
 
     public Door createDoor(int worldX, int worldY) {
-        return new Door(29, worldX, worldY, CollisionType.SOLID);
+        return new Door(Registry.textureIds.get("door-1.png"), worldX, worldY, CollisionType.SOLID);
     }
 
     public Chest createChest(int worldX, int worldY) {
-        return new Chest(30, worldX, worldY, CollisionType.SOLID);
+        return new Chest(Registry.textureIds.get("chest-1.png"), worldX, worldY, CollisionType.SOLID);
     }
 
     public Key createKey(int worldX, int worldY) {
-        return new Key(31, worldX, worldY, CollisionType.TRIGGER);
+        return new Key(Registry.textureIds.get("key-1.png"), worldX, worldY, CollisionType.TRIGGER);
     }
 
     public Prop createStoneBlock(int worldX, int worldY) {
-        return new Prop(32, worldX, worldY, 1f, CollisionType.SOLID, 2, 2, 12, 12);
+        return new Prop(Registry.textureIds.get("stone-block-1.png"), worldX, worldY, 1f, CollisionType.SOLID, 2, 2, 12, 12);
     }
 
     public DisplayHeart createHeart(int worldX, int worldY) {
-        return new DisplayHeart(36, 37, 38);
+        int full = Registry.textureIds.get("heart-1.png");
+        int half = Registry.textureIds.get("heart-2.png");
+        int empty = Registry.textureIds.get("heart-3.png");
+        return new DisplayHeart(full, half, empty);
     }
 
     public List<Prop> createScene1Props() {

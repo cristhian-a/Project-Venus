@@ -1,4 +1,4 @@
-package com.next.graphics;
+package com.next.ui;
 
 import com.next.engine.event.EventDispatcher;
 import com.next.engine.event.ExitEvent;

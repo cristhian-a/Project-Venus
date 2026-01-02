@@ -1,5 +1,6 @@
 package com.next.world;
 
+import com.next.engine.data.Registry;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,14 +19,14 @@ public class World {
 
     private void mapTiles() {
         this.tiles = new Tile[10];
-        tiles[0] = new Tile(0, false);  // grass
-        tiles[1] = new Tile(1, true);   // wall
-        tiles[2] = new Tile(25, true);  // water
-        tiles[3] = new Tile(27, false); // dirt
-        tiles[4] = new Tile(43, true);  // tree mid portion
-        tiles[5] = new Tile(28, false); // sand
-        tiles[6] = new Tile(42, true);  // tree top
-        tiles[7] = new Tile(44, true); // tree base
+        tiles[0] = new Tile(Registry.textureIds.get("grass-1.png"), false);     // grass
+        tiles[1] = new Tile(Registry.textureIds.get("wall-1.png"), true);       // wall
+        tiles[2] = new Tile(Registry.textureIds.get("water-1.png"), true);      // water
+        tiles[3] = new Tile(Registry.textureIds.get("dirt-1.png"), false);      // dirt
+        tiles[4] = new Tile(Registry.textureIds.get("mid-trees.png"), true);    // tree mid portion
+        tiles[5] = new Tile(Registry.textureIds.get("sand-1.png"), false);      // sand
+        tiles[6] = new Tile(Registry.textureIds.get("top-trees.png"), true);    // tree top
+        tiles[7] = new Tile(Registry.textureIds.get("bottom-trees.png"), true); // tree base
     }
 
     public boolean isSolid(int row, int col) {

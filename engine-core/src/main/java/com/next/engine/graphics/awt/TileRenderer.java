@@ -1,24 +1,21 @@
 package com.next.engine.graphics.awt;
 
+import com.next.engine.data.Registry;
 import com.next.engine.model.Camera;
 import com.next.world.Tile;
 import com.next.world.World;
-import com.next.system.AssetRegistry;
 
 import java.awt.*;
 
 final class TileRenderer {
 
-    private final AssetRegistry assets;
     private World world;
-
     private Tile[] tiles;
     private Integer[][] tileMap;
 
     private boolean render;
 
-    public TileRenderer(AssetRegistry assets) {
-        this.assets = assets;
+    public TileRenderer() {
     }
 
     public void setWorld(World world) {
@@ -56,7 +53,7 @@ final class TileRenderer {
                 int screenY = camera.worldToScreenY(worldY);
 
                 g.drawImage(
-                        assets.getSpriteSheet("world").getSprite(tile.spriteId()),
+                        Registry.sprites.get(tile.spriteId()).texture(),
                         screenX,
                         screenY,
                         null

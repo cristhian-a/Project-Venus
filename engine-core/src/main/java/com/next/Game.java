@@ -1,8 +1,8 @@
 package com.next;
 
 import com.next.engine.Global;
-import com.next.engine.data.Cache;
 import com.next.engine.data.Registry;
+import com.next.engine.data.TextureMapper;
 import com.next.engine.event.*;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.*;
@@ -10,10 +10,8 @@ import com.next.event.DamageEvent;
 import com.next.event.PauseEvent;
 import com.next.event.PitFallEvent;
 import com.next.event.handlers.PlayerHandler;
-import com.next.graphics.StartMenuUIState;
-import com.next.graphics.UIState;
-import com.next.rules.Actions;
-import com.next.rules.Conditions;
+import com.next.ui.StartMenuUIState;
+import com.next.ui.UIState;
 import com.next.engine.util.GameState;
 import com.next.engine.data.Mailbox;
 import com.next.engine.physics.Physics;
@@ -29,8 +27,8 @@ import com.next.system.AssetRegistry;
 import com.next.engine.system.Debugger;
 import com.next.system.Input;
 import com.next.system.Settings;
-import com.next.graphics.GameplayUIState;
-import com.next.graphics.UISystem;
+import com.next.ui.GameplayUIState;
+import com.next.ui.UISystem;
 import com.next.engine.util.Sounds;
 import com.next.world.LevelData;
 import com.next.world.Scene;
@@ -81,15 +79,19 @@ public class Game {
 
     public void boot() {
         try {
-            // TODO this should be moved to start(), but can't until I fix the renderer queueing world render
-            scene = loadScene("world_1.json", "level_1.json", "map_01");
-
-            Registry.textureSheets.put(0, Loader.Textures.loadSheet("light.png", 16, 16));
+            // TODO this probably will go elsewhere
             Registry.textures.put(1, Loader.Textures.loadImage("light-mask-2.png"));
             Registry.textures.put(2, Loader.Textures.loadImage("light-mask-3.png"));
             Registry.textures.put(3, Loader.Textures.loadImage("light-mask-4.png"));
             Registry.textures.put(4, Loader.Textures.loadImage("lmask-64x-halo-strong.png"));
             Registry.textures.put(5, Loader.Textures.loadImage("lmask_64x_less.png"));
+
+            var sheetMetadata = Loader.Textures.loadMetadata("sprites.json");
+            var sheet = Loader.Textures.loadImage("sprites.png");
+            TextureMapper.register(sheet, sheetMetadata);
+
+            // TODO this should be moved to start(), but can't until I fix the renderer queueing world render
+            scene = loadScene("world_1.json", "level_1.json", "map_01");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -163,6 +165,8 @@ public class Game {
         Light lightC = LightFactory.create(376, 344);
         Light light2 = LightFactory.create(300, 344);
 
+        Mob ghost = MobFactory.create(342, 649);
+
         Player player = new PlayerFactory(world, level).create();
         player.setInput(input); // TODO meh
 
@@ -174,36 +178,37 @@ public class Game {
 //        s.add(lightB);
 //        s.add(lightC);
 //        s.add(light2);
+        s.add(ghost);
         s.add(player);
 
         // TODO take care: the same rule, for now, share state within multiple sensors, that means a once-use is REALLY once,
         // TODO don't matter how many sensors receive that policy instance (TriggerRule)
-        var triggerRule = TriggerRules
-                .when(Conditions.IS_PLAYER)
-                .and((self, other) -> ((Player) other).getHealth() > 0)
-                .then(Actions.damagePlayer(1));
-        triggerRule = Sensors.once(triggerRule);
-
-        Sensor dmg = new Sensor(305, 580, 6, 6, triggerRule);
-        Sensor sus = Sensors.singleUse(400, 596, 6, 6,
-                TriggerRules.when(Conditions.IS_PLAYER).then(Actions.damagePlayer(1))
-        );
-
-        Sensor tracker = Sensors.builder()
-                .onEnter(Conditions.IS_PLAYER).then(Actions.damagePlayer(1))
-                .onCollision(Conditions.IS_PLAYER).then((self, other) -> {
-                    Debugger.publish("test", new Debugger.DebugText("PIT"), 250, 250, Debugger.TYPE.INFO);
-                    return null;
-                })
-                .onExit(Conditions.IS_PLAYER).then((self, other) -> {
-                    IO.println("Exited");
-                    return null;
-                })
-                .build(400, 340, 32, 32);
-
-        s.add(dmg);
-        s.add(sus);
-        s.add(tracker);
+//        var triggerRule = TriggerRules
+//                .when(Conditions.IS_PLAYER)
+//                .and((self, other) -> ((Player) other).getHealth() > 0)
+//                .then(Actions.damagePlayer(1));
+//        triggerRule = Sensors.once(triggerRule);
+//
+//        Sensor dmg = new Sensor(305, 580, 6, 6, triggerRule);
+//        Sensor sus = Sensors.singleUse(400, 596, 6, 6,
+//                TriggerRules.when(Conditions.IS_PLAYER).then(Actions.damagePlayer(1))
+//        );
+//
+//        Sensor tracker = Sensors.builder()
+//                .onEnter(Conditions.IS_PLAYER).then(Actions.damagePlayer(1))
+//                .onCollision(Conditions.IS_PLAYER).then((self, other) -> {
+//                    Debugger.publish("test", new Debugger.DebugText("PIT"), 250, 250, Debugger.TYPE.INFO);
+//                    return null;
+//                })
+//                .onExit(Conditions.IS_PLAYER).then((self, other) -> {
+//                    IO.println("Exited");
+//                    return null;
+//                })
+//                .build(400, 340, 32, 32);
+//
+//        s.add(dmg);
+//        s.add(sus);
+//        s.add(tracker);
 
         return s;
     }

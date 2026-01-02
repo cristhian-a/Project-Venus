@@ -1,5 +1,6 @@
-package com.next.graphics;
+package com.next.ui;
 
+import com.next.engine.data.Registry;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderPosition;
 import com.next.engine.graphics.RenderQueue;
@@ -18,11 +19,18 @@ public class GameplayUIState implements UIState {
     private boolean dialogueActive;
     private int dialogueIndex;
 
+    private int fullHeart;
+    private int halfHeart;
+    private int emptyHeart;
+
     public GameplayUIState(Player player, Settings.VideoSettings videoSettings) {
         this.player = player;
         this.videoSettings = videoSettings;
 
         setDialogueLines();
+        fullHeart = Registry.textureIds.get("heart-1.png");
+        halfHeart = Registry.textureIds.get("heart-2.png");
+        emptyHeart = Registry.textureIds.get("heart-3.png");
     }
 
     public void setDialogueLines() {
@@ -56,17 +64,17 @@ public class GameplayUIState implements UIState {
         int xOffset = 4 * videoSettings.SCALE;
 
         for (int i = 0; i < fullHearts; i++) {
-            renderQueue.submit(Layer.UI, 5 + c * xOffset, 5, 36);
+            renderQueue.submit(Layer.UI, 5 + c * xOffset, 5, fullHeart);
             c++;
         }
 
         for (int i = 0; i < halfHearts; i++) {
-            renderQueue.submit(Layer.UI, 5 + c * xOffset, 5, 37);
+            renderQueue.submit(Layer.UI, 5 + c * xOffset, 5, halfHeart);
             c++;
         }
 
         for (int i = 0; i < emptyHearts; i++) {
-            renderQueue.submit(Layer.UI, 5 + c * xOffset, 5, 38);
+            renderQueue.submit(Layer.UI, 5 + c * xOffset, 5, emptyHeart);
             c++;
         }
     }

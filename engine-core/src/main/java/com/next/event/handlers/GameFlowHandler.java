@@ -4,8 +4,8 @@ import com.next.Game;
 import com.next.engine.sound.PauseSound;
 import com.next.event.StartGameEvent;
 import com.next.event.PauseEvent;
-import com.next.graphics.GameplayUIState;
-import com.next.graphics.PausedUIState;
+import com.next.ui.GameplayUIState;
+import com.next.ui.PausedUIState;
 import com.next.system.Input;
 import com.next.engine.util.GameState;
 import com.next.engine.data.Mailbox;
@@ -15,7 +15,7 @@ import com.next.engine.sound.PlaySound;
 import com.next.engine.sound.SoundChannel;
 import com.next.engine.sound.StopSound;
 import com.next.event.FinishGameEvent;
-import com.next.graphics.FinishUIState;
+import com.next.ui.FinishUIState;
 import com.next.engine.util.Sounds;
 
 public class GameFlowHandler {
