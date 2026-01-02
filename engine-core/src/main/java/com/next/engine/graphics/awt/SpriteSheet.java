@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * @deprecated
- * Prefer using the new atlas texture mapping instead
+ * Prefer using the new atlas texture mapping instead (see {@link com.next.engine.data.AtlasImporter#register})
  */
 @Deprecated(forRemoval = true)
 public class SpriteSheet {

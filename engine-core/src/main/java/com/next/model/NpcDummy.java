@@ -23,7 +23,7 @@ public class NpcDummy extends Npc {
         this.animations.putAll(animations);
         this.collisionType = CollisionType.SOLID;
         this.animationState = AnimationState.IDLE;
-        this.collisionBox = new CollisionBox(-5, -8, 10, 16);
+        this.collisionBox = new CollisionBox(-5, -4, 10, 12);
 
         this.layer = 1;
         this.collisionMask = 1;

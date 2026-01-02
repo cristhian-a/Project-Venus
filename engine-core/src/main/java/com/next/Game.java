@@ -75,6 +75,8 @@ public class Game {
         new DoorHandler(dispatcher, mailbox);
         new SpellHandler(dispatcher, mailbox);
         gameFlowHandler = new GameFlowHandler(dispatcher, mailbox, input, this);
+
+        Registry.audioTracks.putAll(Loader.Audio.load());
     }
 
     public void boot() {
@@ -213,7 +215,7 @@ public class Game {
     }
 
     public void processInputs() {
-        if (input.isPressed(Input.Action.PAUSE)) {
+        if (input.isTyped(Input.Action.PAUSE)) {
             dispatcher.dispatch(new PauseEvent());
         }
     }

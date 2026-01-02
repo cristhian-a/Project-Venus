@@ -64,7 +64,7 @@ public class Player extends AnimatedActor {
         if (invincible) invincibilityFrames--;
         invincible = invincibilityFrames > 0;
 
-        attacking = attackingFrames > 1;
+        attacking = attackingFrames > 0;
         if (attacking) {
             attackingFrames--;
             switch (orientation) {
@@ -75,9 +75,9 @@ public class Player extends AnimatedActor {
             }
         }
 
-        if (input.isPressed(Input.Action.TALK) && !talking && !attacking) {
+        if (input.isTyped(Input.Action.TALK) && !talking) {
             attacking = true;
-            attackingFrames = 40;
+            attackingFrames = 39;
         } else if (!talking & !attacking) {
             if (input.isDown(Input.Action.UP)) {
                 dy -= speed;
@@ -126,7 +126,7 @@ public class Player extends AnimatedActor {
     @Override
     public void onCollision(Body other, CollisionCollector collector) {
         if (other instanceof NpcDummy dummy) {
-            if (input.isPressed(Input.Action.TALK)) {
+            if (input.isTyped(Input.Action.TALK)) {
                 collector.post(() -> new DialogueEvent(this, dummy));
             }
         }

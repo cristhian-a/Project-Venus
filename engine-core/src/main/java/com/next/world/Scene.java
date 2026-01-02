@@ -12,6 +12,7 @@ import com.next.model.Player;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.function.Consumer;
 
 /**
@@ -120,6 +121,9 @@ public class Scene {
     }
 
     public void submitRender(RenderQueue queue) {
+        // sorting by Y before submitting; Probably not the best, but fine for now
+        Arrays.sort(actors, 0, actorCount, Comparator.comparingDouble(Actor::getWorldY));
+
         for (int i = 0; i < actorCount; i++) {
             actors[i].submitRender(queue);
         }

@@ -30,17 +30,17 @@ public class StartMenuUIState implements UIState {
 
     @Override
     public void update(double delta) {
-        if (input.isPressed(Input.Action.UP)) {
+        if (input.isTyped(Input.Action.UP)) {
             cursor--;
         }
 
-        if (input.isPressed(Input.Action.DOWN)) {
+        if (input.isTyped(Input.Action.DOWN)) {
             cursor++;
         }
 
         cursor = Math.clamp(cursor, 0, 2);
 
-        if (input.isPressed(Input.Action.TALK)) {
+        if (input.isTyped(Input.Action.TALK)) {
             switch (cursor) {
                 case 0 -> dispatcher.dispatch(new StartGameEvent());
                 case 1 -> {}
