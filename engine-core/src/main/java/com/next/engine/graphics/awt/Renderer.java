@@ -18,7 +18,6 @@ public class Renderer {
     private final UIRenderer uiRenderer;
     private final Game game;
     private final Mailbox mailbox;
-    private final AssetRegistry assets;
     private final VideoSettings settings;
     private final TileRenderer tileRenderer;
     private final LightningRenderer lightningRenderer;
@@ -26,7 +25,6 @@ public class Renderer {
     public Renderer(Game game, Mailbox mailbox, VideoSettings settings, AssetRegistry assets) {
         this.game = game;
         this.mailbox = mailbox;
-        this.assets = assets;
         this.settings = settings;
 
         this.uiRenderer = new UIRenderer(assets, settings);

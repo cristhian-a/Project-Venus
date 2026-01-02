@@ -57,22 +57,29 @@ public class PlayerFactory {
         animBuilder.frames(new int[] { walkLeft1, walkLeft2 });
         var leftAnimation = animBuilder.build();
 
-        animBuilder.frames(new int[] { atkFront1, atkFront2 });
+        animBuilder.frameRate(10);  // adjusted framerate for attacks
+        animBuilder.frames(new int[] { atkFront1, atkFront2, atkFront2, atkFront2 });
         var atkFrontAnimation = animBuilder.build();
 
-        animBuilder.frames(new int[] { atkBack1, atkBack2 });
+        animBuilder.frames(new int[] { atkBack1, atkBack2, atkBack2, atkBack2 });
         var atkBackAnimation = animBuilder.build();
 
-        animBuilder.frames(new int[] { atkRight1, atkRight2 });
+        animBuilder.frames(new int[] { atkRight1, atkRight2, atkRight2, atkRight2 });
         var atkRightAnimation = animBuilder.build();
 
-        animBuilder.frames(new int[] { atkLeft1, atkLeft2 });
+        animBuilder.frames(new int[] { atkLeft1, atkLeft2, atkLeft2, atkLeft2 });
         var atkLeftAnimation = animBuilder.build();
 
-        var idle = new Animation(new int[]{idleFront}, 0, false);
+        var idleDown = new Animation(new int[]{idleFront}, 0, false);
+        var idleUp = new Animation(new int[]{idleBack}, 0, false);
+        var idleLft = new Animation(new int[]{idleLeft}, 0, false);
+        var idleRgt = new Animation(new int[]{idleRight}, 0, false);
 
         Map<AnimationState, Animation> animations = new HashMap<>();
-        animations.put(AnimationState.IDLE, idle);
+        animations.put(AnimationState.IDLE_DOWN, idleDown);
+        animations.put(AnimationState.IDLE_UP, idleUp);
+        animations.put(AnimationState.IDLE_LEFT, idleLft);
+        animations.put(AnimationState.IDLE_RIGHT, idleRgt);
         animations.put(AnimationState.WALK_DOWN, downAnimation);
         animations.put(AnimationState.WALK_UP, upAnimation);
         animations.put(AnimationState.WALK_RIGHT, rightAnimation);

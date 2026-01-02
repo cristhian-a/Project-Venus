@@ -31,6 +31,9 @@ public class Player extends AnimatedActor {
     @Getter @Setter private int health = maxHp;
     private Orientation orientation = Orientation.DOWN;
 
+    // Combat-related stuff
+    private boolean attacking = false;
+    private int attackingFrames = 0;
     private int invincibilityFrames = 0;
     private boolean invincible = false;
 
@@ -49,29 +52,33 @@ public class Player extends AnimatedActor {
         setPosition(worldX, worldY);
 
         this.animations = animations;
+        this.animationState = AnimationState.IDLE_DOWN;
     }
 
     @Override
     public void update(double delta, Mailbox mailbox) {
         float dx = 0;
         float dy = 0;
+//        float speed = (float) (this.speed * delta);
 
-        animationState = AnimationState.IDLE;
         if (invincible) invincibilityFrames--;
         invincible = invincibilityFrames > 0;
 
-//        float speed = (float) (this.speed * delta);
-
-        if (input.isDown(Input.Action.TALK) && !talking) {
+        attacking = attackingFrames > 1;
+        if (attacking) {
+            attackingFrames--;
             switch (orientation) {
                 case UP -> animationState = AnimationState.ATTACK_UP;
                 case DOWN -> animationState = AnimationState.ATTACK_DOWN;
                 case LEFT -> animationState = AnimationState.ATTACK_LEFT;
                 case RIGHT -> animationState = AnimationState.ATTACK_RIGHT;
             }
-        } else if (!talking) {
-            orientation = Orientation.DOWN;
+        }
 
+        if (input.isPressed(Input.Action.TALK) && !talking && !attacking) {
+            attacking = true;
+            attackingFrames = 40;
+        } else if (!talking & !attacking) {
             if (input.isDown(Input.Action.UP)) {
                 dy -= speed;
                 animationState = AnimationState.WALK_UP;
@@ -93,6 +100,16 @@ public class Player extends AnimatedActor {
 
         if (dx != 0 || dy != 0)
             mailbox.motionQueue.submit(this.id, dx, dy, 0f);
+        else {
+            if (!attacking) {
+                switch (orientation) {
+                    case UP -> animationState = AnimationState.IDLE_UP;
+                    case DOWN -> animationState = AnimationState.IDLE_DOWN;
+                    case LEFT -> animationState = AnimationState.IDLE_LEFT;
+                    case RIGHT -> animationState = AnimationState.IDLE_RIGHT;
+                }
+            }
+        }
 
         animate();
 
