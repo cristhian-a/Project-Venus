@@ -3,18 +3,15 @@ package com.next.model;
 import com.next.engine.Global;
 import com.next.engine.animation.Animation;
 import com.next.engine.animation.AnimationState;
-import com.next.engine.data.HitboxPool;
 import com.next.engine.data.Mailbox;
+import com.next.engine.event.EventCollector;
 import com.next.engine.event.TriggerRules;
 import com.next.engine.model.AnimatedActor;
-import com.next.engine.model.Hitbox;
 import com.next.engine.model.HitboxSpec;
 import com.next.engine.physics.*;
 import com.next.engine.scene.Direction;
 import com.next.engine.system.Debugger;
 import com.next.event.AttackEvent;
-import com.next.event.DamageEvent;
-import com.next.event.DialogueEvent;
 import com.next.model.factory.HitboxFactory;
 import com.next.system.Input;
 import com.next.world.Scene;
@@ -136,7 +133,7 @@ public class Player extends AnimatedActor implements Combatant {
     }
 
     @Override
-    public void onCollision(Body other, CollisionCollector collector) {
+    public void onCollision(Body other, EventCollector collector) {
 //        if (other instanceof NpcDummy dummy) {
 //            if (input.isTyped(Input.Action.TALK)) {
 //                collector.post(() -> new DialogueEvent(this, dummy));

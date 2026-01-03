@@ -4,7 +4,7 @@ import com.next.engine.data.HitboxPool;
 import com.next.engine.event.TriggerRule;
 import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
-import com.next.engine.physics.CollisionCollector;
+import com.next.engine.event.EventCollector;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,34 +18,6 @@ public class Hitbox extends Sensor {
 
     public Hitbox() {
         super();
-
-//        switch (direction) {
-//            case LEFT -> {
-//                offsetX = offsetX * -1;
-//                worldX = worldX - width;
-//            }
-//            case UP -> {
-//                worldX -= height / 2 - 1;
-//                worldY -= width;
-//                float temp = height;
-//                height = width;
-//                width = temp;
-//
-//                temp = offsetX * -1;
-//                offsetX = offsetY;
-//                offsetY = temp;
-//            }
-//            case DOWN -> {
-//                worldX -= height / 2 - 1;
-//                float temp = height;
-//                height = width;
-//                width = temp;
-//
-//                temp = offsetX;
-//                offsetX = offsetY * -1;
-//                offsetY = temp;
-//            }
-//        }
     }
 
     public void init(Entity owner, float worldX, float worldY, HitboxSpec specs) {
@@ -74,7 +46,7 @@ public class Hitbox extends Sensor {
     }
 
     @Override
-    public void onCollision(Body other, CollisionCollector collector) {
+    public void onCollision(Body other, EventCollector collector) {
         if (other == owner)
             return;
         if (specs.oneHitPerTarget()) {

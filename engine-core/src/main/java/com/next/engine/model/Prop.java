@@ -2,7 +2,7 @@ package com.next.engine.model;
 
 import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
-import com.next.engine.physics.CollisionCollector;
+import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
 
 public class Prop extends Actor {
@@ -33,6 +33,6 @@ public class Prop extends Actor {
     }
 
     @Override
-    public void onCollision(Body other, CollisionCollector collector) {
+    public void onCollision(Body other, EventCollector collector) {
     }
 }

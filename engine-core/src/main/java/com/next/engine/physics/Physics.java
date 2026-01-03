@@ -1,14 +1,15 @@
 package com.next.engine.physics;
 
-import com.next.engine.event.TriggerSystem;
+import com.next.engine.event.EventCollector;
+import com.next.engine.model.Sensor;
 import com.next.world.Scene;
 
-public class Physics {
+public class Physics implements SpatialGridHandler {
 
-    private final CollisionTable collisionTable = new CollisionTable();
+    private CollisionTable previous = new CollisionTable();
+    private CollisionTable collisionTable = new CollisionTable();
+
     private final CollisionInspector inspector = new CollisionInspector();
-
-    private final TriggerSystem triggerSystem = new TriggerSystem();
 
     private Scene scene;
     private SpatialGrid grid;
@@ -169,18 +170,27 @@ public class Physics {
 //        }
 //    }
 
+    private void beginFrame() {
+        var temp = previous;
+        previous = collisionTable;
+        collisionTable = temp;
+
+        collisionTable.clear();
+    }
+
     /**
      * Apply the physics rules to the bodies inside the current ruled over {@link Scene}, then let the {@code collector}
      * collect all events produced during collision resolution.
      *
      * @param delta     delta time.
      * @param queue     a buffer with the requested motion deltas to be processed by the physics engine (see {@link MotionQueue}).
-     * @param collector collects all events produced during collision resolution (see {@link CollisionCollector}).
+     * @param collector collects all events produced during collision resolution (see {@link EventCollector}).
      */
-    public void apply(double delta, MotionQueue queue, CollisionCollector collector) {
+    public void apply(double delta, MotionQueue queue, EventCollector collector) {
         grid.clear();
         scene.forEachBody(grid::insert);
 
+        beginFrame();
         collisionTable.clear();
 
         for (int i = 0; i < queue.size(); i++) {
@@ -188,20 +198,12 @@ public class Physics {
             integrateMotion(Axis.Y, delta, queue.actorIds[i], queue.deltaY[i]);
         }
 
-        for (int i = 0; i < collisionTable.size; i++) {
-            Body a = collisionTable.bodiesA[i];
-            Body b = collisionTable.bodiesB[i];
-
-            a.onCollision(b, collector);
-            b.onCollision(a, collector);
-        }
-
-        triggerSystem.collect(scene, grid);
-        triggerSystem.compute(scene, collector);
+        collectStaticBodies(scene, grid);
+        harvest(collector);
     }
 
     private void integrateMotion(Axis axis, double deltaTime, int entityId, float motionDelta) {
-        Body agent = (Body) scene.getEntity(entityId); //scene.findBodyById(entityId);
+        Body agent = (Body) scene.getEntity(entityId);
         if (axis == Axis.X) {
             agent.moveX(motionDelta, deltaTime);
         } else if (axis == Axis.Y) {
@@ -289,6 +291,68 @@ public class Physics {
         }
     }
 
+    private void collectStaticBodies(Scene scene, SpatialGrid grid) {
+        for (int i = 0; i < scene.getSensorCount(); i++) {
+            Sensor sensor = scene.getSensors()[i];
+            processingSensorBox = sensor.getCollisionBox().getBounds();
+            grid.queryNeighbors(sensor, this);
+        }
+    }
+
+    // aux var only between collect and handleNeighbor
+    // supposedly this helps by reducing the number of virtual calls in the JVM
+    private AABB processingSensorBox;
+
+    @Override
+    public void handleNeighbor(Body self, Body neighbor) {
+        if (neighbor.getCollisionBox().getBounds().intersects(processingSensorBox)) {
+            collisionTable.add(self, neighbor);
+        }
+    }
+
+    private void harvest(EventCollector collector) {
+        for (int i = 0; i < collisionTable.size; i++) {
+            Body a = collisionTable.bodiesA[i];
+            Body b = collisionTable.bodiesB[i];
+
+            boolean found = false;
+            for (int j = 0; j < previous.size; j++) {
+                if (collisionTable.keys[i] == previous.keys[j]) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                a.onEnter(b, collector);
+                b.onEnter(a, collector);
+            }
+
+            a.onCollision(b, collector);
+            b.onCollision(a, collector);
+        }
+
+        for (int i = 0; i < previous.size; i++) {
+            Body a = previous.bodiesA[i];
+            Body b = previous.bodiesB[i];
+
+            if (a == null || b == null) continue;
+
+            boolean found = false;
+            for (int j = 0; j < collisionTable.size; j++) {
+                if (previous.keys[i] == collisionTable.keys[j]) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                a.onExit(b, collector);
+                b.onExit(a, collector);
+            }
+        }
+    }
+
     // contact describing pair + penetration + normal (axis aligned)
     private static final class Contact {
         final int aIdx, bIdx;
@@ -307,9 +371,9 @@ public class Physics {
     }
 
     private static final class CollisionTable {
-        long[] keys     = new long[64];     // when a stack overflow happens, we should reconsider our strategy
-        Body[] bodiesA  = new Body[64];     // to use hashes instead of linear scanning (when adding)
-        Body[] bodiesB  = new Body[64];
+        long[] keys = new long[64];     // when a stack overflow happens, we should reconsider our strategy
+        Body[] bodiesA = new Body[64];  // to use hashes instead of linear scanning (when adding)
+        Body[] bodiesB = new Body[64];
         int size = 0;
 
         void clear() {

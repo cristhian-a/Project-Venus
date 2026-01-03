@@ -5,6 +5,7 @@ import com.next.engine.model.Sensor;
 import com.next.engine.physics.*;
 import com.next.world.Scene;
 
+@Deprecated(forRemoval = true)
 public class TriggerSystem implements SpatialGridHandler {
 
     private SmallPairTable current = new SmallPairTable();
@@ -49,9 +50,9 @@ public class TriggerSystem implements SpatialGridHandler {
     /**
      * Processes collisions and collects generated events.
      * @param scene a {@link Scene} containing all the entities in the scene.
-     * @param collector a {@link CollisionCollector} to collect all the generated events.
+     * @param collector a {@link EventCollector} to collect all the generated events.
      */
-    public void compute(Scene scene, CollisionCollector collector) {
+    public void compute(Scene scene, EventCollector collector) {
         for (int i = 0; i < current.size(); i++) {
             boolean found = false;
             for (int j = 0; j < previous.size(); j++) {
@@ -83,7 +84,7 @@ public class TriggerSystem implements SpatialGridHandler {
         }
     }
 
-    private void fireEnter(int sensor, int agent, Scene scene, CollisionCollector collector) {
+    private void fireEnter(int sensor, int agent, Scene scene, EventCollector collector) {
         Sensor self = (Sensor) scene.getEntity(sensor);
         Body other = (Body) scene.getEntity(agent);
         if (self != null && other != null) {
@@ -91,7 +92,7 @@ public class TriggerSystem implements SpatialGridHandler {
         }
     }
 
-    private void fireExit(int sensor, int agent, Scene scene, CollisionCollector collector) {
+    private void fireExit(int sensor, int agent, Scene scene, EventCollector collector) {
         Sensor self = (Sensor) scene.getEntity(sensor);
         Body other = (Body) scene.getEntity(agent);
         if (self != null && other != null) {
@@ -99,7 +100,7 @@ public class TriggerSystem implements SpatialGridHandler {
         }
     }
 
-    private void fireCollision(int sensor, int agent, Scene scene, CollisionCollector collector) {
+    private void fireCollision(int sensor, int agent, Scene scene, EventCollector collector) {
         Sensor self = (Sensor) scene.getEntity(sensor);
         Body other = (Body) scene.getEntity(agent);
         if (self != null && other != null) {

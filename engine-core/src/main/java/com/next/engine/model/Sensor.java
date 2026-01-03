@@ -1,5 +1,6 @@
 package com.next.engine.model;
 
+import com.next.engine.event.EventCollector;
 import com.next.engine.event.TriggerRule;
 import com.next.engine.physics.*;
 
@@ -29,18 +30,20 @@ public class Sensor extends Entity implements Body {
     }
 
     @Override
-    public void onCollision(Body other, CollisionCollector collector) {
+    public void onCollision(Body other, EventCollector collector) {
         if (rule != null && rule.shouldFire(this, other))
             collector.post(() -> rule.getEvent(this, other));
     }
 
-    public void onEnter(Body other, CollisionCollector collector) {
+    @Override
+    public void onEnter(Body other, EventCollector collector) {
         if (enterRule != null && enterRule.shouldFire(this, other)) {
             collector.post(() -> enterRule.getEvent(this, other));
         }
     }
 
-    public void onExit(Body other, CollisionCollector collector) {
+    @Override
+    public void onExit(Body other, EventCollector collector) {
         if (exitRule != null && exitRule.shouldFire(this, other)) {
             collector.post(() -> exitRule.getEvent(this, other));
         }

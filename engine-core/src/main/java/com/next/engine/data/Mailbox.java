@@ -1,7 +1,7 @@
 package com.next.engine.data;
 
 import com.next.engine.event.GameEvent;
-import com.next.engine.physics.CollisionCollector;
+import com.next.engine.event.EventCollector;
 import com.next.engine.physics.MotionQueue;
 import com.next.engine.graphics.RenderQueue;
 
@@ -15,7 +15,7 @@ import java.util.function.Supplier;
  * @value {@code render} is a double buffered queue of requests to be submitted to the renderer pipeline
  *        (see {@link RenderQueue}).
  */
-public class Mailbox implements CollisionCollector {
+public class Mailbox implements EventCollector {
 
     public final List<Supplier<? extends GameEvent>> eventSuppliers = new ArrayList<>();
     public final MotionQueue motionQueue = new MotionQueue();

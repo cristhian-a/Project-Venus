@@ -6,7 +6,7 @@ import com.next.engine.data.Mailbox;
 import com.next.engine.model.AnimatedActor;
 import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
-import com.next.engine.physics.CollisionCollector;
+import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
 import com.next.event.DamageEvent;
 
@@ -33,7 +33,7 @@ public class Mob extends AnimatedActor implements Combatant {
     }
 
     @Override
-    public void onCollision(Body other, CollisionCollector collector) {
+    public void onCollision(Body other, EventCollector collector) {
         if (other instanceof Player p) {
             collector.post(() -> new DamageEvent(p, 1));
         }
