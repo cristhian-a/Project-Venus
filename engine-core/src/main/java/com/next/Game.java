@@ -53,6 +53,7 @@ public class Game {
 
     // Handlers
     private final GameFlowHandler gameFlowHandler;
+    private final CombatHandler combatHandler;
     private PlayerHandler playerHandler;
 
     // States (if needed)
@@ -70,11 +71,11 @@ public class Game {
         this.settings = settings;
         this.dispatcher = dispatcher;
 
-        new CombatHandler(mailbox, dispatcher);
         new PitFallEvent.Handler(dispatcher);
         new DamageEvent.Handler(dispatcher);
         new DoorHandler(dispatcher, mailbox);
         new SpellHandler(dispatcher, mailbox);
+        combatHandler = new CombatHandler(mailbox, dispatcher);
         gameFlowHandler = new GameFlowHandler(dispatcher, mailbox, input, this);
 
         Registry.audioTracks.putAll(Loader.Audio.load());
@@ -132,6 +133,7 @@ public class Game {
         if (gameState == GameState.RUNNING) {
             // TODO this is very incomplete
             scene.update(delta, mailbox);
+            combatHandler.update(delta);
 
             physics.apply(Global.fixedDelta, mailbox.motionQueue, mailbox); // always after update
 

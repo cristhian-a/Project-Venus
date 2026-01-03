@@ -41,6 +41,9 @@ public class Player extends AnimatedActor implements Combatant {
     private int invincibilityFrames = 0;
     private boolean invincible = false;
 
+    private float dx;
+    private float dy;
+
     public Scene scene;
 
     public Player(float worldX, float worldY, Map<AnimationState, Animation> animations, CollisionBox collisionBox,
@@ -65,8 +68,6 @@ public class Player extends AnimatedActor implements Combatant {
 
     @Override
     public void update(double delta, Mailbox mailbox) {
-        float dx = 0;
-        float dy = 0;
 //        float speed = (float) (this.speed * delta);
 
         if (invincible) invincibilityFrames--;
@@ -121,6 +122,8 @@ public class Player extends AnimatedActor implements Combatant {
         }
 
         animate();
+        dx = 0;
+        dy = 0;
 
         Debugger.publish("PLAYER", new Debugger.DebugText("X: " + worldX + ", Y: " + worldY), 10, 90, Debugger.TYPE.INFO);
         Debugger.publish("HITBOX", new Debugger.DebugText("X: " + collisionBox.getBounds().x + ", Y: " + collisionBox.getBounds().y + ", Width: " + collisionBox.getBounds().width + ", Height: " + collisionBox.getBounds().height), 10, 120, Debugger.TYPE.INFO);
@@ -156,11 +159,18 @@ public class Player extends AnimatedActor implements Combatant {
     }
 
     public void handleAttack() {
+        if (attacking && attackingFrames > 29) {
+            if (direction == Direction.UP) dy -= 1f;
+            if (direction == Direction.DOWN) dy += 1f;
+            if (direction == Direction.LEFT) dx -= 1f;
+            if (direction == Direction.RIGHT) dx += 1f;
+        }
+
         if (attackingFrames == 30) {
             var spec = getWeaponSpecs();
             var rule = TriggerRules
                     .when((s, other) -> other instanceof Combatant)
-                    .then((s, other) -> new AttackEvent(this, (Combatant) other, 1));
+                    .then((s, other) -> new AttackEvent(this, (Combatant) other, spec));
             hitboxFactory.spawnHitbox(this, spec, rule);
         }
     }
@@ -175,28 +185,32 @@ public class Player extends AnimatedActor implements Combatant {
             case DOWN -> {
                 if (downSpec == null) {
                     downSpec = new HitboxSpec(-2, 7, 5, 12,
-                            duration, 1, 0, collisionMask, true, true);
+                            duration, 1, 0, 0.5f,
+                            collisionMask, true, true);
                 }
                 return downSpec;
             }
             case UP -> {
                 if (upSpec == null) {
                     upSpec = new HitboxSpec(-2, -16, 5, 12,
-                            duration, 1, 0, collisionMask, true, true);
+                            duration, 1, 0, -0.5f,
+                            collisionMask, true, true);
                 }
                 return upSpec;
             }
             case LEFT -> {
                 if (leftSpec == null) {
                     leftSpec = new HitboxSpec(-18, 0, 12, 5,
-                            duration, 1, 0, collisionMask, true, true);
+                            duration, 1, -0.5f, 0,
+                            collisionMask, true, true);
                 }
                 return leftSpec;
             }
             case RIGHT -> {
                 if (rightSpec == null) {
                     rightSpec = new HitboxSpec(6, 0, 12, 5,
-                            duration, 1, 0, collisionMask, true, true);
+                            duration, 1, 0.5f, 0,
+                            collisionMask, true, true);
                 }
                 return rightSpec;
             }

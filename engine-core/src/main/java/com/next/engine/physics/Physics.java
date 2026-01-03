@@ -203,6 +203,8 @@ public class Physics implements SpatialGridHandler {
 
     private void integrateMotion(Axis axis, double deltaTime, int entityId, float motionDelta) {
         Body agent = (Body) scene.getEntity(entityId);
+        if (agent == null) return;
+
         if (axis == Axis.X) {
             agent.moveX(motionDelta, deltaTime);
         } else if (axis == Axis.Y) {

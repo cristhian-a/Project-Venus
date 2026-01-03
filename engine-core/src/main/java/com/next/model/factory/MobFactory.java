@@ -5,6 +5,7 @@ import com.next.engine.animation.AnimationState;
 import com.next.engine.data.Registry;
 import com.next.model.Mob;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class MobFactory {
@@ -13,13 +14,22 @@ public class MobFactory {
 
         int mob1 = Registry.textureIds.get("ghost-1.png");
         int mob2 = Registry.textureIds.get("ghost-2.png");
+        int dead = Registry.textureIds.get("ghost-dead.png");
 
         Animation animation = new Animation();
         animation.loop = true;
         animation.frameRate = 10;
         animation.frames = new int[] { mob1, mob2 };
 
-        Map<AnimationState, Animation> animations = Map.of(AnimationState.IDLE, animation);
+        Animation death = new Animation();
+        death.loop = true;
+        death.frameRate = 10;
+        death.frames = new int[] { mob1, dead, mob1, dead, dead };
+
+        Map<AnimationState, Animation> animations = new HashMap<>();
+        animations.put(AnimationState.IDLE, animation);
+        animations.put(AnimationState.DEAD, death);
+
         int pivot = 8;
         int offsetX = 3 - pivot;
         int offsetY = -pivot;

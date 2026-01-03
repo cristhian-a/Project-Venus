@@ -4,7 +4,8 @@ public record HitboxSpec(
         float offsetX, float offsetY, float width, float height,
         double durationSeconds,
         int damage,
-        float knockback,
+        float knockbackX,
+        float knockbackY,
         int collisionLayer,
         boolean oneHitPerTarget,
         boolean followOwner
