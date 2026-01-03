@@ -7,7 +7,7 @@ import com.next.world.Scene;
 public class Physics implements SpatialGridHandler {
 
     private CollisionTable previous = new CollisionTable();
-    private CollisionTable collisionTable = new CollisionTable();
+    private CollisionTable frameCollisions = new CollisionTable();
 
     private final CollisionInspector inspector = new CollisionInspector();
 
@@ -172,10 +172,10 @@ public class Physics implements SpatialGridHandler {
 
     private void beginFrame() {
         var temp = previous;
-        previous = collisionTable;
-        collisionTable = temp;
+        previous = frameCollisions;
+        frameCollisions = temp;
 
-        collisionTable.clear();
+        frameCollisions.clear();
     }
 
     /**
@@ -187,11 +187,10 @@ public class Physics implements SpatialGridHandler {
      * @param collector collects all events produced during collision resolution (see {@link EventCollector}).
      */
     public void apply(double delta, MotionQueue queue, EventCollector collector) {
+        beginFrame();
+
         grid.clear();
         scene.forEachBody(grid::insert);
-
-        beginFrame();
-        collisionTable.clear();
 
         for (int i = 0; i < queue.size(); i++) {
             integrateMotion(Axis.X, delta, queue.actorIds[i], queue.deltaX[i]);
@@ -199,7 +198,7 @@ public class Physics implements SpatialGridHandler {
         }
 
         collectStaticBodies(scene, grid);
-        harvest(collector);
+        notify(collector);
     }
 
     private void integrateMotion(Axis axis, double deltaTime, int entityId, float motionDelta) {
@@ -222,7 +221,7 @@ public class Physics implements SpatialGridHandler {
             if (other == agent) return;
 
             if (agent.getCollisionType() != CollisionType.NONE && other.getCollisionType() != CollisionType.NONE) {
-                collisionTable.add(agent, other);
+                frameCollisions.add(agent, other);
 
                 if (agent.getCollisionType() == CollisionType.SOLID && other.getCollisionType() == CollisionType.SOLID) {
                     updateAxisPosition(axis, agent, other, motionDelta);
@@ -306,18 +305,22 @@ public class Physics implements SpatialGridHandler {
     @Override
     public void handleNeighbor(Body self, Body neighbor) {
         if (neighbor.getCollisionBox().getBounds().intersects(processingSensorBox)) {
-            collisionTable.add(self, neighbor);
+            frameCollisions.add(self, neighbor);
         }
     }
 
-    private void harvest(EventCollector collector) {
-        for (int i = 0; i < collisionTable.size; i++) {
-            Body a = collisionTable.bodiesA[i];
-            Body b = collisionTable.bodiesB[i];
+    /**
+     * Evaluates the collision pairs produced in the current frame and notify entities
+     * @param collector an {@link EventCollector} to be passed to the notified entities.
+     */
+    private void notify(EventCollector collector) {
+        for (int i = 0; i < frameCollisions.size; i++) {
+            Body a = frameCollisions.bodiesA[i];
+            Body b = frameCollisions.bodiesB[i];
 
             boolean found = false;
             for (int j = 0; j < previous.size; j++) {
-                if (collisionTable.keys[i] == previous.keys[j]) {
+                if (frameCollisions.keys[i] == previous.keys[j]) {
                     found = true;
                     break;
                 }
@@ -339,8 +342,8 @@ public class Physics implements SpatialGridHandler {
             if (a == null || b == null) continue;
 
             boolean found = false;
-            for (int j = 0; j < collisionTable.size; j++) {
-                if (previous.keys[i] == collisionTable.keys[j]) {
+            for (int j = 0; j < frameCollisions.size; j++) {
+                if (previous.keys[i] == frameCollisions.keys[j]) {
                     found = true;
                     break;
                 }
