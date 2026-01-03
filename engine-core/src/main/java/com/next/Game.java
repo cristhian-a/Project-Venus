@@ -9,7 +9,7 @@ import com.next.engine.model.*;
 import com.next.event.DamageEvent;
 import com.next.event.PauseEvent;
 import com.next.event.PitFallEvent;
-import com.next.event.handlers.PlayerHandler;
+import com.next.event.handlers.*;
 import com.next.ui.StartMenuUIState;
 import com.next.ui.UIState;
 import com.next.engine.util.GameState;
@@ -17,9 +17,6 @@ import com.next.engine.data.Mailbox;
 import com.next.engine.physics.Physics;
 import com.next.engine.sound.PlaySound;
 import com.next.engine.sound.SoundChannel;
-import com.next.event.handlers.DoorHandler;
-import com.next.event.handlers.GameFlowHandler;
-import com.next.event.handlers.SpellHandler;
 import com.next.io.Loader;
 import com.next.model.*;
 import com.next.model.factory.*;
@@ -62,6 +59,7 @@ public class Game {
     @Getter @Setter private GameState gameState = GameState.START_MENU;
     @Getter private Camera camera;
     @Getter private Scene scene;
+    @Getter private Player player;
 
     public Game(Input input, Mailbox mailbox, Settings settings, AssetRegistry assets, EventDispatcher dispatcher) {
         this.input = input;
@@ -70,6 +68,7 @@ public class Game {
         this.settings = settings;
         this.dispatcher = dispatcher;
 
+        new CombatHandler(mailbox, dispatcher);
         new PitFallEvent.Handler(dispatcher);
         new DamageEvent.Handler(dispatcher);
         new DoorHandler(dispatcher, mailbox);
@@ -139,7 +138,7 @@ public class Game {
             scene.dismissDisposed();   // PLEASE, dismiss before rendering
         }
 
-        camera.follow(scene.player);    // the camera follows after events' resolution
+        camera.follow(player);    // the camera follows after events' resolution
         scene.submitRender(writeQueue);
 
         ui.update(delta);
@@ -168,10 +167,9 @@ public class Game {
 
         Mob ghost = MobFactory.create(342, 649);
 
-        Player player = new PlayerFactory(world, level).create();
-        player.setInput(input); // TODO meh
 
-        Scene s = new Scene(world, player);
+
+        Scene s = new Scene(world);
         s.addAll(props);
         s.add(npc);
         s.add(fc);
@@ -180,6 +178,10 @@ public class Game {
 //        s.add(lightC);
 //        s.add(light2);
         s.add(ghost);
+
+        HitboxFactory hitboxFactory = new HitboxFactory(s);
+        player = new PlayerFactory(world, level, hitboxFactory).create();
+        player.setInput(input); // TODO meh
         s.add(player);
 
         // TODO take care: the same rule, for now, share state within multiple sensors, that means a once-use is REALLY once,
@@ -211,6 +213,7 @@ public class Game {
 //        s.add(sus);
 //        s.add(tracker);
 
+        player.scene = s;
         return s;
     }
 

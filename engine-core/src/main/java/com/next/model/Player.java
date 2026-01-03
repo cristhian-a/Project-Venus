@@ -1,13 +1,23 @@
 package com.next.model;
 
+import com.next.engine.Global;
 import com.next.engine.animation.Animation;
 import com.next.engine.animation.AnimationState;
+import com.next.engine.data.HitboxPool;
 import com.next.engine.data.Mailbox;
+import com.next.engine.event.TriggerRules;
 import com.next.engine.model.AnimatedActor;
+import com.next.engine.model.Hitbox;
+import com.next.engine.model.HitboxSpec;
 import com.next.engine.physics.*;
+import com.next.engine.scene.Direction;
 import com.next.engine.system.Debugger;
+import com.next.event.AttackEvent;
+import com.next.event.DamageEvent;
 import com.next.event.DialogueEvent;
+import com.next.model.factory.HitboxFactory;
 import com.next.system.Input;
+import com.next.world.Scene;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,21 +25,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Player extends AnimatedActor {
-
-    private enum Orientation {
-        UP, DOWN, LEFT, RIGHT
-    }
+public class Player extends AnimatedActor implements Combatant {
 
     @Getter private final List<Key> heldKeys = new ArrayList<>();
     @Setter private Input input;
+    private HitboxFactory hitboxFactory;
 
     @Getter @Setter boolean talking;
 
     private float speed = 1;
     @Getter @Setter private int maxHp = 6;
     @Getter @Setter private int health = maxHp;
-    private Orientation orientation = Orientation.DOWN;
+    private Direction direction = Direction.DOWN;
 
     // Combat-related stuff
     private boolean attacking = false;
@@ -37,7 +44,10 @@ public class Player extends AnimatedActor {
     private int invincibilityFrames = 0;
     private boolean invincible = false;
 
-    public Player(float worldX, float worldY, Map<AnimationState, Animation> animations, CollisionBox collisionBox
+    public Scene scene;
+
+    public Player(float worldX, float worldY, Map<AnimationState, Animation> animations, CollisionBox collisionBox,
+                  HitboxFactory hitboxFactory
     ) {
         this.worldX = worldX;
         this.worldY = worldY;
@@ -53,6 +63,7 @@ public class Player extends AnimatedActor {
 
         this.animations = animations;
         this.animationState = AnimationState.IDLE_DOWN;
+        this.hitboxFactory = hitboxFactory;
     }
 
     @Override
@@ -65,9 +76,10 @@ public class Player extends AnimatedActor {
         invincible = invincibilityFrames > 0;
 
         attacking = attackingFrames > 0;
+        handleAttack();
         if (attacking) {
             attackingFrames--;
-            switch (orientation) {
+            switch (direction) {
                 case UP -> animationState = AnimationState.ATTACK_UP;
                 case DOWN -> animationState = AnimationState.ATTACK_DOWN;
                 case LEFT -> animationState = AnimationState.ATTACK_LEFT;
@@ -75,26 +87,26 @@ public class Player extends AnimatedActor {
             }
         }
 
-        if (input.isTyped(Input.Action.TALK) && !talking) {
+        if (input.isTyped(Input.Action.TALK) && !talking && !attacking) {
             attacking = true;
             attackingFrames = 39;
         } else if (!talking & !attacking) {
             if (input.isDown(Input.Action.UP)) {
                 dy -= speed;
                 animationState = AnimationState.WALK_UP;
-                orientation = Orientation.UP;
+                direction = Direction.UP;
             } else if (input.isDown(Input.Action.DOWN)) {
                 dy += speed;
                 animationState = AnimationState.WALK_DOWN;
-                orientation = Orientation.DOWN;
+                direction = Direction.DOWN;
             } else if (input.isDown(Input.Action.LEFT)) {
                 dx -= speed;
                 animationState = AnimationState.WALK_LEFT;
-                orientation = Orientation.LEFT;
+                direction = Direction.LEFT;
             } else if (input.isDown(Input.Action.RIGHT)) {
                 dx += speed;
                 animationState = AnimationState.WALK_RIGHT;
-                orientation = Orientation.RIGHT;
+                direction = Direction.RIGHT;
             }
         }
 
@@ -102,7 +114,7 @@ public class Player extends AnimatedActor {
             mailbox.motionQueue.submit(this.id, dx, dy, 0f);
         else {
             if (!attacking) {
-                switch (orientation) {
+                switch (direction) {
                     case UP -> animationState = AnimationState.IDLE_UP;
                     case DOWN -> animationState = AnimationState.IDLE_DOWN;
                     case LEFT -> animationState = AnimationState.IDLE_LEFT;
@@ -125,17 +137,18 @@ public class Player extends AnimatedActor {
 
     @Override
     public void onCollision(Body other, CollisionCollector collector) {
-        if (other instanceof NpcDummy dummy) {
-            if (input.isTyped(Input.Action.TALK)) {
-                collector.post(() -> new DialogueEvent(this, dummy));
-            }
-        }
+//        if (other instanceof NpcDummy dummy) {
+//            if (input.isTyped(Input.Action.TALK)) {
+//                collector.post(() -> new DialogueEvent(this, dummy));
+//            }
+//        }
     }
 
     public void boostSpeed(float boost) {
         speed += boost;
     }
 
+    @Override
     public void takeDamage(int damage) {
         if (invincible) return;
 
@@ -143,5 +156,55 @@ public class Player extends AnimatedActor {
         health -= damage;
         invincible = true;
         invincibilityFrames = 60;
+    }
+
+    public void handleAttack() {
+        if (attackingFrames == 30) {
+            var spec = getWeaponSpecs();
+            var rule = TriggerRules
+                    .when((s, other) -> other instanceof Combatant)
+                    .then((s, other) -> new AttackEvent(this, (Combatant) other, 1));
+            hitboxFactory.spawnHitbox(this, spec, rule);
+        }
+    }
+
+    // weapon specs
+    private HitboxSpec downSpec, upSpec, leftSpec, rightSpec;
+
+    public HitboxSpec getWeaponSpecs() {
+        double duration = Global.fixedDelta * 30d;
+
+        switch (direction) {
+            case DOWN -> {
+                if (downSpec == null) {
+                    downSpec = new HitboxSpec(-2, 7, 5, 12,
+                            duration, 1, 0, collisionMask, true, true);
+                }
+                return downSpec;
+            }
+            case UP -> {
+                if (upSpec == null) {
+                    upSpec = new HitboxSpec(-2, -16, 5, 12,
+                            duration, 1, 0, collisionMask, true, true);
+                }
+                return upSpec;
+            }
+            case LEFT -> {
+                if (leftSpec == null) {
+                    leftSpec = new HitboxSpec(-18, 0, 12, 5,
+                            duration, 1, 0, collisionMask, true, true);
+                }
+                return leftSpec;
+            }
+            case RIGHT -> {
+                if (rightSpec == null) {
+                    rightSpec = new HitboxSpec(6, 0, 12, 5,
+                            duration, 1, 0, collisionMask, true, true);
+                }
+                return rightSpec;
+            }
+        }
+
+        throw new RuntimeException("Invalid direction");
     }
 }

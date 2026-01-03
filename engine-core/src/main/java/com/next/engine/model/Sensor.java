@@ -11,11 +11,14 @@ public class Sensor extends Entity implements Body {
     protected int layer = 1;
     protected int collisionMask = 2;
     protected int lastQueryId = -1;
-    protected final CollisionBox collisionBox;
+    protected CollisionBox collisionBox;
 
-    protected final TriggerRule rule;
+    protected TriggerRule rule;
     protected TriggerRule enterRule;
     protected TriggerRule exitRule;
+
+    public Sensor() {
+    }
 
     public Sensor(float worldX, float worldY, float width, float height, TriggerRule rule) {
         this.worldX = worldX;
@@ -41,6 +44,9 @@ public class Sensor extends Entity implements Body {
         if (exitRule != null && exitRule.shouldFire(this, other)) {
             collector.post(() -> exitRule.getEvent(this, other));
         }
+    }
+
+    public void update(double delta) {
     }
 
     @Override

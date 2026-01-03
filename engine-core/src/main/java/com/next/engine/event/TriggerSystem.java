@@ -64,6 +64,8 @@ public class TriggerSystem implements SpatialGridHandler {
             if (!found) {
                 fireEnter(current.valuesA[i], current.valuesB[i], scene, collector);
             }
+
+            fireCollision(current.valuesA[i], current.valuesB[i], scene, collector);
         }
 
         for (int i = 0; i < previous.size(); i++) {
@@ -94,6 +96,14 @@ public class TriggerSystem implements SpatialGridHandler {
         Body other = (Body) scene.getEntity(agent);
         if (self != null && other != null) {
             self.onExit(other, collector);
+        }
+    }
+
+    private void fireCollision(int sensor, int agent, Scene scene, CollisionCollector collector) {
+        Sensor self = (Sensor) scene.getEntity(sensor);
+        Body other = (Body) scene.getEntity(agent);
+        if (self != null && other != null) {
+            self.onCollision(other, collector);
         }
     }
 }

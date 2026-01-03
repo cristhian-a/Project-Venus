@@ -8,7 +8,6 @@ import com.next.engine.model.Light;
 import com.next.engine.model.Sensor;
 import com.next.engine.physics.Body;
 import com.next.engine.system.Debugger;
-import com.next.model.Player;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -20,7 +19,6 @@ import java.util.function.Consumer;
  */
 public class Scene {
     public final World world;
-    public final Player player;
 
     @Getter private Entity[] entities;  // everyone
     private int entityCount;
@@ -40,9 +38,8 @@ public class Scene {
     private Entity[] entitiesById;
     private int nextId = 0;
 
-    public Scene(World world, Player player) {
+    public Scene(World world) {
         this.world = world;
-        this.player = player;
 
         this.entities = new Entity[16];
         this.actors = new Actor[16];
@@ -64,10 +61,12 @@ public class Scene {
 
         if (entityCount >= entities.length) {
             entities = Arrays.copyOf(entities, entities.length * 2);
+        }
+        entities[entityCount++] = entity;
+
+        if (nextId >= entitiesById.length) {
             entitiesById = Arrays.copyOf(entitiesById, entitiesById.length * 2);
         }
-
-        entities[entityCount++] = entity;
         entitiesById[entity.getId()] = entity;
 
         if (entity instanceof Body body) {
@@ -117,6 +116,10 @@ public class Scene {
     public void update(double delta, Mailbox mailbox) {
         for (int i = 0; i < actorCount; i++) {
             actors[i].update(delta, mailbox);
+        }
+
+        for (int i = 0; i < sensorCount; i++) {
+            sensors[i].update(delta);
         }
     }
 

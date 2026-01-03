@@ -15,10 +15,12 @@ public class PlayerFactory {
 
     private final World world;
     private final LevelData level;
+    private final HitboxFactory hitboxFactory;
 
-    public PlayerFactory(World world, LevelData level) {
+    public PlayerFactory(World world, LevelData level, HitboxFactory hitboxFactory) {
         this.world = world;
         this.level = level;
+        this.hitboxFactory = hitboxFactory;
     }
 
     public Player create() {
@@ -94,11 +96,11 @@ public class PlayerFactory {
 
         float offsetX = -5;
         float offsetY = -2;
-        float width = 10;
+        float width = 11;
         float height = 9;
         CollisionBox box = new CollisionBox(spawnX, spawnY, offsetX, offsetY, width, height);
 
-        return new Player(spawnX, spawnY, animations, box);
+        return new Player(spawnX, spawnY, animations, box, hitboxFactory);
     }
 
 }
