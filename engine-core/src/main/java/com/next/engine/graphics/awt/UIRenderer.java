@@ -1,5 +1,6 @@
 package com.next.engine.graphics.awt;
 
+import com.next.engine.data.Registry;
 import com.next.engine.graphics.*;
 import com.next.engine.physics.AABB;
 import com.next.engine.model.Camera;
@@ -66,7 +67,7 @@ class UIRenderer {
     protected void renderSpriteTable(Graphics2D g, RenderQueue.SpriteTable table) {
         for (int i = 0; i < table.count; i++) {
             g.drawImage(
-                    assets.getSpriteSheet("world").getSprite(table.spriteId[i]),
+                    Registry.sprites.get(table.spriteId[i]).texture(),
                     table.x[i],
                     table.y[i],
                     null

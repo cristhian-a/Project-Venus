@@ -1,5 +1,6 @@
 package com.next.engine.model;
 
+import com.next.engine.event.EventCollector;
 import com.next.engine.event.TriggerRule;
 import com.next.engine.physics.*;
 
@@ -11,9 +12,14 @@ public class Sensor extends Entity implements Body {
     protected int layer = 1;
     protected int collisionMask = 2;
     protected int lastQueryId = -1;
-    protected final CollisionBox collisionBox;
+    protected CollisionBox collisionBox;
 
-    protected final TriggerRule rule;
+    protected TriggerRule rule;
+    protected TriggerRule enterRule;
+    protected TriggerRule exitRule;
+
+    public Sensor() {
+    }
 
     public Sensor(float worldX, float worldY, float width, float height, TriggerRule rule) {
         this.worldX = worldX;
@@ -24,9 +30,26 @@ public class Sensor extends Entity implements Body {
     }
 
     @Override
-    public void onCollision(Body other, CollisionCollector collector) {
-        if (rule.shouldFire(this, other))
+    public void onCollision(Body other, EventCollector collector) {
+        if (rule != null && rule.shouldFire(this, other))
             collector.post(() -> rule.getEvent(this, other));
+    }
+
+    @Override
+    public void onEnter(Body other, EventCollector collector) {
+        if (enterRule != null && enterRule.shouldFire(this, other)) {
+            collector.post(() -> enterRule.getEvent(this, other));
+        }
+    }
+
+    @Override
+    public void onExit(Body other, EventCollector collector) {
+        if (exitRule != null && exitRule.shouldFire(this, other)) {
+            collector.post(() -> exitRule.getEvent(this, other));
+        }
+    }
+
+    public void update(double delta) {
     }
 
     @Override

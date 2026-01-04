@@ -43,7 +43,6 @@ public class Main {
         Loop gameLoop = new Loop(game, panel, input);
 
         // Setting default listeners up
-        Registry.audioTracks.putAll(Loader.Audio.load());
         AudioBackend audio = new JavaSoundBackend(Registry.audioTracks);
         SoundSystem sound = new SoundSystem(audio);
 

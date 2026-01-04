@@ -2,6 +2,7 @@ package com.next.engine.graphics.awt;
 
 import com.next.Game;
 import com.next.engine.data.Mailbox;
+import com.next.engine.data.Registry;
 import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
@@ -17,7 +18,6 @@ public class Renderer {
     private final UIRenderer uiRenderer;
     private final Game game;
     private final Mailbox mailbox;
-    private final AssetRegistry assets;
     private final VideoSettings settings;
     private final TileRenderer tileRenderer;
     private final LightningRenderer lightningRenderer;
@@ -25,11 +25,10 @@ public class Renderer {
     public Renderer(Game game, Mailbox mailbox, VideoSettings settings, AssetRegistry assets) {
         this.game = game;
         this.mailbox = mailbox;
-        this.assets = assets;
         this.settings = settings;
 
         this.uiRenderer = new UIRenderer(assets, settings);
-        this.tileRenderer = new TileRenderer(assets);
+        this.tileRenderer = new TileRenderer();
         this.lightningRenderer = new LightningRenderer(settings);
     }
 
@@ -62,8 +61,18 @@ public class Renderer {
         // 3.5 Lightning (black magic)
         lightningRenderer.render(g, camera, queue.getBucket(Layer.LIGHTS));
 
-        // 4. UI
-        var uiLayer = queue.getBucket(Layer.UI);
+        // 4. UI - WORLD (health bars and stuff like that)
+        var uiWorldLayer = queue.getBucket(Layer.UI_WORLD);
+        uiRenderer.renderSpriteTable(g, uiWorldLayer.sprites);
+        uiRenderer.renderRectangleTable(g, uiWorldLayer.rectangles);
+        uiRenderer.renderFilledRectangleTable(g, uiWorldLayer.filledRectangles);
+        uiRenderer.renderFilledRoundRectangleTable(g, uiWorldLayer.filledRoundRects);
+        uiRenderer.renderRoundedStrokeRectTable(g, uiWorldLayer.roundedStrokeRectTable);
+        uiRenderer.renderTextTable(g, uiWorldLayer.texts);
+        uiRenderer.renderMessages(g);
+
+        // 5. UI - SCREEN (Hud and stuff like that)
+        var uiLayer = queue.getBucket(Layer.UI_SCREEN);
         uiRenderer.renderSpriteTable(g, uiLayer.sprites);
         g.setTransform(oldScale);
         uiRenderer.renderRectangleTable(g, uiLayer.rectangles);
@@ -74,7 +83,7 @@ public class Renderer {
         uiRenderer.renderTextTable(g, uiLayer.texts);
         uiRenderer.renderMessages(g);
 
-        // 5. DEBUG
+        // 6. DEBUG
         uiRenderer.renderDebugInfo(g, camera);  // TODO also
 
         long end = System.nanoTime();
@@ -83,10 +92,11 @@ public class Renderer {
 
     private void renderSpriteTable(Graphics2D g, Camera camera, RenderQueue.SpriteTable table) {
         for (int i = 0; i < table.count; i++) {
+            var sprite = Registry.sprites.get(table.spriteId[i]);
             g.drawImage(
-                    assets.getSpriteSheet("world").getSprite(table.spriteId[i]),
-                    camera.worldToScreenX(table.x[i]),
-                    camera.worldToScreenY(table.y[i]),
+                    sprite.texture(),
+                    camera.worldToScreenX(table.x[i] - sprite.pivotX()),
+                    camera.worldToScreenY(table.y[i] - sprite.pivotY()),
                     null
             );
         }

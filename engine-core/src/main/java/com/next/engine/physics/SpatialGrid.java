@@ -3,7 +3,7 @@ package com.next.engine.physics;
 import java.util.ArrayList;
 import java.util.List;
 
-class SpatialGrid {
+public class SpatialGrid {
     private final int cellSize;
     private final List<Body>[][] cells;
     private final int cols, rows;
@@ -70,6 +70,34 @@ class SpatialGrid {
                     if (other != agent && other.getLastQueryId() != queryCounter) {
                         other.setLastQueryId(queryCounter);
                         physics.solveNarrowPhase(axis, agent, other, motionDelta);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Queries for the {@code Body} agent's nearby entities, then performs a visit to the handler
+     * @param agent {@link Body} to be queried for nearby entities {@link Body#getCollisionBox()}
+     * @param handler {@link SpatialGridHandler} to be visited.
+     */
+    public void queryNeighbors(Body agent, SpatialGridHandler handler) {
+        queryCounter++;
+
+        AABB box    = agent.getCollisionBox().getBounds();
+        int left    = Math.max(0, (int) (box.x / cellSize));
+        int right   = Math.min(cols - 1, (int) ((box.x + box.width) / cellSize));
+        int top     = Math.max(0, (int) (box.y / cellSize));
+        int bottom  = Math.min(rows - 1, (int) ((box.y + box.height) / cellSize));
+
+        for (int row = top; row <= bottom; row++) {
+            for (int col = left; col <= right; col++) {
+                List<Body> cell = cells[col][row];
+                for (int i = 0; i < cell.size(); i++) {
+                    Body other = cell.get(i);
+                    if (other != agent && other.getLastQueryId() != queryCounter) {
+                        other.setLastQueryId(queryCounter);
+                        handler.handleNeighbor(agent, other);
                     }
                 }
             }

@@ -1,4 +1,4 @@
-package com.next.graphics;
+package com.next.ui;
 
 import com.next.engine.graphics.RenderQueue;
 

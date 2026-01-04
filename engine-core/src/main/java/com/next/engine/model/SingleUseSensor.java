@@ -2,7 +2,7 @@ package com.next.engine.model;
 
 import com.next.engine.event.TriggerRule;
 import com.next.engine.physics.Body;
-import com.next.engine.physics.CollisionCollector;
+import com.next.engine.event.EventCollector;
 
 /**
  * Consider using {@link Sensors#singleUse} instead.
@@ -18,7 +18,7 @@ public class SingleUseSensor extends Sensor {
     }
 
     @Override
-    public void onCollision(Body other, CollisionCollector collector) {
+    public void onCollision(Body other, EventCollector collector) {
         if (!active || !rule.shouldFire(this, other))
             return;
 

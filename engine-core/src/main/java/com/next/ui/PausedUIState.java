@@ -1,4 +1,4 @@
-package com.next.graphics;
+package com.next.ui;
 
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderPosition;
@@ -17,7 +17,7 @@ public class PausedUIState implements UIState {
     @Override
     public void submitRender(RenderQueue queue) {
         queue.submit(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 PAUSED,
                 Fonts.DEFAULT,
                 Colors.WHITE,

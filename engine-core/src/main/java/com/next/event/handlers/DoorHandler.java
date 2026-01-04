@@ -40,7 +40,7 @@ public class DoorHandler {
 
     public void onFire(NoKeysEvent event) {
         mailbox.postRender().submit(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 "First grab a Key!",
                 Fonts.DEFAULT,
                 Colors.WHITE,
@@ -60,7 +60,7 @@ public class DoorHandler {
         IO.println("AAAAAAI CHAVES: " + player.getHeldKeys().size());
 
         mailbox.postRender().submit(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 "Got a Key!",
                 Fonts.DEFAULT,
                 Colors.WHITE,

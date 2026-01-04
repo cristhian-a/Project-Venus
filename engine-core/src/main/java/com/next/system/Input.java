@@ -42,7 +42,7 @@ public class Input {
 
             var state = actionStates.get(action);
             state.down = down;
-            state.pressed = pressed;
+            state.typed = pressed;
             state.released = released;
         }
     }
@@ -70,8 +70,8 @@ public class Input {
         return device;
     }
 
-    public boolean isPressed(Action action) {
-        return actionStates.get(action).pressed;
+    public boolean isTyped(Action action) {
+        return actionStates.get(action).typed;
     }
 
     public boolean isReleased(Action action) {
@@ -86,7 +86,7 @@ public class Input {
 
     private static final class ActionState {
         boolean down;
-        boolean pressed;
+        boolean typed;
         boolean released;
     }
 

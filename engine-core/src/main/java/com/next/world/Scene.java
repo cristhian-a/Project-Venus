@@ -2,23 +2,21 @@ package com.next.world;
 
 import com.next.engine.data.Mailbox;
 import com.next.engine.graphics.RenderQueue;
-import com.next.engine.model.Actor;
-import com.next.engine.model.Entity;
-import com.next.engine.model.Light;
+import com.next.engine.model.*;
 import com.next.engine.physics.Body;
 import com.next.engine.system.Debugger;
-import com.next.model.Player;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.function.Consumer;
 
 /**
- * A {@code Scene} holds all the runtime entities relevant to the current game scene.
+ * A {@code Scene} holds all the runtime entities relevant to the current scene.
  */
 public class Scene {
     public final World world;
-    public final Player player;
+    public Camera camera;
 
     @Getter private Entity[] entities;  // everyone
     private int entityCount;
@@ -32,16 +30,22 @@ public class Scene {
     @Getter private Light[] lights;
     private int lightCount;
 
-    private int nextId = 1;
+    @Getter private Sensor[] sensors;
+    @Getter private int sensorCount;
 
-    public Scene(World world, Player player) {
+    private Entity[] entitiesById;
+    private int nextId = 0;
+
+    public Scene(World world) {
         this.world = world;
-        this.player = player;
 
         this.entities = new Entity[16];
         this.actors = new Actor[16];
         this.bodies = new Body[16];
         this.lights = new Light[16];
+        this.sensors = new Sensor[16];
+
+        this.entitiesById = new Entity[16];
     }
 
     public void addAll(Entity[] entities) {
@@ -56,8 +60,12 @@ public class Scene {
         if (entityCount >= entities.length) {
             entities = Arrays.copyOf(entities, entities.length * 2);
         }
-
         entities[entityCount++] = entity;
+
+        if (nextId >= entitiesById.length) {
+            entitiesById = Arrays.copyOf(entitiesById, entitiesById.length * 2);
+        }
+        entitiesById[entity.getId()] = entity;
 
         if (entity instanceof Body body) {
             if (bodyCount >= bodies.length) {
@@ -82,6 +90,14 @@ public class Scene {
 
             lights[lightCount++] = light;
         }
+
+        if (entity instanceof Sensor sensor) {
+            if (sensorCount >= sensors.length) {
+                sensors = Arrays.copyOf(sensors, sensors.length * 2);
+            }
+
+            sensors[sensorCount++] = sensor;
+        }
     }
 
     public Body findBodyById(int id) {
@@ -91,13 +107,24 @@ public class Scene {
         return null;
     }
 
+    public Entity getEntity(int id) {
+        return entitiesById[id];
+    }
+
     public void update(double delta, Mailbox mailbox) {
         for (int i = 0; i < actorCount; i++) {
             actors[i].update(delta, mailbox);
         }
+
+        for (int i = 0; i < sensorCount; i++) {
+            sensors[i].update(delta);
+        }
     }
 
     public void submitRender(RenderQueue queue) {
+        // sorting by Y before submitting; Probably not the best, but fine for now
+        Arrays.sort(actors, 0, actorCount, Comparator.comparingDouble(Actor::getWorldY));
+
         for (int i = 0; i < actorCount; i++) {
             actors[i].submitRender(queue);
         }
@@ -121,6 +148,8 @@ public class Scene {
         for (int i = 0; i < entityCount; i++) {
             if (entities[i].isDisposed()) {
                 entities[i].onDispose();
+
+                entitiesById[entities[i].getId()] = null;
 
                 entities[i] = entities[entityCount - 1];
                 entities[entityCount - 1] = null;
@@ -148,12 +177,27 @@ public class Scene {
                 i--;
             }
         }
+
+        for (int i = 0; i < sensorCount; i++) {
+            if (sensors[i].isDisposed()) {
+                sensors[i] = sensors[sensorCount - 1];
+                sensors[sensorCount - 1] = null;
+                sensorCount--;
+                i--;
+            }
+        }
     }
 
     public void forEachBody(Consumer<Body> consumer) {
         for (int i = 0; i < bodyCount; i++) {
             Debugger.publish("HITBOX" + bodies[i].getId(), bodies[i].getCollisionBox());
             consumer.accept(bodies[i]);
+        }
+    }
+
+    public void forEachSensor(Consumer<Sensor> consumer) {
+        for (int i = 0; i < sensorCount; i++) {
+            consumer.accept(sensors[i]);
         }
     }
 

@@ -2,19 +2,19 @@ package com.next.engine.model;
 
 import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
-import com.next.engine.physics.CollisionCollector;
+import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
 
 public class Prop extends Actor {
 
-    public Prop(int spriteId, float worldX, float worldY, CollisionType collisionType) {
+    public Prop(int spriteId, float worldX, float worldY, CollisionType collisionType, CollisionBox collisionBox) {
         this.spriteId = spriteId;
         this.collisionType = collisionType;
 
         this.layer = 1;
         this.collisionMask = 0;
 
-        collisionBox = new CollisionBox(0, 0, 16, 16);
+        this.collisionBox = collisionBox;
         setPosition(worldX, worldY);
     }
 
@@ -33,6 +33,6 @@ public class Prop extends Actor {
     }
 
     @Override
-    public void onCollision(Body other, CollisionCollector collector) {
+    public void onCollision(Body other, EventCollector collector) {
     }
 }

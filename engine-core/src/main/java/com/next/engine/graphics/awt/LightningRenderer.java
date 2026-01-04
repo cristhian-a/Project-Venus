@@ -21,7 +21,7 @@ class LightningRenderer {
     private final int COMPOSITE_BUCKETS = 16;
     private final int AMBIENT_BUCKETS = 16;
 
-    private float ambient = 0.8f;
+    private float ambient = 0.4f;
 
     private BufferedImage cachedColoredLight;
 
@@ -110,18 +110,18 @@ class LightningRenderer {
                     null
             );
 
-            if (cachedColoredLight == null) {
-                cachedColoredLight = makeColoredLight(light, new Color(0, 255, 255));
-            }
-
-            lightGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-            lightGraphics.drawImage(
-                    cachedColoredLight,
-                    camera.worldToScreenX(drawX),
-                    camera.worldToScreenY(drawY),
-                    (int) finalRadius, (int) finalRadius,
-                    null
-            );
+//            if (cachedColoredLight == null) {
+//                cachedColoredLight = makeColoredLight(light, new Color(0, 255, 255));
+//            }
+//
+//            lightGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+//            lightGraphics.drawImage(
+//                    cachedColoredLight,
+//                    camera.worldToScreenX(drawX),
+//                    camera.worldToScreenY(drawY),
+//                    (int) finalRadius, (int) finalRadius,
+//                    null
+//            );
         }
     }
 

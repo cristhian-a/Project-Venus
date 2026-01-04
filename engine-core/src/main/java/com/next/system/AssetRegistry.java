@@ -1,6 +1,5 @@
 package com.next.system;
 
-import com.next.engine.graphics.awt.SpriteSheet;
 import com.next.engine.io.FileReader;
 import com.next.io.Loader;
 import com.next.engine.util.Colors;
@@ -19,24 +18,16 @@ public class AssetRegistry {
     private final Map<String, Integer[][]> tileMaps = new HashMap<>();
 
     // Awt resources (remember that)
-    private final Map<String, SpriteSheet> spriteSheets = new HashMap<>();
-    private final Map<String, SpriteSheet> textureSheets = new HashMap<>();
     private final Map<String, Font> fonts = new HashMap<>();
     private final Map<Integer, Color> colors = new HashMap<>();
 
     public void load() {
         try {
-            loadSprites();
             loadFonts();
             loadMaps();
         } catch (IOException | FontFormatException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private void loadSprites() throws IOException {
-        spriteSheets.put("world", new SpriteSheet("/sprites/spritesheet.png", 16, 16));
-        textureSheets.put("light", new SpriteSheet("/textures/light.png", 16, 16));
     }
 
     private void loadFonts() throws IOException, FontFormatException {
@@ -82,8 +73,6 @@ public class AssetRegistry {
         tileMaps.put("map_01", tileMap);
     }
 
-    public SpriteSheet getSpriteSheet(String name) { return spriteSheets.get(name); }
-    public SpriteSheet getTextureSheet(String name) { return textureSheets.get(name); }
     public Font getFont(String name) { return fonts.get(name); }
     public Integer[][] getTileMap(String name) { return tileMaps.get(name); }
     public Color getColor(int hex) { return colors.get(hex); }

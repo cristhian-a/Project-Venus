@@ -1,4 +1,4 @@
-package com.next.graphics;
+package com.next.ui;
 
 import com.next.engine.event.EventDispatcher;
 import com.next.engine.event.ExitEvent;
@@ -30,17 +30,17 @@ public class StartMenuUIState implements UIState {
 
     @Override
     public void update(double delta) {
-        if (input.isPressed(Input.Action.UP)) {
+        if (input.isTyped(Input.Action.UP)) {
             cursor--;
         }
 
-        if (input.isPressed(Input.Action.DOWN)) {
+        if (input.isTyped(Input.Action.DOWN)) {
             cursor++;
         }
 
         cursor = Math.clamp(cursor, 0, 2);
 
-        if (input.isPressed(Input.Action.TALK)) {
+        if (input.isTyped(Input.Action.TALK)) {
             switch (cursor) {
                 case 0 -> dispatcher.dispatch(new StartGameEvent());
                 case 1 -> {}
@@ -52,7 +52,7 @@ public class StartMenuUIState implements UIState {
     @Override
     public void submitRender(RenderQueue queue) {
         queue.submit(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 CURSOR,
                 Fonts.DEFAULT,
                 Colors.WHITE,
@@ -63,7 +63,7 @@ public class StartMenuUIState implements UIState {
         );
 
         queue.submit(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 NAME,
                 Fonts.DEFAULT_80_BOLD,
                 Colors.RED,
@@ -74,7 +74,7 @@ public class StartMenuUIState implements UIState {
         );
 
         queue.submit(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 START,
                 Fonts.DEFAULT,
                 Colors.WHITE,
@@ -85,7 +85,7 @@ public class StartMenuUIState implements UIState {
         );
 
         queue.submit(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 LOAD,
                 Fonts.DEFAULT,
                 Colors.WHITE,
@@ -96,7 +96,7 @@ public class StartMenuUIState implements UIState {
         );
 
         queue.submit(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 EXIT,
                 Fonts.DEFAULT,
                 Colors.WHITE,

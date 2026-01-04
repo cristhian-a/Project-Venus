@@ -1,4 +1,4 @@
-package com.next.graphics;
+package com.next.ui;
 
 import com.next.engine.graphics.*;
 import com.next.engine.util.Colors;
@@ -24,9 +24,9 @@ public class FinishUIState implements UIState {
         String finalMessage = "You are a treasure hunter master!";
         String timeMessage = "Your Time: " + String.format("%.2f", time) + "s";
 
-        queue.submit(Layer.UI, RenderType.OVERLAY);
-        queue.submit(Layer.UI, congratsMsg, Fonts.DEFAULT_80_BOLD, Colors.ORANGE, 0, -125, RenderPosition.CENTERED, 1);
-        queue.submit(Layer.UI, finalMessage, Fonts.DEFAULT, Colors.WHITE, 0, 60, RenderPosition.CENTERED, 1);
-        queue.submit(Layer.UI, timeMessage, Fonts.DEFAULT, Colors.WHITE, 0, 100, RenderPosition.CENTERED, 1);
+        queue.submit(Layer.UI_SCREEN, RenderType.OVERLAY);
+        queue.submit(Layer.UI_SCREEN, congratsMsg, Fonts.DEFAULT_80_BOLD, Colors.ORANGE, 0, -125, RenderPosition.CENTERED, 1);
+        queue.submit(Layer.UI_SCREEN, finalMessage, Fonts.DEFAULT, Colors.WHITE, 0, 60, RenderPosition.CENTERED, 1);
+        queue.submit(Layer.UI_SCREEN, timeMessage, Fonts.DEFAULT, Colors.WHITE, 0, 100, RenderPosition.CENTERED, 1);
     }
 }

@@ -10,7 +10,7 @@ public class DisplayHeart extends Prop {
     private int depletion;
 
     public DisplayHeart(int fullHeartSprite, int halfHeartSprite, int emptyHeartSprite) {
-        super(fullHeartSprite, 0f, 0f, CollisionType.NONE);
+        super(fullHeartSprite, 0f, 0f, CollisionType.NONE, null);
 
         sprites = new int[3];
         sprites[0] = fullHeartSprite;

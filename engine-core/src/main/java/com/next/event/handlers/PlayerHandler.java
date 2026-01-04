@@ -2,7 +2,7 @@ package com.next.event.handlers;
 
 import com.next.engine.event.EventDispatcher;
 import com.next.event.DialogueEvent;
-import com.next.graphics.GameplayUIState;
+import com.next.ui.GameplayUIState;
 import com.next.model.NpcDummy;
 
 public class PlayerHandler {

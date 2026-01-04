@@ -1,6 +1,6 @@
 package com.next.io;
 
-import com.next.engine.graphics.awt.SpriteSheet;
+import com.next.engine.dto.TextureMetadata;
 import com.next.engine.io.FileReader;
 import com.next.engine.io.JsonReader;
 import com.next.engine.sound.SoundClip;
@@ -86,16 +86,13 @@ public final class Loader {
     }
 
     public static final class Textures {
-        public static InputStream load(String fileName) {
-            return FileReader.getFile("/textures/" + fileName);
-        }
 
         public static BufferedImage loadImage(String fileName) throws IOException {
             return ImageIO.read(FileReader.getFile("/textures/" + fileName));
         }
 
-        public static SpriteSheet loadSheet(String fileName, int width, int height) throws IOException {
-            return new SpriteSheet("/textures/" + fileName, width, height);
+        public static TextureMetadata loadMetadata(String fileName) throws IOException {
+            return JsonReader.readObject(FileReader.getFile("/textures/" + fileName), TextureMetadata.class);
         }
     }
 

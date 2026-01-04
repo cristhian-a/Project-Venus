@@ -1,5 +1,7 @@
 package com.next.engine.physics;
 
+import com.next.engine.event.EventCollector;
+
 /**
  * Interface for objects that want to be subject to the physics engine. Implementing its methods will make it able to be
  * considered during {@link Physics} apply.
@@ -16,7 +18,9 @@ public interface Body {
     CollisionType getCollisionType();
 
     void setPosition(float x, float y);
-    void onCollision(Body other, CollisionCollector collector);
+    void onCollision(Body other, EventCollector collector);
+    default void onEnter(Body other, EventCollector collector) {}
+    default void onExit(Body other, EventCollector collector) {}
 
     int getLastQueryId();
     void setLastQueryId(int id);

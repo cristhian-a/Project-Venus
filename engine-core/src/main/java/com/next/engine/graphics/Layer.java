@@ -5,6 +5,7 @@ public enum Layer {
     WORLD,
     ACTORS,
     LIGHTS,
-    UI,
+    UI_WORLD,
+    UI_SCREEN,
     DEBUG
 }
