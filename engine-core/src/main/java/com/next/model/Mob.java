@@ -9,7 +9,7 @@ import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
-import com.next.event.DamageEvent;
+import com.next.event.FallDamageEvent;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class Mob extends AnimatedActor implements Combatant {
 
-    private final int maxHealth = 6;
+    @Getter private final int maxHealth = 6;
     @Getter @Setter private int health = maxHealth;
 
     private double deathTimer = 0;
@@ -51,7 +51,7 @@ public class Mob extends AnimatedActor implements Combatant {
     @Override
     public void onCollision(Body other, EventCollector collector) {
         if (other instanceof Player p) {
-            collector.post(() -> new DamageEvent(p, 1));
+            collector.post(() -> new FallDamageEvent(p, 1));
         }
     }
 

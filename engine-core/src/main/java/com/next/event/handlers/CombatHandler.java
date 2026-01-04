@@ -4,6 +4,7 @@ import com.next.engine.Global;
 import com.next.engine.data.Mailbox;
 import com.next.engine.event.EventDispatcher;
 import com.next.event.AttackEvent;
+import com.next.event.UiDamageEvent;
 import com.next.model.Combatant;
 import lombok.AllArgsConstructor;
 
@@ -38,6 +39,7 @@ public class CombatHandler {
 
     public void onAttack(AttackEvent event) {
         event.target().takeDamage(event.spec().damage());
+        dispatcher.dispatch(new UiDamageEvent(event.target().getId()));
 
         if (event.target().getHealth() > 0) {
             double remaining = Global.fixedDelta * 10;

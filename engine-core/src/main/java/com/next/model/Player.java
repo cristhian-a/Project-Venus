@@ -31,8 +31,8 @@ public class Player extends AnimatedActor implements Combatant {
     @Getter @Setter boolean talking;
 
     private float speed = 1;
-    @Getter @Setter private int maxHp = 6;
-    @Getter @Setter private int health = maxHp;
+    @Getter @Setter private int maxHealth = 6;
+    @Getter @Setter private int health = maxHealth;
     private Direction direction = Direction.DOWN;
 
     // Combat-related stuff

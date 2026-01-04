@@ -2,10 +2,7 @@ package com.next.world;
 
 import com.next.engine.data.Mailbox;
 import com.next.engine.graphics.RenderQueue;
-import com.next.engine.model.Actor;
-import com.next.engine.model.Entity;
-import com.next.engine.model.Light;
-import com.next.engine.model.Sensor;
+import com.next.engine.model.*;
 import com.next.engine.physics.Body;
 import com.next.engine.system.Debugger;
 import lombok.Getter;
@@ -19,6 +16,7 @@ import java.util.function.Consumer;
  */
 public class Scene {
     public final World world;
+    public Camera camera;
 
     @Getter private Entity[] entities;  // everyone
     private int entityCount;

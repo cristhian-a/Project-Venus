@@ -1,24 +1,16 @@
 package com.next;
 
-import com.next.engine.Global;
 import com.next.engine.data.Registry;
 import com.next.engine.data.AtlasImporter;
 import com.next.engine.event.*;
-import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.*;
-import com.next.event.DamageEvent;
+import com.next.event.FallDamageEvent;
 import com.next.event.PauseEvent;
 import com.next.event.PitFallEvent;
 import com.next.event.handlers.*;
-import com.next.rules.Actions;
-import com.next.rules.Conditions;
-import com.next.ui.StartMenuUIState;
-import com.next.ui.UIState;
-import com.next.engine.util.GameState;
+import com.next.gameflow.*;
 import com.next.engine.data.Mailbox;
 import com.next.engine.physics.Physics;
-import com.next.engine.sound.PlaySound;
-import com.next.engine.sound.SoundChannel;
 import com.next.io.Loader;
 import com.next.model.*;
 import com.next.model.factory.*;
@@ -28,7 +20,6 @@ import com.next.system.Input;
 import com.next.system.Settings;
 import com.next.ui.GameplayUIState;
 import com.next.ui.UISystem;
-import com.next.engine.util.Sounds;
 import com.next.world.LevelData;
 import com.next.world.Scene;
 import com.next.world.World;
@@ -38,17 +29,18 @@ import lombok.Setter;
 
 import java.io.IOException;
 
+@Getter
 public class Game {
 
     // Dependencies
     private final Input input;
     private final Mailbox mailbox;
     private final AssetRegistry assets;
-    @Getter private final Settings settings;
+    private final Settings settings;
     private final EventDispatcher dispatcher;
 
     // Systems
-    @Getter private final UISystem ui = new UISystem();
+    private final UISystem ui = new UISystem();
     private final Physics physics = new Physics();
 
     // Handlers
@@ -57,12 +49,12 @@ public class Game {
     private PlayerHandler playerHandler;
 
     // States (if needed)
-    private GameplayUIState gameplayUIState;
+    private GameMode mode;
+    @Setter private GameplayUIState gameplayUIState;
 
-    @Getter @Setter private GameState gameState = GameState.START_MENU;
-    @Getter private Camera camera;
-    @Getter private Scene scene;
-    @Getter private Player player;
+    private Camera camera;
+    private Scene scene;
+    private Player player;
 
     public Game(Input input, Mailbox mailbox, Settings settings, AssetRegistry assets, EventDispatcher dispatcher) {
         this.input = input;
@@ -72,13 +64,19 @@ public class Game {
         this.dispatcher = dispatcher;
 
         new PitFallEvent.Handler(dispatcher);
-        new DamageEvent.Handler(dispatcher);
+        new FallDamageEvent.Handler(dispatcher);
         new DoorHandler(dispatcher, mailbox);
         new SpellHandler(dispatcher, mailbox);
         combatHandler = new CombatHandler(mailbox, dispatcher);
-        gameFlowHandler = new GameFlowHandler(dispatcher, mailbox, input, this);
+        gameFlowHandler = new GameFlowHandler(dispatcher, this);
 
         Registry.audioTracks.putAll(Loader.Audio.load());
+    }
+
+    public void setMode(GameMode newMode) {
+        if (mode != null) mode.onExit(this);
+        mode = newMode;
+        mode.onEnter(this);
     }
 
     public void boot() {
@@ -101,52 +99,28 @@ public class Game {
         }
 
         camera = new Camera(settings.video.WIDTH, settings.video.HEIGHT, 0, 0, settings.video.SCALE);
-        ui.setState(new StartMenuUIState(input, dispatcher));
+        scene.camera = camera;
+        setMode(new TitleMode());
     }
 
-    public void start(UIState uiState) {
+    public void start() {
+        gameplayUIState = new GameplayUIState(scene, player, dispatcher, settings.video);
         camera = new Camera(settings.video.UNSCALED_WIDTH, settings.video.UNSCALED_HEIGHT, 0, 0, settings.video.SCALE);
-
+        scene.camera = camera;
         physics.ruleOver(scene);
-
-        playerHandler = new PlayerHandler(dispatcher, (GameplayUIState) uiState);
-
+        playerHandler = new PlayerHandler(dispatcher, gameplayUIState);
         dispatcher.dispatch(new WorldTransitionEvent(scene.world));
-        dispatcher.dispatch(new PlaySound(Sounds.WIND, SoundChannel.MUSIC, true));
     }
 
     public void update(double delta) {
         long start = System.nanoTime();
 
         mailbox.beginFrame();
-
-        RenderQueue writeQueue = mailbox.postRender();
         processInputs();
 
-        // TODO GameFlowHandler and Game are competing as conductors now
-        gameFlowHandler.update(delta);
-
-        // TODO game states are poorly managed right now
-        if (gameState == GameState.START_MENU) {
-            // Nothing?
-        }
-        if (gameState == GameState.RUNNING) {
-            // TODO this is very incomplete
-            scene.update(delta, mailbox);
-            combatHandler.update(delta);
-
-            physics.apply(Global.fixedDelta, mailbox.motionQueue, mailbox); // always after update
-
-            dispatcher.dispatch(mailbox);   // for now, this should happen after physics
-
-            scene.dismissDisposed();   // PLEASE, dismiss before rendering
-        }
-
-        camera.follow(player);    // the camera follows after events' resolution
-        scene.submitRender(writeQueue);
-
+        mode.update(this, delta);
         ui.update(delta);
-        ui.submit(writeQueue);
+        ui.submit(mailbox.postRender());
 
         mailbox.publish();
         long end = System.nanoTime();
@@ -222,5 +196,13 @@ public class Game {
         if (input.isTyped(Input.Action.PAUSE)) {
             dispatcher.dispatch(new PauseEvent());
         }
+    }
+
+    public boolean isRunning() {
+        return mode instanceof RunningMode;
+    }
+
+    public boolean isPaused() {
+        return mode instanceof PausedMode;
     }
 }
