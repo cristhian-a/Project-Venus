@@ -61,8 +61,18 @@ public class Renderer {
         // 3.5 Lightning (black magic)
         lightningRenderer.render(g, camera, queue.getBucket(Layer.LIGHTS));
 
-        // 4. UI
-        var uiLayer = queue.getBucket(Layer.UI);
+        // 4. UI - WORLD (health bars and stuff like that)
+        var uiWorldLayer = queue.getBucket(Layer.UI_WORLD);
+        uiRenderer.renderSpriteTable(g, uiWorldLayer.sprites);
+        uiRenderer.renderRectangleTable(g, uiWorldLayer.rectangles);
+        uiRenderer.renderFilledRectangleTable(g, uiWorldLayer.filledRectangles);
+        uiRenderer.renderFilledRoundRectangleTable(g, uiWorldLayer.filledRoundRects);
+        uiRenderer.renderRoundedStrokeRectTable(g, uiWorldLayer.roundedStrokeRectTable);
+        uiRenderer.renderTextTable(g, uiWorldLayer.texts);
+        uiRenderer.renderMessages(g);
+
+        // 5. UI - SCREEN (Hud and stuff like that)
+        var uiLayer = queue.getBucket(Layer.UI_SCREEN);
         uiRenderer.renderSpriteTable(g, uiLayer.sprites);
         g.setTransform(oldScale);
         uiRenderer.renderRectangleTable(g, uiLayer.rectangles);
@@ -73,7 +83,7 @@ public class Renderer {
         uiRenderer.renderTextTable(g, uiLayer.texts);
         uiRenderer.renderMessages(g);
 
-        // 5. DEBUG
+        // 6. DEBUG
         uiRenderer.renderDebugInfo(g, camera);  // TODO also
 
         long end = System.nanoTime();

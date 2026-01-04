@@ -52,7 +52,7 @@ public class StartMenuUIState implements UIState {
     @Override
     public void submitRender(RenderQueue queue) {
         queue.submit(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 CURSOR,
                 Fonts.DEFAULT,
                 Colors.WHITE,
@@ -63,7 +63,7 @@ public class StartMenuUIState implements UIState {
         );
 
         queue.submit(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 NAME,
                 Fonts.DEFAULT_80_BOLD,
                 Colors.RED,
@@ -74,7 +74,7 @@ public class StartMenuUIState implements UIState {
         );
 
         queue.submit(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 START,
                 Fonts.DEFAULT,
                 Colors.WHITE,
@@ -85,7 +85,7 @@ public class StartMenuUIState implements UIState {
         );
 
         queue.submit(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 LOAD,
                 Fonts.DEFAULT,
                 Colors.WHITE,
@@ -96,7 +96,7 @@ public class StartMenuUIState implements UIState {
         );
 
         queue.submit(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 EXIT,
                 Fonts.DEFAULT,
                 Colors.WHITE,

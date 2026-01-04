@@ -29,7 +29,7 @@ public class SpellHandler {
         event.player().boostSpeed(3f);
 
         mailbox.postRender().submit(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 "Mercury's Bless!",
                 Fonts.DEFAULT,
                 Colors.WHITE,

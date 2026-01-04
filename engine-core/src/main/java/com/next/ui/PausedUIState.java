@@ -17,7 +17,7 @@ public class PausedUIState implements UIState {
     @Override
     public void submitRender(RenderQueue queue) {
         queue.submit(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 PAUSED,
                 Fonts.DEFAULT,
                 Colors.WHITE,

@@ -56,10 +56,14 @@ public class GameplayUIState implements UIState {
     @Override
     public void update(double delta) {
         var bars = uiWorldModel.getHealthBars();
-        for (int i = bars.size() - 1; i >= 0; i--) {
-            var healthBar = bars.get(i);
+        var iterator = bars.values().iterator();
+
+        while (iterator.hasNext()) {
+            var healthBar = iterator.next();
             healthBar.ttl -= delta;
-            if (healthBar.ttl <= 0) bars.remove(i);
+            if (healthBar.ttl <= 0) {
+                iterator.remove();
+            }
         }
     }
 
@@ -71,8 +75,10 @@ public class GameplayUIState implements UIState {
     }
 
     public void onFire(UiDamageEvent event) {
-        var healthBar = new UIWorldModel.HealthBar(event.entityId(), 10);
-        uiWorldModel.getHealthBars().add(healthBar);
+        var bar = uiWorldModel.getHealthBars().getOrDefault(event.entityId(), new UIWorldModel.HealthBar());
+        bar.entityId = event.entityId();
+        bar.ttl = 10;
+        uiWorldModel.getHealthBars().put(event.entityId(), bar);
     }
 
     private void renderPlayerHealth(RenderQueue renderQueue) {
@@ -85,45 +91,49 @@ public class GameplayUIState implements UIState {
         int halfHearts = (maxHp / 2) - (fullHearts + emptyHearts);
 
         int c = 0;
-        int xOffset = 4 * videoSettings.SCALE;
+        int xOffset = 16;
 
         for (int i = 0; i < fullHearts; i++) {
-            renderQueue.submit(Layer.UI, 5 + c * xOffset, 5, fullHeart);
+            renderQueue.submit(Layer.UI_WORLD, 5 + c * xOffset, 5, fullHeart);
             c++;
         }
 
         for (int i = 0; i < halfHearts; i++) {
-            renderQueue.submit(Layer.UI, 5 + c * xOffset, 5, halfHeart);
+            renderQueue.submit(Layer.UI_WORLD, 5 + c * xOffset, 5, halfHeart);
             c++;
         }
 
         for (int i = 0; i < emptyHearts; i++) {
-            renderQueue.submit(Layer.UI, 5 + c * xOffset, 5, emptyHeart);
+            renderQueue.submit(Layer.UI_WORLD, 5 + c * xOffset, 5, emptyHeart);
             c++;
         }
     }
 
     private void renderHealthBars(RenderQueue renderQueue) {
         var bars = uiWorldModel.getHealthBars();
-        for (int i = bars.size() - 1; i >= 0; i--) {
-            var healthBar = bars.get(i);
-            var entity = scene.getEntity(healthBar.entityId);
+        var iterator = bars.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            var entry = iterator.next();
+            var entityId = entry.getKey();
+            var entity = scene.getEntity(entityId);
+
             if (entity == null) {
-                bars.remove(i);
+                iterator.remove();
                 continue;
             }
 
             float x = scene.camera.worldToScreenX(entity.getWorldX() - 8);
             float y = scene.camera.worldToScreenY(entity.getWorldY() - 16);
 
-            int width = 58;
-            int height = 10;
+            int width = 14;
+            int height = 2;
             Combatant c = (Combatant) entity;
             int oneScale = width / c.getMaxHealth();
             int sw = oneScale * c.getHealth();
 
-            renderQueue.fillRectangle(Layer.UI, x * 4 - 1, y * 4 - 1, width + 2, height + 2, Colors.BLACK);
-            renderQueue.fillRectangle(Layer.UI, x * 4, y * 4, sw, height, Colors.RED);
+            renderQueue.fillRectangle(Layer.UI_WORLD, x - 1, y - 1, width + 2, height + 2, Colors.BLACK);
+            renderQueue.fillRectangle(Layer.UI_WORLD, x, y, sw, height, Colors.RED);
         }
     }
 
@@ -153,7 +163,7 @@ public class GameplayUIState implements UIState {
         int bArc = Math.max(0, arc - thickness);
 
         queue.roundStrokeRect(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 x, y,
                 w, h,
                 thickness,
@@ -161,7 +171,7 @@ public class GameplayUIState implements UIState {
                 arc
         );
         queue.fillRoundRect(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 bx, by,
                 bw, bh,
                 Colors.FADED_BLACK,
@@ -169,7 +179,7 @@ public class GameplayUIState implements UIState {
         );
 
         queue.submit(
-                Layer.UI,
+                Layer.UI_SCREEN,
                 dialogueLines[dialogueIndex],
                 Fonts.DEFAULT,
                 Colors.WHITE,

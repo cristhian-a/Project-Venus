@@ -1,20 +1,18 @@
 package com.next.ui;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class UIWorldModel {
 
-    @AllArgsConstructor
     public static final class HealthBar {
         public int entityId;
         public double ttl;
     }
 
-    @Getter private final List<HealthBar> healthBars = new ArrayList<>();
+    @Getter private final Map<Integer, HealthBar> healthBars = new HashMap<>();
 
     public void clear() {
         healthBars.clear();
