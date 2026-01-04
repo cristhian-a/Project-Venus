@@ -169,10 +169,6 @@ public class Game {
         Light lightC = LightFactory.create(376, 344);
         Light light2 = LightFactory.create(300, 344);
 
-        Mob ghost = MobFactory.create(342, 649);
-
-
-
         Scene s = new Scene(world);
         s.addAll(props);
         s.add(npc);
@@ -181,7 +177,8 @@ public class Game {
 //        s.add(lightB);
 //        s.add(lightC);
 //        s.add(light2);
-        s.add(ghost);
+        s.add(MobFactory.create(342, 649));
+        s.add(MobFactory.create(380, 610));
 
         HitboxFactory hitboxFactory = new HitboxFactory(s);
         player = new PlayerFactory(world, level, hitboxFactory).create();

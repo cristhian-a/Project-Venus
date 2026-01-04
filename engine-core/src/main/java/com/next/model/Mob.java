@@ -21,6 +21,8 @@ public class Mob extends AnimatedActor implements Combatant {
     @Getter @Setter private int health = maxHealth;
 
     private double deathTimer = 0;
+    private int movementFrames = 50;
+    private int direction = 0;
 
     public Mob(Map<AnimationState, Animation> animations, float x, float y, float width, float height, float offsetX, float offsetY) {
         this.animations = animations;
@@ -34,12 +36,16 @@ public class Mob extends AnimatedActor implements Combatant {
 
     @Override
     public void update(double delta, Mailbox mailbox) {
-        animate();
-
         if (deathTimer > 0d) {
             deathTimer -= delta;
-            if (deathTimer <= 0d) dispose();
+            if (deathTimer <= 0d) {
+                dispose();
+                return;
+            }
         }
+
+        behave(mailbox);
+        animate();
     }
 
     @Override
@@ -64,5 +70,43 @@ public class Mob extends AnimatedActor implements Combatant {
     private void die() {
         animationState = AnimationState.DEAD;
         deathTimer = Global.fixedDelta * 45;
+    }
+
+    private void behave(Mailbox mailbox) {
+        if (health <= 0) return;
+
+        long n = System.nanoTime();
+        long rng = n % 35;
+
+        float dx = 0, dy = 0;
+
+        if (movementFrames-- <= 0) {
+            movementFrames = 50;
+
+            if (rng < 7) {
+                direction = 1;
+            } else if (rng < 14) {
+                direction = 2;
+            } else if (rng < 21) {
+                direction = 3;
+            } else if (rng < 28){
+                direction = 4;
+            } else {
+                direction = 0;
+            }
+        }
+
+        float speed = 0.5f;
+        if (direction == 1) {
+            dx += speed;
+        } else if (direction == 2) {
+            dx -= speed;
+        } else if (direction == 3) {
+            dy -= speed;
+        } else if (direction == 4) {
+            dy += speed;
+        }
+
+        mailbox.motionQueue.submit(this.id, dx, dy, 0f);
     }
 }

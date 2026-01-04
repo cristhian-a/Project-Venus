@@ -25,7 +25,7 @@ public class CombatHandler {
     }
 
     public void update(double delta) {
-        for (int i = 0; i < knockbacks.size(); i++) {
+        for (int i = knockbacks.size() - 1; i >= 0; i--) {
             var k = knockbacks.get(i);
             mailbox.motionQueue.submit(k.target.getId(), k.knockbackX, k.knockbackY, 0);
             k.remainingTime -= delta;

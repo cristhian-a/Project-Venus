@@ -160,10 +160,10 @@ public class Player extends AnimatedActor implements Combatant {
 
     public void handleAttack() {
         if (attacking && attackingFrames > 29) {
-            if (direction == Direction.UP) dy -= 1f;
-            if (direction == Direction.DOWN) dy += 1f;
-            if (direction == Direction.LEFT) dx -= 1f;
-            if (direction == Direction.RIGHT) dx += 1f;
+            if (direction == Direction.UP) dy -= speed;
+            if (direction == Direction.DOWN) dy += speed;
+            if (direction == Direction.LEFT) dx -= speed;
+            if (direction == Direction.RIGHT) dx += speed;
         }
 
         if (attackingFrames == 30) {
@@ -180,12 +180,13 @@ public class Player extends AnimatedActor implements Combatant {
 
     public HitboxSpec getWeaponSpecs() {
         double duration = Global.fixedDelta * 30d;
+        float knockback = 0.5f * speed;
 
         switch (direction) {
             case DOWN -> {
                 if (downSpec == null) {
                     downSpec = new HitboxSpec(-2, 7, 5, 12,
-                            duration, 1, 0, 0.5f,
+                            duration, 1, 0, knockback,
                             collisionMask, true, true);
                 }
                 return downSpec;
@@ -193,7 +194,7 @@ public class Player extends AnimatedActor implements Combatant {
             case UP -> {
                 if (upSpec == null) {
                     upSpec = new HitboxSpec(-2, -16, 5, 12,
-                            duration, 1, 0, -0.5f,
+                            duration, 1, 0, -knockback,
                             collisionMask, true, true);
                 }
                 return upSpec;
@@ -201,7 +202,7 @@ public class Player extends AnimatedActor implements Combatant {
             case LEFT -> {
                 if (leftSpec == null) {
                     leftSpec = new HitboxSpec(-18, 0, 12, 5,
-                            duration, 1, -0.5f, 0,
+                            duration, 1, -knockback, 0,
                             collisionMask, true, true);
                 }
                 return leftSpec;
@@ -209,7 +210,7 @@ public class Player extends AnimatedActor implements Combatant {
             case RIGHT -> {
                 if (rightSpec == null) {
                     rightSpec = new HitboxSpec(6, 0, 12, 5,
-                            duration, 1, 0.5f, 0,
+                            duration, 1, knockback, 0,
                             collisionMask, true, true);
                 }
                 return rightSpec;
