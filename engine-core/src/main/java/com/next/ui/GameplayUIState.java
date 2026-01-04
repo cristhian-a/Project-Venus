@@ -26,9 +26,9 @@ public class GameplayUIState implements UIState {
     private boolean dialogueActive;
     private int dialogueIndex;
 
-    private int fullHeart;
-    private int halfHeart;
-    private int emptyHeart;
+    private final int fullHeart;
+    private final int halfHeart;
+    private final int emptyHeart;
 
     public GameplayUIState(Scene scene, Player player, EventDispatcher dispatcher,
                            Settings.VideoSettings videoSettings
