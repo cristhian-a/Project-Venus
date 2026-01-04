@@ -21,6 +21,7 @@ public class Mob extends AnimatedActor implements Combatant {
     @Getter @Setter private int health = maxHealth;
 
     private double deathTimer = 0;
+    private double stunTimer = 0;
     private int movementFrames = 50;
     private int direction = 0;
 
@@ -44,6 +45,12 @@ public class Mob extends AnimatedActor implements Combatant {
             }
         }
 
+        if (stunTimer > 0d) {
+            stunTimer -= delta;
+            stunTimer = Math.max(0d, stunTimer);
+            return;
+        }
+
         behave(mailbox);
         animate();
     }
@@ -64,6 +71,8 @@ public class Mob extends AnimatedActor implements Combatant {
 
         if (health == 0) {
             die();
+        } else {
+            stunTimer = Global.fixedDelta * 30;
         }
     }
 
