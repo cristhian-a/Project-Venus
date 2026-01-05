@@ -6,10 +6,14 @@ import java.net.URL;
 public class FileReader {
 
     public static InputStream getFile(String path) {
-        return FileReader.class.getResourceAsStream(path);
+        return Thread.currentThread().getContextClassLoader().getResourceAsStream(getPath(path));
     }
 
     public static URL getResource(String path) {
-        return FileReader.class.getResource(path);
+        return Thread.currentThread().getContextClassLoader().getResource(getPath(path));
+    }
+
+    private static String getPath(String path) {
+        return path.startsWith("/") ? path.substring(1) : path;
     }
 }
