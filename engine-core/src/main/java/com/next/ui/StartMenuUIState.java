@@ -9,6 +9,7 @@ import com.next.event.StartGameEvent;
 import com.next.system.Input;
 import com.next.util.Colors;
 import com.next.util.Fonts;
+import com.next.util.Inputs;
 
 public class StartMenuUIState implements UIState {
 
@@ -30,17 +31,17 @@ public class StartMenuUIState implements UIState {
 
     @Override
     public void update(double delta) {
-        if (input.isTyped(Input.Action.UP)) {
+        if (input.isTyped(Inputs.UP)) {
             cursor--;
         }
 
-        if (input.isTyped(Input.Action.DOWN)) {
+        if (input.isTyped(Inputs.DOWN)) {
             cursor++;
         }
 
         cursor = Math.clamp(cursor, 0, 2);
 
-        if (input.isTyped(Input.Action.TALK)) {
+        if (input.isTyped(Inputs.TALK)) {
             switch (cursor) {
                 case 0 -> dispatcher.dispatch(new StartGameEvent());
                 case 1 -> {}

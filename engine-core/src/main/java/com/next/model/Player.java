@@ -16,6 +16,7 @@ import com.next.model.factory.HitboxFactory;
 import com.next.rules.data.ActiveGear;
 import com.next.rules.data.Attributes;
 import com.next.system.Input;
+import com.next.util.Inputs;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -98,23 +99,23 @@ public class Player extends AnimatedActor implements Combatant {
             }
         }
 
-        if (input.isTyped(Input.Action.TALK) && !talking && !attacking) {
+        if (input.isTyped(Inputs.TALK) && !talking && !attacking) {
             attacking = true;
             attackingFrames = 39;
         } else if (!talking & !attacking) {
-            if (input.isDown(Input.Action.UP)) {
+            if (input.isDown(Inputs.UP)) {
                 dy -= speed;
                 animationState = AnimationState.WALK_UP;
                 direction = Direction.UP;
-            } else if (input.isDown(Input.Action.DOWN)) {
+            } else if (input.isDown(Inputs.DOWN)) {
                 dy += speed;
                 animationState = AnimationState.WALK_DOWN;
                 direction = Direction.DOWN;
-            } else if (input.isDown(Input.Action.LEFT)) {
+            } else if (input.isDown(Inputs.LEFT)) {
                 dx -= speed;
                 animationState = AnimationState.WALK_LEFT;
                 direction = Direction.LEFT;
-            } else if (input.isDown(Input.Action.RIGHT)) {
+            } else if (input.isDown(Inputs.RIGHT)) {
                 dx += speed;
                 animationState = AnimationState.WALK_RIGHT;
                 direction = Direction.RIGHT;

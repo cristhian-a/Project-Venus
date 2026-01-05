@@ -2,27 +2,18 @@ package com.next.system;
 
 import com.next.engine.io.InputReader;
 
-import java.awt.event.KeyEvent;
 import java.util.*;
 
 public class Input {
 
-    public enum Action {
-        UP, DOWN, LEFT, RIGHT, TALK, PAUSE, DISPLAY_STATS, DEBUG_1
-    }
-
     private final List<InputReader> devices;
-    private final EnumMap<Action, List<DeviceMapping>> mappings;
-    private final EnumMap<Action, ActionState> actionStates;
+    private final Map<String, List<DeviceMapping>> mappings;
+    private final Map<String, ActionState> actionStates;
 
     public Input() {
         devices = new ArrayList<>();
-        mappings = new EnumMap<>(Action.class);
-        actionStates = new EnumMap<>(Action.class);
-
-        for (Action a : Action.values()) {
-            actionStates.put(a, new ActionState());
-        }
+        mappings = new HashMap<>();
+        actionStates = new HashMap<>();
     }
 
     public void poll() {
@@ -30,7 +21,7 @@ public class Input {
             device.snapshot();
         }
 
-        for (Action action : mappings.keySet()) {
+        for (String action : mappings.keySet()) {
             boolean down = false;
             boolean pressed = false;
             boolean released = false;
@@ -48,40 +39,30 @@ public class Input {
         }
     }
 
-    public InputReader mapActions(Settings.ControlSettings controls) {
+    public InputReader mapActions(Map<String, Integer> mappedActions) {
         var device = new InputReader();
         devices.add(device);
 
-        var actionUp = new DeviceMapping(controls.up, device);
-        var actionDown = new DeviceMapping(controls.down, device);
-        var actionLeft = new DeviceMapping(controls.left, device);
-        var actionRight = new DeviceMapping(controls.right, device);
-        var actionTalk = new DeviceMapping(controls.talk, device);
-        var pause = new DeviceMapping(controls.pause, device);
-        var displayStats = new DeviceMapping(KeyEvent.VK_TAB, device);
-        var debug1 = new DeviceMapping(controls.debugMode1, device);
+        for (Map.Entry<String, Integer> entry : mappedActions.entrySet()) {
+            var key = entry.getKey();
+            var button = entry.getValue();
+            mappings.computeIfAbsent(key, _ -> new ArrayList<>()).add(new DeviceMapping(button, device));
 
-        mappings.computeIfAbsent(Action.UP, _ -> new ArrayList<>()).add(actionUp);
-        mappings.computeIfAbsent(Action.DOWN, _ -> new ArrayList<>()).add(actionDown);
-        mappings.computeIfAbsent(Action.LEFT, _ -> new ArrayList<>()).add(actionLeft);
-        mappings.computeIfAbsent(Action.RIGHT, _ -> new ArrayList<>()).add(actionRight);
-        mappings.computeIfAbsent(Action.TALK, _ -> new ArrayList<>()).add(actionTalk);
-        mappings.computeIfAbsent(Action.PAUSE, _ -> new ArrayList<>()).add(pause);
-        mappings.computeIfAbsent(Action.DISPLAY_STATS, _ -> new ArrayList<>()).add(displayStats);
-        mappings.computeIfAbsent(Action.DEBUG_1, _ -> new ArrayList<>()).add(debug1);
+            actionStates.putIfAbsent(key, new ActionState());
+        }
 
         return device;
     }
 
-    public boolean isTyped(Action action) {
+    public boolean isTyped(String action) {
         return actionStates.get(action).typed;
     }
 
-    public boolean isReleased(Action action) {
+    public boolean isReleased(String action) {
         return actionStates.get(action).released;
     }
 
-    public boolean isDown(Action action) {
+    public boolean isDown(String action) {
         return actionStates.get(action).down;
     }
 

@@ -18,6 +18,7 @@ import com.next.system.Input;
 import com.next.system.Settings;
 
 import java.awt.event.KeyListener;
+import java.util.Map;
 
 public class Main {
 
@@ -26,10 +27,11 @@ public class Main {
         Settings settings = Loader.Settings.load();
         AssetRegistry assets = new AssetRegistry();
         assets.load();
+        Map<String, Integer> actionMap = Loader.Controls.loadActionMap();
 
         // Configuration
         Input input = new Input();
-        KeyListener keyboardDevice = input.mapActions(settings.controls);
+        KeyListener keyboardDevice = input.mapActions(actionMap);
 
         // Communication channels
         Mailbox mailbox = new Mailbox();

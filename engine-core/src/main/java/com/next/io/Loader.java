@@ -32,6 +32,17 @@ public final class Loader {
         }
     }
 
+    public static class Controls {
+        public static Map<String, Integer> loadActionMap() {
+            var file = FileReader.getFile("/controls.json");
+            try {
+                return JsonReader.readMap(file, String.class, Integer.class);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     public static class Fonts {
         public static InputStream load() {
             return FileReader.getFile("/fonts/x12y16pxMaruMonica.ttf");

@@ -21,6 +21,7 @@ import com.next.system.Input;
 import com.next.system.Settings;
 import com.next.ui.GameplayUIState;
 import com.next.ui.UISystem;
+import com.next.util.Inputs;
 import com.next.world.LevelData;
 import com.next.world.Scene;
 import com.next.world.World;
@@ -196,9 +197,9 @@ public class Game {
     }
 
     public void processInputs() {
-        if (input.isTyped(Input.Action.PAUSE)) {
+        if (input.isTyped(Inputs.PAUSE)) {
             dispatcher.dispatch(new PauseEvent());
-        } else if (input.isTyped(Input.Action.DISPLAY_STATS)) {
+        } else if (input.isTyped(Inputs.DISPLAY_STATS)) {
             dispatcher.dispatch(new DisplayStatsEvent());
         }
     }
