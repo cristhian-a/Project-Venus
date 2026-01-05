@@ -1,12 +1,12 @@
 package com.next.system;
 
-import com.next.engine.io.InputReader;
+import com.next.engine.io.RawInputListener;
 
 import java.util.*;
 
 public class Input {
 
-    private final List<InputReader> devices;
+    private final List<RawInputListener> devices;
     private final Map<String, List<DeviceMapping>> mappings;
     private final Map<String, ActionState> actionStates;
 
@@ -17,7 +17,7 @@ public class Input {
     }
 
     public void poll() {
-        for (InputReader device : devices) {
+        for (RawInputListener device : devices) {
             device.snapshot();
         }
 
@@ -28,7 +28,7 @@ public class Input {
 
             for (DeviceMapping mapping : mappings.get(action)) {
                 down |= mapping.device.isDown(mapping.button);
-                pressed |= mapping.device.isPressed(mapping.button);
+                pressed |= mapping.device.isTyped(mapping.button);
                 released |= mapping.device.isReleased(mapping.button);
             }
 
@@ -39,8 +39,7 @@ public class Input {
         }
     }
 
-    public InputReader mapActions(Map<String, Integer> mappedActions) {
-        var device = new InputReader();
+    public void mapActions(Map<String, Integer> mappedActions, RawInputListener device) {
         devices.add(device);
 
         for (Map.Entry<String, Integer> entry : mappedActions.entrySet()) {
@@ -50,8 +49,6 @@ public class Input {
 
             actionStates.putIfAbsent(key, new ActionState());
         }
-
-        return device;
     }
 
     public boolean isTyped(String action) {
@@ -66,7 +63,7 @@ public class Input {
         return actionStates.get(action).down;
     }
 
-    private record DeviceMapping(int button, InputReader device) {}
+    private record DeviceMapping(int button, RawInputListener device) {}
 
     private static final class ActionState {
         boolean down;

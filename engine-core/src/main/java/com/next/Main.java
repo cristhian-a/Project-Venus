@@ -10,6 +10,7 @@ import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.GamePanel;
 import com.next.engine.graphics.awt.AwtPanel;
 import com.next.engine.graphics.awt.Renderer;
+import com.next.engine.io.AwtInputListener;
 import com.next.engine.sound.*;
 import com.next.engine.sound.jxsound.JavaSoundBackend;
 import com.next.io.Loader;
@@ -31,7 +32,8 @@ public class Main {
 
         // Configuration
         Input input = new Input();
-        KeyListener keyboardDevice = input.mapActions(actionMap);
+        var keyboardDevice = new AwtInputListener();
+        input.mapActions(actionMap, keyboardDevice);
 
         // Communication channels
         Mailbox mailbox = new Mailbox();
