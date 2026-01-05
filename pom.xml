@@ -12,6 +12,7 @@
         <module>engine-annotations</module>
         <module>engine-core</module>
         <module>engine-processor</module>
+        <module>game</module>
     </modules>
 
     <properties>

@@ -1,6 +1,6 @@
 package com.next.engine.physics;
 
-import com.next.world.Scene;
+import com.next.engine.scene.Scene;
 import lombok.Getter;
 
 /**

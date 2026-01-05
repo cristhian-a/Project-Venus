@@ -5,11 +5,8 @@ import com.next.engine.graphics.*;
 import com.next.engine.physics.AABB;
 import com.next.engine.model.Camera;
 import com.next.engine.physics.CollisionBox;
-import com.next.system.AssetRegistry;
 import com.next.engine.system.Debugger;
-import com.next.system.Settings.VideoSettings;
-import com.next.util.Colors;
-import com.next.util.Fonts;
+import com.next.engine.system.Settings.VideoSettings;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -17,14 +14,12 @@ import java.util.List;
 
 class UIRenderer {
 
-    private final AssetRegistry assets;
     private final VideoSettings settings;
 
     private final List<UIMessage> messages;
     private final Stroke collisionStroke = new BasicStroke(1);
 
-    protected UIRenderer(AssetRegistry assets, VideoSettings settings) {
-        this.assets = assets;
+    protected UIRenderer(VideoSettings settings) {
         this.settings = settings;
 
         messages = new ArrayList<>();
@@ -44,7 +39,7 @@ class UIRenderer {
     }
 
     protected void renderText(Graphics2D g, UIMessage m) {
-        renderText(g, m.text, m.x, m.y, assets.getColor(m.color), assets.getFont(m.font), m.position);
+        renderText(g, m.text, m.x, m.y, Registry.colors.get(m.color), Registry.fonts.get(m.font), m.position);
     }
 
     protected void renderText(Graphics2D g, String text, int x, int y, Color color, Font font, RenderPosition position) {
@@ -80,7 +75,7 @@ class UIRenderer {
             if (table.frames[i] > 0) {
                 messages.add(new UIMessage(table.message[i], table.font[i], table.colors[i], table.x[i], table.y[i], table.positions[i], table.frames[i]));
             } else {
-                renderText(g, table.message[i], table.x[i], table.y[i], assets.getColor(table.colors[i]), assets.getFont(table.font[i]), table.positions[i]);
+                renderText(g, table.message[i], table.x[i], table.y[i], Registry.colors.get(table.colors[i]), Registry.fonts.get(table.font[i]), table.positions[i]);
             }
         }
     }
@@ -130,8 +125,8 @@ class UIRenderer {
 
     protected void renderDebugInfo(Graphics2D g, Camera camera) {
         var debug = Debugger.getRenderQueue();
-        g.setFont(assets.getFont(Fonts.DEFAULT));
-        g.setColor(assets.getColor(Colors.GREEN));
+//        g.setFont(assets.getFont(Fonts.DEFAULT));
+//        g.setColor(assets.getColor(Colors.GREEN));
         g.setStroke(collisionStroke);
 
         for (String key : debug.keySet()) {

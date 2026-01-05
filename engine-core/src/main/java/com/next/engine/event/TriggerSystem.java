@@ -3,7 +3,7 @@ package com.next.engine.event;
 import com.next.engine.data.SmallPairTable;
 import com.next.engine.model.Sensor;
 import com.next.engine.physics.*;
-import com.next.world.Scene;
+import com.next.engine.scene.Scene;
 
 @Deprecated(forRemoval = true)
 public class TriggerSystem implements SpatialGridHandler {

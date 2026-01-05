@@ -1,21 +1,20 @@
 package com.next.engine;
 
-import com.next.Game;
 import com.next.engine.graphics.GamePanel;
 import com.next.engine.system.Debugger;
-import com.next.system.Input;
+import com.next.engine.system.Input;
 
 public class Loop implements Runnable {
 
-    private final Game game;
+    private final Director director;
     private final Input input;
     private final GamePanel panel;
 
     private Thread mainThread;
     private boolean running;
 
-    public Loop(Game game, GamePanel panel, Input input) {
-        this.game = game;
+    public Loop(Director director, GamePanel panel, Input input) {
+        this.director = director;
         this.panel = panel;
         this.input = input;
     }
@@ -24,7 +23,7 @@ public class Loop implements Runnable {
         running = true;
         mainThread = new Thread(this, "Game Conductor Thread");
 
-        game.boot();
+        director.init();
         panel.openWindow();
         mainThread.start();
     }
@@ -70,7 +69,7 @@ public class Loop implements Runnable {
             while (accumulator >= fixedDelta) {
                 input.poll();
                 Debugger.update(input);
-                game.update(fixedDelta);
+                director.update(fixedDelta);
 
                 accumulator -= fixedDelta;
                 shouldRender = true;

@@ -1,7 +1,7 @@
 package com.next.engine.graphics.awt;
 
 import com.next.engine.graphics.GamePanel;
-import com.next.system.Settings.VideoSettings;
+import com.next.engine.system.Settings.VideoSettings;
 
 import javax.swing.*;
 import java.awt.*;

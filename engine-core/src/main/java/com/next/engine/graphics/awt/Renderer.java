@@ -1,33 +1,32 @@
 package com.next.engine.graphics.awt;
 
-import com.next.Game;
+import com.next.engine.Director;
 import com.next.engine.data.Mailbox;
 import com.next.engine.data.Registry;
 import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
-import com.next.system.AssetRegistry;
 import com.next.engine.system.Debugger;
-import com.next.system.Settings.VideoSettings;
+import com.next.engine.system.Settings.VideoSettings;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 public class Renderer {
     private final UIRenderer uiRenderer;
-    private final Game game;
+    private final Director director;
     private final Mailbox mailbox;
     private final VideoSettings settings;
     private final TileRenderer tileRenderer;
     private final LightningRenderer lightningRenderer;
 
-    public Renderer(Game game, Mailbox mailbox, VideoSettings settings, AssetRegistry assets) {
-        this.game = game;
+    public Renderer(Director director, Mailbox mailbox, VideoSettings settings) {
+        this.director = director;
         this.mailbox = mailbox;
         this.settings = settings;
 
-        this.uiRenderer = new UIRenderer(assets, settings);
+        this.uiRenderer = new UIRenderer(settings);
         this.tileRenderer = new TileRenderer();
         this.lightningRenderer = new LightningRenderer(settings);
     }
@@ -41,7 +40,7 @@ public class Renderer {
         long start = System.nanoTime();
 
         RenderQueue queue = mailbox.receiveRender();
-        Camera camera = game.getCamera();
+        Camera camera = director.getCamera();
 
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         AffineTransform oldScale = g.getTransform();

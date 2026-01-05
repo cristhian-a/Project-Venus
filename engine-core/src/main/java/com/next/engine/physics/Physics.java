@@ -2,7 +2,7 @@ package com.next.engine.physics;
 
 import com.next.engine.event.EventCollector;
 import com.next.engine.model.Sensor;
-import com.next.world.Scene;
+import com.next.engine.scene.Scene;
 
 public class Physics implements SpatialGridHandler {
 

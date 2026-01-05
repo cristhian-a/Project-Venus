@@ -2,8 +2,8 @@ package com.next.engine.graphics.awt;
 
 import com.next.engine.data.Registry;
 import com.next.engine.model.Camera;
-import com.next.world.Tile;
-import com.next.world.World;
+import com.next.engine.scene.Tile;
+import com.next.engine.scene.World;
 
 import java.awt.*;
 

@@ -2,7 +2,6 @@ package com.next.engine.graphics;
 
 import com.next.engine.physics.AABB;
 import com.next.engine.physics.CollisionBox;
-import com.next.util.Colors;
 
 import java.util.Arrays;
 
@@ -38,7 +37,7 @@ public final class RenderQueue {
     public void submit(Layer layer, CollisionBox box, boolean hit) {
         if (box == null) return;
         AABB bounds = box.getBounds();
-        int color = hit ? Colors.WHITE : Colors.RED;
+        int color = hit ? 0xffffffff : 0xffff0000;
         buckets[layer.ordinal()].rectangles.add(bounds.x, bounds.y, bounds.width, bounds.height, color);
     }
 
