@@ -4,8 +4,10 @@ import com.next.engine.Global;
 import com.next.engine.data.Mailbox;
 import com.next.engine.event.EventDispatcher;
 import com.next.event.AttackEvent;
+import com.next.event.LevelUpEvent;
 import com.next.event.UiDamageEvent;
 import com.next.model.Combatant;
+import com.next.model.Player;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
@@ -51,6 +53,24 @@ public class CombatHandler {
             double remaining = Global.fixedDelta * 10;
             knockbacks.add(new Knockback(event.target(), event.spec().knockbackX(), event.spec().knockbackY(), remaining));
         }
+
+        if (event.target().isDead() && event.striker() instanceof Player player) {
+            var att = player.getAttributes();
+            att.xp += 50;
+            if (att.xp >= att.lupXP) {
+                levelUp(player);
+            }
+        }
+    }
+
+    private void levelUp(Player player) {
+        var att = player.getAttributes();
+        att.level++;
+        att.xp -= att.lupXP;
+        att.strength++;
+        att.resistance++;
+
+        dispatcher.dispatch(new LevelUpEvent(player));
     }
 
     @AllArgsConstructor

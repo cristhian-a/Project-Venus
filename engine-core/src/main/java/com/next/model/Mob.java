@@ -94,6 +94,11 @@ public class Mob extends AnimatedActor implements Combatant {
         }
     }
 
+    @Override
+    public boolean isDead() {
+        return health == 0;
+    }
+
     private void die() {
         animationState = AnimationState.DEAD;
         deathTimer = Global.fixedDelta * 45;

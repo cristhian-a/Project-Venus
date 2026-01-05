@@ -13,4 +13,5 @@ public interface Combatant {
     int getDefense();
 
     void takeDamage(int damage);
+    boolean isDead();
 }

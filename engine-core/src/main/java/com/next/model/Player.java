@@ -167,6 +167,11 @@ public class Player extends AnimatedActor implements Combatant {
         invincibilityFrames = 60;
     }
 
+    @Override
+    public boolean isDead() {
+        return false;
+    }
+
     public void boostSpeed(float boost) {
         speed += boost;
     }

@@ -5,6 +5,7 @@ import com.next.engine.event.EventDispatcher;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderPosition;
 import com.next.engine.graphics.RenderQueue;
+import com.next.event.LevelUpEvent;
 import com.next.event.UiDamageEvent;
 import com.next.model.Combatant;
 import com.next.model.Player;
@@ -13,15 +14,23 @@ import com.next.util.Colors;
 import com.next.util.Fonts;
 import com.next.world.Scene;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameplayUIState implements UIState {
+
+    private static String[] LVL_UP = new String[] { "Level ", "!" };
 
     private Scene scene;
     private Player player;
     private final Settings.VideoSettings videoSettings;
 
     private final UIWorldModel uiWorldModel = new UIWorldModel();
+    private final List<String> queuedMessages = new ArrayList<>();
 
     private String[] dialogueLines;
+    private String levelUpMessage;
+    private boolean levelUp;
 
     private boolean dialogueActive;
     private int dialogueIndex;
@@ -38,6 +47,7 @@ public class GameplayUIState implements UIState {
         this.videoSettings = videoSettings;
 
         dispatcher.register(UiDamageEvent.class, this::onFire);
+        dispatcher.register(LevelUpEvent.class, this::onFire);
 
         setDialogueLines();
         fullHeart = Registry.textureIds.get("heart-1.png");
@@ -72,6 +82,19 @@ public class GameplayUIState implements UIState {
         renderPlayerHealth(queue);
         renderHealthBars(queue);
         if (dialogueActive) presentDialogue(queue);
+
+        if (!queuedMessages.isEmpty()) {
+            // TODO must implement a way of making scrolling and fading messages, that should be easy
+//            for (int i = 0; i < queuedMessages.size(); i++) {
+//                queue.submit(Layer.UI_SCREEN, queuedMessages.get(i), Fonts.DEFAULT, Colors.ORANGE, 0, -200, RenderPosition.CENTERED, 600);
+//            }
+            queuedMessages.clear();
+        }
+
+        if (levelUp) {
+            queue.submit(Layer.UI_SCREEN, levelUpMessage, Fonts.DEFAULT_80_BOLD, Colors.ORANGE, 0, -200, RenderPosition.CENTERED, 600);
+            levelUp = false;
+        }
     }
 
     public void onFire(UiDamageEvent event) {
@@ -79,6 +102,12 @@ public class GameplayUIState implements UIState {
         bar.entityId = event.entityId();
         bar.ttl = 10;
         uiWorldModel.getHealthBars().put(event.entityId(), bar);
+    }
+
+    public void onFire(LevelUpEvent event) {
+        levelUpMessage = LVL_UP[0] + event.player().getAttributes().level + LVL_UP[1];
+        levelUp = true;
+//        queuedMessages.add(levelUpMessage);
     }
 
     private void renderPlayerHealth(RenderQueue renderQueue) {

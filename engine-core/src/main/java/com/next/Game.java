@@ -154,6 +154,9 @@ public class Game {
 //        s.add(light2);
         s.add(MobFactory.create(342, 649));
         s.add(MobFactory.create(380, 610));
+        s.add(MobFactory.create(420, 610));
+        s.add(MobFactory.create(500, 610));
+        s.add(MobFactory.create(500, 630));
 
         HitboxFactory hitboxFactory = new HitboxFactory(s);
         player = new PlayerFactory(world, level, hitboxFactory).create();
