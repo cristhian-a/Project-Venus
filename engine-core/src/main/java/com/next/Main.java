@@ -18,7 +18,6 @@ import com.next.system.AssetRegistry;
 import com.next.system.Input;
 import com.next.system.Settings;
 
-import java.awt.event.KeyListener;
 import java.util.Map;
 
 public class Main {

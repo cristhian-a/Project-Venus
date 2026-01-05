@@ -6,15 +6,10 @@ import java.util.*;
 
 public class Input {
 
-    private final List<RawInputListener> devices;
-    private final Map<String, List<DeviceMapping>> mappings;
-    private final Map<String, ActionState> actionStates;
-
-    public Input() {
-        devices = new ArrayList<>();
-        mappings = new HashMap<>();
-        actionStates = new HashMap<>();
-    }
+    private final Map<String, List<DeviceMapping>> mappings = new HashMap<>();
+    private final Map<String, ActionState> actionStates = new HashMap<>();
+    private final List<RawInputListener> devices = new ArrayList<>();
+    private final Set<String> disabledActions = new HashSet<>();
 
     public void poll() {
         for (RawInputListener device : devices) {
@@ -37,6 +32,15 @@ public class Input {
             state.typed = pressed;
             state.released = released;
         }
+
+        for (String action : disabledActions) {
+            var state = actionStates.get(action);
+            if (state != null) {
+                state.down = false;
+                state.typed = false;
+                state.released = false;
+            }
+        }
     }
 
     public void mapActions(Map<String, Integer> mappedActions, RawInputListener device) {
@@ -49,6 +53,11 @@ public class Input {
 
             actionStates.putIfAbsent(key, new ActionState());
         }
+    }
+
+    public void setActionEnabled(String action, boolean enabled) {
+        if (enabled) disabledActions.remove(action);
+        else disabledActions.add(action);
     }
 
     public boolean isTyped(String action) {
