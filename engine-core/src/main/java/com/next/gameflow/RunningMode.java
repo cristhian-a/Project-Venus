@@ -29,7 +29,7 @@ public final class RunningMode implements GameMode {
         game.getDispatcher().dispatch(game.getMailbox());
         scene.dismissDisposed();
 
-        game.getCamera().follow(game.getPlayer());
+        scene.camera.follow(game.getPlayer());
         scene.submitRender(game.getMailbox().postRender());
     }
 }

@@ -109,6 +109,7 @@ public class Game {
         gameplayUIState = new GameplayUIState(scene, player, dispatcher, settings.video);
         camera = new Camera(settings.video.UNSCALED_WIDTH, settings.video.UNSCALED_HEIGHT, 0, 0, settings.video.SCALE);
         scene.camera = camera;
+        camera.follow(player);
         physics.ruleOver(scene);
         playerHandler = new PlayerHandler(dispatcher, gameplayUIState);
         dispatcher.dispatch(new WorldTransitionEvent(scene.world));
