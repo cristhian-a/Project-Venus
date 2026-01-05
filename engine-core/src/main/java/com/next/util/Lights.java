@@ -1,4 +1,4 @@
-package com.next.engine.util;
+package com.next.util;
 
 public class Lights {
     public static final int HALO_LIGHT = 2;

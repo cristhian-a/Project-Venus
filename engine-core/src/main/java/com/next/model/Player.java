@@ -13,8 +13,9 @@ import com.next.engine.scene.Direction;
 import com.next.engine.system.Debugger;
 import com.next.event.AttackEvent;
 import com.next.model.factory.HitboxFactory;
+import com.next.rules.data.ActiveGear;
+import com.next.rules.data.Attributes;
 import com.next.system.Input;
-import com.next.world.Scene;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,7 +45,8 @@ public class Player extends AnimatedActor implements Combatant {
     private float dx;
     private float dy;
 
-    public Scene scene;
+    @Getter private final ActiveGear activeGear;
+    @Getter private final Attributes attributes;
 
     public Player(float worldX, float worldY, Map<AnimationState, Animation> animations, CollisionBox collisionBox,
                   HitboxFactory hitboxFactory
@@ -64,11 +66,22 @@ public class Player extends AnimatedActor implements Combatant {
         this.animations = animations;
         this.animationState = AnimationState.IDLE_DOWN;
         this.hitboxFactory = hitboxFactory;
+
+        // Gear and stuff
+        this.activeGear = new ActiveGear();
+        activeGear.weapon = new EquipSword();
+        activeGear.shield = new EquipShieldWood();
+
+        this.attributes = new Attributes();
+        attributes.strength = 1;
+        attributes.resistance = 1;
+        attributes.coin = 0;
+        attributes.level = 1;
+        attributes.xp = 0;
     }
 
     @Override
     public void update(double delta, Mailbox mailbox) {
-//        float speed = (float) (this.speed * delta);
 
         if (invincible) invincibilityFrames--;
         invincible = invincibilityFrames > 0;
@@ -144,10 +157,6 @@ public class Player extends AnimatedActor implements Combatant {
 //        }
     }
 
-    public void boostSpeed(float boost) {
-        speed += boost;
-    }
-
     @Override
     public void takeDamage(int damage) {
         if (invincible) return;
@@ -156,6 +165,18 @@ public class Player extends AnimatedActor implements Combatant {
         health -= damage;
         invincible = true;
         invincibilityFrames = 60;
+    }
+
+    public void boostSpeed(float boost) {
+        speed += boost;
+    }
+
+    public int getAttack() {
+        return attributes.strength * activeGear.weapon.getMight();
+    }
+
+    public int getResistance() {
+        return attributes.resistance * activeGear.shield.getResistance();
     }
 
     public void handleAttack() {

@@ -2,8 +2,8 @@ package com.next.system;
 
 import com.next.engine.io.FileReader;
 import com.next.io.Loader;
-import com.next.engine.util.Colors;
-import com.next.engine.util.Fonts;
+import com.next.util.Colors;
+import com.next.util.Fonts;
 
 import java.awt.*;
 import java.io.BufferedReader;

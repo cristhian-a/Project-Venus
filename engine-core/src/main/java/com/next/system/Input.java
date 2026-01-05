@@ -2,12 +2,13 @@ package com.next.system;
 
 import com.next.engine.io.InputReader;
 
+import java.awt.event.KeyEvent;
 import java.util.*;
 
 public class Input {
 
     public enum Action {
-        UP, DOWN, LEFT, RIGHT, TALK, PAUSE, DEBUG_1
+        UP, DOWN, LEFT, RIGHT, TALK, PAUSE, DISPLAY_STATS, DEBUG_1
     }
 
     private final List<InputReader> devices;
@@ -57,6 +58,7 @@ public class Input {
         var actionRight = new DeviceMapping(controls.right, device);
         var actionTalk = new DeviceMapping(controls.talk, device);
         var pause = new DeviceMapping(controls.pause, device);
+        var displayStats = new DeviceMapping(KeyEvent.VK_TAB, device);
         var debug1 = new DeviceMapping(controls.debugMode1, device);
 
         mappings.computeIfAbsent(Action.UP, _ -> new ArrayList<>()).add(actionUp);
@@ -65,6 +67,7 @@ public class Input {
         mappings.computeIfAbsent(Action.RIGHT, _ -> new ArrayList<>()).add(actionRight);
         mappings.computeIfAbsent(Action.TALK, _ -> new ArrayList<>()).add(actionTalk);
         mappings.computeIfAbsent(Action.PAUSE, _ -> new ArrayList<>()).add(pause);
+        mappings.computeIfAbsent(Action.DISPLAY_STATS, _ -> new ArrayList<>()).add(displayStats);
         mappings.computeIfAbsent(Action.DEBUG_1, _ -> new ArrayList<>()).add(debug1);
 
         return device;

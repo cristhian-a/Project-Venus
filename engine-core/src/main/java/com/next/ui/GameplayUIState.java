@@ -9,8 +9,8 @@ import com.next.event.UiDamageEvent;
 import com.next.model.Combatant;
 import com.next.model.Player;
 import com.next.system.Settings;
-import com.next.engine.util.Colors;
-import com.next.engine.util.Fonts;
+import com.next.util.Colors;
+import com.next.util.Fonts;
 import com.next.world.Scene;
 
 public class GameplayUIState implements UIState {

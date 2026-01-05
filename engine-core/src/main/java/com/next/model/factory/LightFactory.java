@@ -1,7 +1,7 @@
 package com.next.model.factory;
 
 import com.next.engine.model.Light;
-import com.next.engine.util.Lights;
+import com.next.util.Lights;
 
 public class LightFactory {
 

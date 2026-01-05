@@ -7,8 +7,8 @@ import com.next.engine.graphics.RenderPosition;
 import com.next.engine.graphics.RenderQueue;
 import com.next.event.StartGameEvent;
 import com.next.system.Input;
-import com.next.engine.util.Colors;
-import com.next.engine.util.Fonts;
+import com.next.util.Colors;
+import com.next.util.Fonts;
 
 public class StartMenuUIState implements UIState {
 

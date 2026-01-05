@@ -4,6 +4,7 @@ import com.next.engine.data.Registry;
 import com.next.engine.data.AtlasImporter;
 import com.next.engine.event.*;
 import com.next.engine.model.*;
+import com.next.event.DisplayStatsEvent;
 import com.next.event.FallDamageEvent;
 import com.next.event.PauseEvent;
 import com.next.event.PitFallEvent;
@@ -188,13 +189,14 @@ public class Game {
 //        s.add(sus);
 //        s.add(tracker);
 
-        player.scene = s;
         return s;
     }
 
     public void processInputs() {
         if (input.isTyped(Input.Action.PAUSE)) {
             dispatcher.dispatch(new PauseEvent());
+        } else if (input.isTyped(Input.Action.DISPLAY_STATS)) {
+            dispatcher.dispatch(new DisplayStatsEvent());
         }
     }
 
@@ -204,5 +206,9 @@ public class Game {
 
     public boolean isPaused() {
         return mode instanceof PausedMode;
+    }
+
+    public boolean isDisplayingStats() {
+        return mode instanceof StatsViewMode;
     }
 }

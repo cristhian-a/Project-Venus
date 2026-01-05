@@ -5,7 +5,7 @@ import com.next.engine.event.GracefullyStopEvent;
 import com.next.engine.sound.PlaySound;
 import com.next.engine.sound.SoundChannel;
 import com.next.engine.sound.StopSound;
-import com.next.engine.util.Sounds;
+import com.next.util.Sounds;
 import com.next.ui.FinishUIState;
 
 public final class FinishedMode implements GameMode {

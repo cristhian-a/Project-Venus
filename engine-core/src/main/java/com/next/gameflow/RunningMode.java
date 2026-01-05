@@ -3,7 +3,7 @@ package com.next.gameflow;
 import com.next.Game;
 import com.next.engine.sound.PlaySound;
 import com.next.engine.sound.SoundChannel;
-import com.next.engine.util.Sounds;
+import com.next.util.Sounds;
 import com.next.world.Scene;
 
 public final class RunningMode implements GameMode {

@@ -5,7 +5,7 @@ import com.next.engine.io.FileReader;
 import com.next.engine.io.JsonReader;
 import com.next.engine.sound.SoundClip;
 import com.next.engine.sound.SoundData;
-import com.next.engine.util.Sounds;
+import com.next.util.Sounds;
 import com.next.world.LevelData;
 import com.next.world.WorldRules;
 

@@ -1,4 +1,4 @@
-package com.next.engine.util;
+package com.next.util;
 
 public class Colors {
     public static final int WHITE   = 0xffffffff;

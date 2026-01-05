@@ -9,9 +9,9 @@ import com.next.event.DoorUnlockedEvent;
 import com.next.event.KeyPickedUpEvent;
 import com.next.event.NoKeysEvent;
 import com.next.engine.graphics.Layer;
-import com.next.engine.util.Colors;
-import com.next.engine.util.Fonts;
-import com.next.engine.util.Sounds;
+import com.next.util.Colors;
+import com.next.util.Fonts;
+import com.next.util.Sounds;
 
 public class DoorHandler {
 
