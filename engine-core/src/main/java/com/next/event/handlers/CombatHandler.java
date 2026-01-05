@@ -38,7 +38,13 @@ public class CombatHandler {
     }
 
     public void onAttack(AttackEvent event) {
-        event.target().takeDamage(event.spec().damage());
+        int atkV = event.striker().getAttack();
+        int defV = event.target().getDefense();
+
+        int damage = atkV - defV;
+        damage = Math.max(1, damage);   // 1 damage is the minimum
+        event.target().takeDamage(damage);
+
         dispatcher.dispatch(new UiDamageEvent(event.target().getId()));
 
         if (event.target().getHealth() > 0) {

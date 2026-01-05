@@ -126,11 +126,11 @@ public class GameplayUIState implements UIState {
             float x = scene.camera.worldToScreenX(entity.getWorldX() - 8);
             float y = scene.camera.worldToScreenY(entity.getWorldY() - 16);
 
-            int width = 14;
-            int height = 2;
+            float width = 14f;
+            float height = 2f;
             Combatant c = (Combatant) entity;
-            int oneScale = width / c.getMaxHealth();
-            int sw = oneScale * c.getHealth();
+            float oneScale = width / c.getMaxHealth();
+            float sw = oneScale * c.getHealth();
 
             renderQueue.fillRectangle(Layer.UI_WORLD, x - 1, y - 1, width + 2, height + 2, Colors.BLACK);
             renderQueue.fillRectangle(Layer.UI_WORLD, x, y, sw, height, Colors.RED);

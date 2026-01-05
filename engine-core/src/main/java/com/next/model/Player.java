@@ -171,11 +171,13 @@ public class Player extends AnimatedActor implements Combatant {
         speed += boost;
     }
 
+    @Override
     public int getAttack() {
         return attributes.strength * activeGear.weapon.getMight();
     }
 
-    public int getResistance() {
+    @Override
+    public int getDefense() {
         return attributes.resistance * activeGear.shield.getResistance();
     }
 
@@ -206,7 +208,7 @@ public class Player extends AnimatedActor implements Combatant {
         switch (direction) {
             case DOWN -> {
                 if (downSpec == null) {
-                    downSpec = new HitboxSpec(-2, 7, 5, 12,
+                    downSpec = new HitboxSpec(-2, 7, 5, 14,
                             duration, 1, 0, knockback,
                             collisionMask, true, true);
                 }
@@ -214,7 +216,7 @@ public class Player extends AnimatedActor implements Combatant {
             }
             case UP -> {
                 if (upSpec == null) {
-                    upSpec = new HitboxSpec(-2, -16, 5, 12,
+                    upSpec = new HitboxSpec(-2, -18, 5, 14,
                             duration, 1, 0, -knockback,
                             collisionMask, true, true);
                 }
@@ -222,7 +224,7 @@ public class Player extends AnimatedActor implements Combatant {
             }
             case LEFT -> {
                 if (leftSpec == null) {
-                    leftSpec = new HitboxSpec(-18, 0, 12, 5,
+                    leftSpec = new HitboxSpec(-20, 0, 14, 5,
                             duration, 1, -knockback, 0,
                             collisionMask, true, true);
                 }
@@ -230,7 +232,7 @@ public class Player extends AnimatedActor implements Combatant {
             }
             case RIGHT -> {
                 if (rightSpec == null) {
-                    rightSpec = new HitboxSpec(6, 0, 12, 5,
+                    rightSpec = new HitboxSpec(6, 0, 14, 5,
                             duration, 1, knockback, 0,
                             collisionMask, true, true);
                 }

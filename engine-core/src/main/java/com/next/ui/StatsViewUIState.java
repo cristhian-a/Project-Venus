@@ -72,7 +72,7 @@ public class StatsViewUIState implements UIState {
         strength = STRENGTH + attributes.strength;
         resistance = RESISTANCE + attributes.resistance;
         attack = ATTACK + player.getAttack();
-        defense = DEFENSE + player.getResistance();
+        defense = DEFENSE + player.getDefense();
         level = LEVEL + attributes.level;
         xp = XP + attributes.xp;
         nextLevel = NEXT_LEVEL + (attributes.level * 100);
