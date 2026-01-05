@@ -10,6 +10,7 @@ import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.GamePanel;
 import com.next.engine.graphics.awt.AwtPanel;
 import com.next.engine.graphics.awt.Renderer;
+import com.next.engine.io.AwtInputListener;
 import com.next.engine.sound.*;
 import com.next.engine.sound.jxsound.JavaSoundBackend;
 import com.next.io.Loader;
@@ -17,7 +18,7 @@ import com.next.system.AssetRegistry;
 import com.next.system.Input;
 import com.next.system.Settings;
 
-import java.awt.event.KeyListener;
+import java.util.Map;
 
 public class Main {
 
@@ -26,10 +27,12 @@ public class Main {
         Settings settings = Loader.Settings.load();
         AssetRegistry assets = new AssetRegistry();
         assets.load();
+        Map<String, Integer> actionMap = Loader.Controls.loadActionMap();
 
         // Configuration
         Input input = new Input();
-        KeyListener keyboardDevice = input.mapActions(settings.controls);
+        var keyboardDevice = new AwtInputListener();
+        input.mapActions(actionMap, keyboardDevice);
 
         // Communication channels
         Mailbox mailbox = new Mailbox();

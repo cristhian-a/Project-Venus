@@ -13,8 +13,10 @@ import com.next.engine.scene.Direction;
 import com.next.engine.system.Debugger;
 import com.next.event.AttackEvent;
 import com.next.model.factory.HitboxFactory;
+import com.next.rules.data.ActiveGear;
+import com.next.rules.data.Attributes;
 import com.next.system.Input;
-import com.next.world.Scene;
+import com.next.util.Inputs;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +28,7 @@ public class Player extends AnimatedActor implements Combatant {
 
     @Getter private final List<Key> heldKeys = new ArrayList<>();
     @Setter private Input input;
-    private HitboxFactory hitboxFactory;
+    private final HitboxFactory hitboxFactory;
 
     @Getter @Setter boolean talking;
 
@@ -35,16 +37,16 @@ public class Player extends AnimatedActor implements Combatant {
     @Getter @Setter private int health = maxHealth;
     private Direction direction = Direction.DOWN;
 
+    private float dx;
+    private float dy;
+
     // Combat-related stuff
     private boolean attacking = false;
     private int attackingFrames = 0;
     private int invincibilityFrames = 0;
     private boolean invincible = false;
-
-    private float dx;
-    private float dy;
-
-    public Scene scene;
+    @Getter private final ActiveGear activeGear;
+    @Getter private final Attributes attributes;
 
     public Player(float worldX, float worldY, Map<AnimationState, Animation> animations, CollisionBox collisionBox,
                   HitboxFactory hitboxFactory
@@ -64,11 +66,22 @@ public class Player extends AnimatedActor implements Combatant {
         this.animations = animations;
         this.animationState = AnimationState.IDLE_DOWN;
         this.hitboxFactory = hitboxFactory;
+
+        // Gear and stuff
+        this.activeGear = new ActiveGear();
+        activeGear.weapon = new EquipSword();
+        activeGear.shield = new EquipShieldWood();
+
+        this.attributes = new Attributes();
+        attributes.strength = 1;
+        attributes.resistance = 1;
+        attributes.coin = 0;
+        attributes.level = 1;
+        attributes.xp = 0;
     }
 
     @Override
     public void update(double delta, Mailbox mailbox) {
-//        float speed = (float) (this.speed * delta);
 
         if (invincible) invincibilityFrames--;
         invincible = invincibilityFrames > 0;
@@ -85,23 +98,23 @@ public class Player extends AnimatedActor implements Combatant {
             }
         }
 
-        if (input.isTyped(Input.Action.TALK) && !talking && !attacking) {
+        if (input.isTyped(Inputs.TALK) && !talking && !attacking) {
             attacking = true;
             attackingFrames = 39;
         } else if (!talking & !attacking) {
-            if (input.isDown(Input.Action.UP)) {
+            if (input.isDown(Inputs.UP)) {
                 dy -= speed;
                 animationState = AnimationState.WALK_UP;
                 direction = Direction.UP;
-            } else if (input.isDown(Input.Action.DOWN)) {
+            } else if (input.isDown(Inputs.DOWN)) {
                 dy += speed;
                 animationState = AnimationState.WALK_DOWN;
                 direction = Direction.DOWN;
-            } else if (input.isDown(Input.Action.LEFT)) {
+            } else if (input.isDown(Inputs.LEFT)) {
                 dx -= speed;
                 animationState = AnimationState.WALK_LEFT;
                 direction = Direction.LEFT;
-            } else if (input.isDown(Input.Action.RIGHT)) {
+            } else if (input.isDown(Inputs.RIGHT)) {
                 dx += speed;
                 animationState = AnimationState.WALK_RIGHT;
                 direction = Direction.RIGHT;
@@ -144,10 +157,6 @@ public class Player extends AnimatedActor implements Combatant {
 //        }
     }
 
-    public void boostSpeed(float boost) {
-        speed += boost;
-    }
-
     @Override
     public void takeDamage(int damage) {
         if (invincible) return;
@@ -156,6 +165,25 @@ public class Player extends AnimatedActor implements Combatant {
         health -= damage;
         invincible = true;
         invincibilityFrames = 60;
+    }
+
+    @Override
+    public boolean isDead() {
+        return false;
+    }
+
+    public void boostSpeed(float boost) {
+        speed += boost;
+    }
+
+    @Override
+    public int getAttack() {
+        return attributes.strength * activeGear.weapon.getMight();
+    }
+
+    @Override
+    public int getDefense() {
+        return attributes.resistance * activeGear.shield.getResistance();
     }
 
     public void handleAttack() {
@@ -185,7 +213,7 @@ public class Player extends AnimatedActor implements Combatant {
         switch (direction) {
             case DOWN -> {
                 if (downSpec == null) {
-                    downSpec = new HitboxSpec(-2, 7, 5, 12,
+                    downSpec = new HitboxSpec(-2, 7, 5, 14,
                             duration, 1, 0, knockback,
                             collisionMask, true, true);
                 }
@@ -193,7 +221,7 @@ public class Player extends AnimatedActor implements Combatant {
             }
             case UP -> {
                 if (upSpec == null) {
-                    upSpec = new HitboxSpec(-2, -16, 5, 12,
+                    upSpec = new HitboxSpec(-2, -18, 5, 14,
                             duration, 1, 0, -knockback,
                             collisionMask, true, true);
                 }
@@ -201,7 +229,7 @@ public class Player extends AnimatedActor implements Combatant {
             }
             case LEFT -> {
                 if (leftSpec == null) {
-                    leftSpec = new HitboxSpec(-18, 0, 12, 5,
+                    leftSpec = new HitboxSpec(-20, 0, 14, 5,
                             duration, 1, -knockback, 0,
                             collisionMask, true, true);
                 }
@@ -209,7 +237,7 @@ public class Player extends AnimatedActor implements Combatant {
             }
             case RIGHT -> {
                 if (rightSpec == null) {
-                    rightSpec = new HitboxSpec(6, 0, 12, 5,
+                    rightSpec = new HitboxSpec(6, 0, 14, 5,
                             duration, 1, knockback, 0,
                             collisionMask, true, true);
                 }

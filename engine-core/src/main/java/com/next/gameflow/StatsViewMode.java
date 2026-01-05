@@ -1,20 +1,18 @@
 package com.next.gameflow;
 
 import com.next.Game;
-import com.next.engine.sound.PauseSound;
-import com.next.util.Sounds;
-import com.next.ui.PausedUIState;
+import com.next.ui.StatsViewUIState;
 
-public final class PausedMode implements GameMode {
+public class StatsViewMode implements GameMode {
 
     @Override
     public void onEnter(Game game) {
-        game.getUi().setState(new PausedUIState());
-        game.getDispatcher().dispatch(new PauseSound(Sounds.WIND));
+        game.getUi().setState(new StatsViewUIState(game));
     }
 
     @Override
     public void onExit(Game game) {
+
     }
 
     @Override

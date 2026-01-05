@@ -10,6 +10,7 @@ import com.next.engine.physics.CollisionBox;
 import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
 import com.next.event.FallDamageEvent;
+import com.next.rules.data.Attributes;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,8 +18,10 @@ import java.util.Map;
 
 public class Mob extends AnimatedActor implements Combatant {
 
-    @Getter private final int maxHealth = 6;
+    @Getter private final int maxHealth = 3;
     @Getter @Setter private int health = maxHealth;
+
+    @Getter private final Attributes attributes;
 
     private double deathTimer = 0;
     private double stunTimer = 0;
@@ -33,6 +36,11 @@ public class Mob extends AnimatedActor implements Combatant {
         this.collisionType = CollisionType.SOLID;
         this.collisionBox = new CollisionBox(x, y, offsetX, offsetY, width, height);
         this.layer = 1;
+
+        this.attributes = new Attributes();
+        attributes.strength = 1;
+        attributes.resistance = 0;
+        attributes.level = 1;
     }
 
     @Override
@@ -63,6 +71,16 @@ public class Mob extends AnimatedActor implements Combatant {
     }
 
     @Override
+    public int getAttack() {
+        return attributes.strength;
+    }
+
+    @Override
+    public int getDefense() {
+        return attributes.resistance;
+    }
+
+    @Override
     public void takeDamage(int damage) {
         if (deathTimer > 0) return;
 
@@ -74,6 +92,11 @@ public class Mob extends AnimatedActor implements Combatant {
         } else {
             stunTimer = Global.fixedDelta * 30;
         }
+    }
+
+    @Override
+    public boolean isDead() {
+        return health == 0;
     }
 
     private void die() {

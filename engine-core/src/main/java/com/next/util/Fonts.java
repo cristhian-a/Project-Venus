@@ -1,4 +1,4 @@
-package com.next.engine.util;
+package com.next.util;
 
 public class Fonts {
     public static final String DEFAULT = "maruMonica_30";

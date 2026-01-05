@@ -5,7 +5,7 @@ import com.next.engine.io.FileReader;
 import com.next.engine.io.JsonReader;
 import com.next.engine.sound.SoundClip;
 import com.next.engine.sound.SoundData;
-import com.next.engine.util.Sounds;
+import com.next.util.Sounds;
 import com.next.world.LevelData;
 import com.next.world.WorldRules;
 
@@ -29,6 +29,17 @@ public final class Loader {
                 if (file == null) throw new IOException("Settings file not found");
                 return JsonReader.readObject(file, com.next.system.Settings.class);
             } catch (IOException e) { throw new RuntimeException(e); }
+        }
+    }
+
+    public static class Controls {
+        public static Map<String, Integer> loadActionMap() {
+            var file = FileReader.getFile("/controls.json");
+            try {
+                return JsonReader.readMap(file, String.class, Integer.class);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

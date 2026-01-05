@@ -1,13 +1,4 @@
 {
-  "controls": {
-    "up": 87,
-    "down": 83,
-    "left": 65,
-    "right": 68,
-    "talk": 97,
-    "pause": 27,
-    "debugMode1": 112
-  },
   "video": {
     "WIDTH": 1024,
     "HEIGHT": 768,

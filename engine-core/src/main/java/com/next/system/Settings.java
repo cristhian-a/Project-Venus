@@ -2,18 +2,7 @@ package com.next.system;
 
 public final class Settings {
 
-    public ControlSettings controls;
     public VideoSettings video;
-
-    public static final class ControlSettings {
-        public int up;
-        public int down;
-        public int left;
-        public int right;
-        public int talk;
-        public int pause;
-        public int debugMode1;
-    }
 
     public static final class VideoSettings {
         private final int DEFAULT_SCREEN_COL = 16;

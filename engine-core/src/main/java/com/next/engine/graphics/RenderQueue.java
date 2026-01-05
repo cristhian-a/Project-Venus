@@ -2,7 +2,7 @@ package com.next.engine.graphics;
 
 import com.next.engine.physics.AABB;
 import com.next.engine.physics.CollisionBox;
-import com.next.engine.util.Colors;
+import com.next.util.Colors;
 
 import java.util.Arrays;
 

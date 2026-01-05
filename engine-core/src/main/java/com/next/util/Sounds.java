@@ -1,4 +1,4 @@
-package com.next.engine.util;
+package com.next.util;
 
 import com.next.engine.sound.SoundClip;
 

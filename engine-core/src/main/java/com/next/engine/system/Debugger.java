@@ -2,6 +2,7 @@ package com.next.engine.system;
 
 import com.next.engine.physics.CollisionBox;
 import com.next.system.Input;
+import com.next.util.Inputs;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class Debugger {
     public static void update(Input input) {
         ProfilerAssistant.collectMemoryInfo();  // TODO move this to another place please
 
-        if (input.isTyped(Input.Action.DEBUG_1))
+        if (input.isTyped(Inputs.DEBUG_MODE_1))
             INSTANCE.DEBUG_1 = !INSTANCE.DEBUG_1;
 
         INSTANCE.update();

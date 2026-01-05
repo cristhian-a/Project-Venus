@@ -8,9 +8,9 @@ import com.next.engine.sound.SetVolume;
 import com.next.engine.sound.SoundChannel;
 import com.next.event.SpellPickedUpEvent;
 import com.next.engine.graphics.Layer;
-import com.next.engine.util.Colors;
-import com.next.engine.util.Fonts;
-import com.next.engine.util.Sounds;
+import com.next.util.Colors;
+import com.next.util.Fonts;
+import com.next.util.Sounds;
 
 public class SpellHandler {
 

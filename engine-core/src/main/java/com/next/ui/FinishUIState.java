@@ -1,8 +1,8 @@
 package com.next.ui;
 
 import com.next.engine.graphics.*;
-import com.next.engine.util.Colors;
-import com.next.engine.util.Fonts;
+import com.next.util.Colors;
+import com.next.util.Fonts;
 
 public class FinishUIState implements UIState {
 

@@ -8,8 +8,8 @@ import com.next.engine.physics.CollisionBox;
 import com.next.system.AssetRegistry;
 import com.next.engine.system.Debugger;
 import com.next.system.Settings.VideoSettings;
-import com.next.engine.util.Colors;
-import com.next.engine.util.Fonts;
+import com.next.util.Colors;
+import com.next.util.Fonts;
 
 import java.awt.*;
 import java.util.ArrayList;

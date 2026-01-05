@@ -29,6 +29,7 @@ public class AwtPanel extends JPanel implements ComponentListener, GamePanel {
         setDoubleBuffered(true);
         setFocusable(true);
         requestFocus();
+        setFocusTraversalKeysEnabled(false);
     }
 
     @Override

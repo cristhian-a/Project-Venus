@@ -4,6 +4,7 @@ import com.next.engine.data.Registry;
 import com.next.engine.data.AtlasImporter;
 import com.next.engine.event.*;
 import com.next.engine.model.*;
+import com.next.event.DisplayStatsEvent;
 import com.next.event.FallDamageEvent;
 import com.next.event.PauseEvent;
 import com.next.event.PitFallEvent;
@@ -20,6 +21,7 @@ import com.next.system.Input;
 import com.next.system.Settings;
 import com.next.ui.GameplayUIState;
 import com.next.ui.UISystem;
+import com.next.util.Inputs;
 import com.next.world.LevelData;
 import com.next.world.Scene;
 import com.next.world.World;
@@ -107,6 +109,7 @@ public class Game {
         gameplayUIState = new GameplayUIState(scene, player, dispatcher, settings.video);
         camera = new Camera(settings.video.UNSCALED_WIDTH, settings.video.UNSCALED_HEIGHT, 0, 0, settings.video.SCALE);
         scene.camera = camera;
+        camera.follow(player);
         physics.ruleOver(scene);
         playerHandler = new PlayerHandler(dispatcher, gameplayUIState);
         dispatcher.dispatch(new WorldTransitionEvent(scene.world));
@@ -153,6 +156,9 @@ public class Game {
 //        s.add(light2);
         s.add(MobFactory.create(342, 649));
         s.add(MobFactory.create(380, 610));
+        s.add(MobFactory.create(420, 610));
+        s.add(MobFactory.create(500, 610));
+        s.add(MobFactory.create(500, 630));
 
         HitboxFactory hitboxFactory = new HitboxFactory(s);
         player = new PlayerFactory(world, level, hitboxFactory).create();
@@ -188,13 +194,14 @@ public class Game {
 //        s.add(sus);
 //        s.add(tracker);
 
-        player.scene = s;
         return s;
     }
 
     public void processInputs() {
-        if (input.isTyped(Input.Action.PAUSE)) {
+        if (input.isTyped(Inputs.PAUSE)) {
             dispatcher.dispatch(new PauseEvent());
+        } else if (input.isTyped(Inputs.DISPLAY_STATS)) {
+            dispatcher.dispatch(new DisplayStatsEvent());
         }
     }
 
@@ -204,5 +211,9 @@ public class Game {
 
     public boolean isPaused() {
         return mode instanceof PausedMode;
+    }
+
+    public boolean isDisplayingStats() {
+        return mode instanceof StatsViewMode;
     }
 }

@@ -1,42 +1,29 @@
 package com.next.system;
 
-import com.next.engine.io.InputReader;
+import com.next.engine.io.RawInputListener;
 
 import java.util.*;
 
 public class Input {
 
-    public enum Action {
-        UP, DOWN, LEFT, RIGHT, TALK, PAUSE, DEBUG_1
-    }
-
-    private final List<InputReader> devices;
-    private final EnumMap<Action, List<DeviceMapping>> mappings;
-    private final EnumMap<Action, ActionState> actionStates;
-
-    public Input() {
-        devices = new ArrayList<>();
-        mappings = new EnumMap<>(Action.class);
-        actionStates = new EnumMap<>(Action.class);
-
-        for (Action a : Action.values()) {
-            actionStates.put(a, new ActionState());
-        }
-    }
+    private final Map<String, List<DeviceMapping>> mappings = new HashMap<>();
+    private final Map<String, ActionState> actionStates = new HashMap<>();
+    private final List<RawInputListener> devices = new ArrayList<>();
+    private final Set<String> disabledActions = new HashSet<>();
 
     public void poll() {
-        for (InputReader device : devices) {
+        for (RawInputListener device : devices) {
             device.snapshot();
         }
 
-        for (Action action : mappings.keySet()) {
+        for (String action : mappings.keySet()) {
             boolean down = false;
             boolean pressed = false;
             boolean released = false;
 
             for (DeviceMapping mapping : mappings.get(action)) {
                 down |= mapping.device.isDown(mapping.button);
-                pressed |= mapping.device.isPressed(mapping.button);
+                pressed |= mapping.device.isTyped(mapping.button);
                 released |= mapping.device.isReleased(mapping.button);
             }
 
@@ -45,44 +32,47 @@ public class Input {
             state.typed = pressed;
             state.released = released;
         }
+
+        for (String action : disabledActions) {
+            var state = actionStates.get(action);
+            if (state != null) {
+                state.down = false;
+                state.typed = false;
+                state.released = false;
+            }
+        }
     }
 
-    public InputReader mapActions(Settings.ControlSettings controls) {
-        var device = new InputReader();
+    public void mapActions(Map<String, Integer> mappedActions, RawInputListener device) {
         devices.add(device);
 
-        var actionUp = new DeviceMapping(controls.up, device);
-        var actionDown = new DeviceMapping(controls.down, device);
-        var actionLeft = new DeviceMapping(controls.left, device);
-        var actionRight = new DeviceMapping(controls.right, device);
-        var actionTalk = new DeviceMapping(controls.talk, device);
-        var pause = new DeviceMapping(controls.pause, device);
-        var debug1 = new DeviceMapping(controls.debugMode1, device);
+        for (Map.Entry<String, Integer> entry : mappedActions.entrySet()) {
+            var key = entry.getKey();
+            var button = entry.getValue();
+            mappings.computeIfAbsent(key, _ -> new ArrayList<>()).add(new DeviceMapping(button, device));
 
-        mappings.computeIfAbsent(Action.UP, _ -> new ArrayList<>()).add(actionUp);
-        mappings.computeIfAbsent(Action.DOWN, _ -> new ArrayList<>()).add(actionDown);
-        mappings.computeIfAbsent(Action.LEFT, _ -> new ArrayList<>()).add(actionLeft);
-        mappings.computeIfAbsent(Action.RIGHT, _ -> new ArrayList<>()).add(actionRight);
-        mappings.computeIfAbsent(Action.TALK, _ -> new ArrayList<>()).add(actionTalk);
-        mappings.computeIfAbsent(Action.PAUSE, _ -> new ArrayList<>()).add(pause);
-        mappings.computeIfAbsent(Action.DEBUG_1, _ -> new ArrayList<>()).add(debug1);
-
-        return device;
+            actionStates.putIfAbsent(key, new ActionState());
+        }
     }
 
-    public boolean isTyped(Action action) {
+    public void setActionEnabled(String action, boolean enabled) {
+        if (enabled) disabledActions.remove(action);
+        else disabledActions.add(action);
+    }
+
+    public boolean isTyped(String action) {
         return actionStates.get(action).typed;
     }
 
-    public boolean isReleased(Action action) {
+    public boolean isReleased(String action) {
         return actionStates.get(action).released;
     }
 
-    public boolean isDown(Action action) {
+    public boolean isDown(String action) {
         return actionStates.get(action).down;
     }
 
-    private record DeviceMapping(int button, InputReader device) {}
+    private record DeviceMapping(int button, RawInputListener device) {}
 
     private static final class ActionState {
         boolean down;
