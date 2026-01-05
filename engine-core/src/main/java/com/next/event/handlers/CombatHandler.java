@@ -69,6 +69,7 @@ public class CombatHandler {
         att.xp -= att.lupXP;
         att.strength++;
         att.resistance++;
+        att.lupXP += (att.level * 100);
 
         dispatcher.dispatch(new LevelUpEvent(player));
     }

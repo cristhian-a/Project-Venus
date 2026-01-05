@@ -28,7 +28,7 @@ public class Player extends AnimatedActor implements Combatant {
 
     @Getter private final List<Key> heldKeys = new ArrayList<>();
     @Setter private Input input;
-    private HitboxFactory hitboxFactory;
+    private final HitboxFactory hitboxFactory;
 
     @Getter @Setter boolean talking;
 
@@ -37,15 +37,14 @@ public class Player extends AnimatedActor implements Combatant {
     @Getter @Setter private int health = maxHealth;
     private Direction direction = Direction.DOWN;
 
+    private float dx;
+    private float dy;
+
     // Combat-related stuff
     private boolean attacking = false;
     private int attackingFrames = 0;
     private int invincibilityFrames = 0;
     private boolean invincible = false;
-
-    private float dx;
-    private float dy;
-
     @Getter private final ActiveGear activeGear;
     @Getter private final Attributes attributes;
 

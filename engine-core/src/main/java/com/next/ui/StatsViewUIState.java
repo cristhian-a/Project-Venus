@@ -75,7 +75,7 @@ public class StatsViewUIState implements UIState {
         defense = DEFENSE + player.getDefense();
         level = LEVEL + attributes.level;
         xp = XP + attributes.xp;
-        nextLevel = NEXT_LEVEL + (attributes.level * 100);
+        nextLevel = NEXT_LEVEL + attributes.lupXP;
         coins = COIN + attributes.coin;
     }
 

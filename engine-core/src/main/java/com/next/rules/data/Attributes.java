@@ -8,5 +8,5 @@ public final class Attributes {
     public int coin;
     public int level;
     public int xp;
-    public final int lupXP = 100;
+    public int lupXP = 100;
 }

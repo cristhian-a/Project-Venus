@@ -13,16 +13,8 @@ public class JsonReader {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public static <T> T readObject(String filePath, Class<T> clazz) throws IOException {
-        return mapper.readValue(new File(filePath), clazz);
-    }
-
     public static <T> T readObject(InputStream stream, Class<T> clazz) throws IOException {
         return mapper.readValue(stream, clazz);
-    }
-
-    public static <T, U> Map<T, U> readMap(String filePath, Class<T> key, Class<U> value) throws IOException {
-        return mapper.readValue(new File(filePath), mapper.getTypeFactory().constructMapType(HashMap.class, key, value));
     }
 
     public static <T, U> Map<T, U> readMap(InputStream stream, Class<T> key, Class<U> value) throws IOException {
