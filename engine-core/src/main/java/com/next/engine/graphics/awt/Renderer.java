@@ -80,9 +80,9 @@ public class Renderer {
                 "RENDER",
                 new Debugger.DebugText(
                         String.format(
-                                "avg: %.2f ms | max: %.2f ms",
+                                "avg: %.2f ms | p95: %.2f ms",
                                 renderTimer.stat().mean() / 1e6f,
-                                renderTimer.stat().max() / 1e6f
+                                renderTimer.stat().percentile(0.95f) / 1e6f
                         )
                 ),
                 200,
