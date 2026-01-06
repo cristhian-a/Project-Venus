@@ -85,7 +85,7 @@ public class Renderer {
                                 renderTimer.stat().percentile(0.95f) / 1e6f
                         )
                 ),
-                200,
+                690,
                 30,
                 DebugChannel.INFO
         );

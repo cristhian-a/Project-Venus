@@ -140,8 +140,8 @@ public class Game implements Director {
                                 updateTimer.stat().max() / 1e6f
                         )
                 ),
-                650,
-                30,
+                690,
+                90,
                 DebugChannel.INFO
         );
     }
