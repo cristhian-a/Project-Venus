@@ -26,4 +26,8 @@ public final class DevToolkit {
             if (tool.isEnabled()) tool.emit(sink);
         }
     }
+
+    public static boolean isEnabled() {
+        return true;
+    }
 }

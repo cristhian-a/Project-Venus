@@ -35,7 +35,7 @@ import java.io.IOException;
 public class Game implements Director {
 
     // debug related stuff
-    private static final DebugTimer updateTimer = DebugTimers.GAME;
+    private static final DebugTimer updateTimer = DebugTimers.of(DebugTimers.UPDATE);
 
     // Dependencies
     private final Input input;

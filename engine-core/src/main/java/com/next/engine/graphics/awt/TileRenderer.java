@@ -11,7 +11,7 @@ import java.awt.*;
 
 final class TileRenderer {
 
-    private static final DebugTimer debugtimer = DebugTimers.TILES;
+    private static final DebugTimer debugtimer = DebugTimers.of(DebugTimers.RENDER_TILES);
 
     private World world;
     private Tile[] tiles;

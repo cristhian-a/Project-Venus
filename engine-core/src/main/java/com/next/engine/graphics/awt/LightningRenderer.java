@@ -14,7 +14,7 @@ import java.awt.image.BufferedImage;
 
 class LightningRenderer {
 
-    private static final DebugTimer debugtimer = DebugTimers.LIGHTS;
+    private static final DebugTimer debugtimer = DebugTimers.of(DebugTimers.RENDER_LIGHTS);
     private static final float EPSILON = 0.0001f;
 
     private final VideoSettings settings;
@@ -132,15 +132,13 @@ class LightningRenderer {
     }
 
     public void render(Graphics2D g, Camera camera, RenderQueue.LayerBucket bucket) {
-        debugtimer.begin();
+        try (var _ = DebugTimers.scope(DebugTimers.RENDER_LIGHTS)) {
+            punchLightMap(camera, bucket.lights);
+            g.setComposite(AlphaComposite.SrcOver);
 
-        punchLightMap(camera, bucket.lights);
-        g.setComposite(AlphaComposite.SrcOver);
-
-        // A fix is needed to avoid the light map being pixels off in the bottom and right corners.
-        g.drawImage(lightMap, (int) (camera.getX()), (int) (camera.getY()), null);
-
-        debugtimer.end();
+            // A fix is needed to avoid the light map being pixels off in the bottom and right corners.
+            g.drawImage(lightMap, (int) (camera.getX()), (int) (camera.getY()), null);
+        }
     }
 
     private BufferedImage makeColoredLight(BufferedImage mask, Color color) {

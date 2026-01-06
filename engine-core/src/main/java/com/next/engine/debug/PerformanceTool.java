@@ -23,7 +23,7 @@ public final class PerformanceTool implements DevTool {
     public void update() {
         if (frameCounter++ % 60 != 0) return;
 
-        var renderTimer = DebugTimers.RENDERER.stat();
+        var renderTimer = DebugTimers.of(DebugTimers.RENDERER).stat();
         long renderingAvg = renderTimer.mean();
         long renderingP95 = renderTimer.percentile(0.95f);
         renderTotal = String.format(AVG_P95, renderingAvg / 1e6f, renderingP95 / 1e6f);
@@ -31,17 +31,17 @@ public final class PerformanceTool implements DevTool {
         long fps = (long) (1e9 / renderTimer.percentile(0.5f));
         fpsLabel = FPS_LABEL + fps;
 
-        var lightTimer = DebugTimers.LIGHTS.stat();
+        var lightTimer = DebugTimers.of(DebugTimers.RENDER_LIGHTS).stat();
         long lightingAvg = lightTimer.mean();
         long lightingP95 = lightTimer.percentile(0.95f);
         renderLights = String.format(AVG_P95, lightingAvg / 1e6f, lightingP95 / 1e6f);
 
-        var tileTimer = DebugTimers.TILES.stat();
+        var tileTimer = DebugTimers.of(DebugTimers.RENDER_TILES).stat();
         long tileAvg = tileTimer.mean();
         long tileP95 = tileTimer.percentile(0.95f);
         renderTiles = String.format(AVG_P95, tileAvg / 1e6f, tileP95 / 1e6f);
 
-        var gameTimer = DebugTimers.GAME.stat();
+        var gameTimer = DebugTimers.of(DebugTimers.UPDATE).stat();
         long gameAvg = gameTimer.mean();
         long gameP95 = gameTimer.percentile(0.95f);
         directorUpdate = String.format(AVG_P95, gameAvg / 1e6f, gameP95 / 1e6f);

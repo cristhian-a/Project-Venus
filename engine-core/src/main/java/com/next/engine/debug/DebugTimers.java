@@ -1,10 +1,29 @@
 package com.next.engine.debug;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public final class DebugTimers {
     private DebugTimers() {}
 
-    public static final DebugTimer RENDERER = new DebugTimer(120);
-    public static final DebugTimer LIGHTS = new DebugTimer(120);
-    public static final DebugTimer TILES = new DebugTimer(120);
-    public static final DebugTimer GAME = new DebugTimer(120);
+    public static final String RENDER_LIGHTS = "render.lights";
+    public static final String RENDER_TILES = "render.tiles";
+    public static final String UPDATE = "director.update";
+    public static final String RENDERER = "render.total";
+
+    private static final Map<String, DebugTimer> TIMERS = new HashMap<>();
+
+    static {
+        TIMERS.put(RENDERER, new DebugTimer(120));
+        TIMERS.put(RENDER_LIGHTS, new DebugTimer(120));
+        TIMERS.put(RENDER_TILES, new DebugTimer(120));
+        TIMERS.put(UPDATE, new DebugTimer(120));
+    }
+
+    public static DebugTimerScope scope(String id) {
+        DebugTimer t = TIMERS.computeIfAbsent(id, _ -> new DebugTimer(120));
+        return new DebugTimerScope(t);
+    }
+
+    public static DebugTimer of(String id) { return TIMERS.get(id); }
 }

@@ -19,7 +19,7 @@ import java.awt.geom.AffineTransform;
 public class Renderer {
 
     // debug stuff
-    private static final DebugTimer renderTimer = DebugTimers.RENDERER;
+    private static final DebugTimer renderTimer = DebugTimers.of(DebugTimers.RENDERER);
 
     // static pre-computed stuff
     private static final Color OVERLAY_COLOR = new Color(0, 0, 0, 100);
