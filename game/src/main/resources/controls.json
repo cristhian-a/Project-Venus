@@ -1,0 +1,12 @@
+{
+  "up": 87,
+  "down": 83,
+  "left": 65,
+  "right": 68,
+  "talk": 97,
+  "pause": 27,
+  "displayStats": 9,
+  "debugMode1": 112,
+  "debugMemory": 113,
+  "debugCollisions": 114
+}

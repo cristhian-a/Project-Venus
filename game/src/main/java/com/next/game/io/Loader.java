@@ -1,0 +1,168 @@
+package com.next.game.io;
+
+import com.next.engine.data.Registry;
+import com.next.engine.dto.TextureMetadata;
+import com.next.engine.io.FileReader;
+import com.next.engine.io.JsonReader;
+import com.next.engine.sound.SoundClip;
+import com.next.engine.sound.SoundData;
+import com.next.game.util.Colors;
+import com.next.game.util.Fonts;
+import com.next.game.util.Sounds;
+import com.next.engine.scene.LevelData;
+import com.next.engine.scene.WorldRules;
+
+import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+public final class Loader {
+
+    public static class Settings {
+        public static com.next.engine.system.Settings load() {
+            var file = FileReader.getFile("/settings.json");
+            try {
+                if (file == null) throw new IOException("Settings file not found");
+                return JsonReader.readObject(file, com.next.engine.system.Settings.class);
+            } catch (IOException e) { throw new RuntimeException(e); }
+        }
+    }
+
+    public static class Controls {
+        public static Map<String, Integer> loadActionMap() {
+            var file = FileReader.getFile("/controls.json");
+            try {
+                return JsonReader.readMap(file, String.class, Integer.class);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static class Founts {
+        public static InputStream load() {
+            return FileReader.getFile("/fonts/x12y16pxMaruMonica.ttf");
+        }
+
+        public static void register() {
+            try (InputStream is = load()) {
+                var f = Font.createFont(Font.TRUETYPE_FONT, is);
+                Registry.fonts.put(Fonts.DEBUG, f.deriveFont(Font.PLAIN, 32f));
+                Registry.fonts.put(Fonts.DEFAULT, f.deriveFont(Font.PLAIN, 32f));
+                Registry.fonts.put(Fonts.DEFAULT_80_BOLD, f.deriveFont(Font.BOLD, 80f));
+            } catch (IOException | FontFormatException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static class Colours {
+        public static void register() {
+            Registry.colors.put(Colors.WHITE, Color.WHITE);
+            Registry.colors.put(Colors.BLACK, Color.BLACK);
+            Registry.colors.put(Colors.RED, Color.RED);
+            Registry.colors.put(Colors.GREEN, Color.GREEN);
+            Registry.colors.put(Colors.BLUE, Color.BLUE);
+            Registry.colors.put(Colors.YELLOW, Color.YELLOW);
+            Registry.colors.put(Colors.ORANGE, Color.ORANGE);
+            Registry.colors.put(Colors.PINK, Color.PINK);
+            Registry.colors.put(Colors.GRAY, Color.GRAY);
+            Registry.colors.put(Colors.MAGENTA, Color.MAGENTA);
+        }
+    }
+
+    public static class Worlds {
+        public static WorldRules load(String fileName) throws IOException {
+            var file = FileReader.getFile("/configuration/" + fileName);
+            return JsonReader.readObject(file, WorldRules.class);
+        }
+
+        public static Integer[][] map1() {
+            Integer[][] tileMap = new Integer[50][50];
+
+            InputStream is = FileReader.getFile("/maps/map_01.txt");
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                int row = 0;
+
+                while (row < 50) {
+                    String line = br.readLine();
+                    int col = 0;
+
+                    while (col < 50) {
+                        String[] numbers = line.split(" ");
+                        tileMap[row][col] = Integer.parseInt(numbers[col]);
+                        col++;
+                    }
+
+                    row++;
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            return tileMap;
+        }
+    }
+
+    public static class Levels {
+        public static LevelData load(String fileName) throws IOException {
+            var file = FileReader.getFile("/configuration/" + fileName);
+            return JsonReader.readObject(file, LevelData.class);
+        }
+    }
+
+    public static class Audio {
+
+        /**
+         * Load using javax.sound.AudioInputStream
+         * @return {@link Map} of {@link SoundData} indexed by {@link String} track name
+         * @throws RuntimeException if an error occurs while loading the audio
+         */
+        public static Map<SoundClip, SoundData> load() {
+            var tracks = new HashMap<SoundClip, String>();
+            tracks.put(Sounds.FANFARE, "/sounds/end_sound.wav");
+            tracks.put(Sounds.WIND, "/sounds/wind.wav");
+            tracks.put(Sounds.PICK_UP, "/sounds/pick_up.wav");
+            tracks.put(Sounds.SPELL_UP, "/sounds/spell_up.wav");
+            tracks.put(Sounds.OPEN_DOOR, "/sounds/door.wav");
+
+            Map<SoundClip, SoundData> data = new HashMap<>();
+            for (var track : tracks.keySet()) {
+                URL u = FileReader.getResource(tracks.get(track));
+                try {
+                    AudioInputStream stream = AudioSystem.getAudioInputStream(u);
+                    SoundData sd = new SoundData();
+                    sd.format = stream.getFormat();
+                    sd.pcmData = stream.readAllBytes();
+                    data.put(track, sd);
+                } catch (UnsupportedAudioFileException | IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            return data;
+        }
+    }
+
+    public static final class Textures {
+
+        public static BufferedImage loadImage(String fileName) throws IOException {
+            return ImageIO.read(FileReader.getFile("/textures/" + fileName));
+        }
+
+        public static TextureMetadata loadMetadata(String fileName) throws IOException {
+            return JsonReader.readObject(FileReader.getFile("/textures/" + fileName), TextureMetadata.class);
+        }
+    }
+
+}

@@ -1,33 +1,33 @@
 package com.next.engine.graphics.awt;
 
-import com.next.Game;
+import com.next.engine.Director;
 import com.next.engine.data.Mailbox;
 import com.next.engine.data.Registry;
 import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
-import com.next.system.AssetRegistry;
-import com.next.engine.system.Debugger;
-import com.next.system.Settings.VideoSettings;
+import com.next.engine.debug.DebugChannel;
+import com.next.engine.debug.Debugger;
+import com.next.engine.system.Settings.VideoSettings;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 public class Renderer {
     private final UIRenderer uiRenderer;
-    private final Game game;
+    private final Director director;
     private final Mailbox mailbox;
     private final VideoSettings settings;
     private final TileRenderer tileRenderer;
     private final LightningRenderer lightningRenderer;
 
-    public Renderer(Game game, Mailbox mailbox, VideoSettings settings, AssetRegistry assets) {
-        this.game = game;
+    public Renderer(Director director, Mailbox mailbox, VideoSettings settings) {
+        this.director = director;
         this.mailbox = mailbox;
         this.settings = settings;
 
-        this.uiRenderer = new UIRenderer(assets, settings);
+        this.uiRenderer = new UIRenderer(settings);
         this.tileRenderer = new TileRenderer();
         this.lightningRenderer = new LightningRenderer(settings);
     }
@@ -41,7 +41,8 @@ public class Renderer {
         long start = System.nanoTime();
 
         RenderQueue queue = mailbox.receiveRender();
-        Camera camera = game.getCamera();
+        Debugger.INSTANCE.enqueueRequests(queue);    // Collecting debug stuff
+        Camera camera = director.getCamera();
 
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         AffineTransform oldScale = g.getTransform();
@@ -84,10 +85,16 @@ public class Renderer {
         uiRenderer.renderMessages(g);
 
         // 6. DEBUG
-        uiRenderer.renderDebugInfo(g, camera);  // TODO also
+        var debugLayer = queue.getBucket(Layer.DEBUG);
+        uiRenderer.renderRectangleTable(g, debugLayer.rectangles);
+        uiRenderer.renderFilledRectangleTable(g, debugLayer.filledRectangles);
+        uiRenderer.renderFilledRoundRectangleTable(g, debugLayer.filledRoundRects);
+        uiRenderer.renderRoundedStrokeRectTable(g, debugLayer.roundedStrokeRectTable);
+        renderOverlayTable(g, debugLayer.overlays);
+        uiRenderer.renderTextTable(g, debugLayer.texts);
 
         long end = System.nanoTime();
-        Debugger.publish("RENDER", new Debugger.DebugLong(end - start), 200, 30, Debugger.TYPE.INFO);
+        Debugger.publish("RENDER", new Debugger.DebugLong(end - start), 200, 30, DebugChannel.INFO);
     }
 
     private void renderSpriteTable(Graphics2D g, Camera camera, RenderQueue.SpriteTable table) {

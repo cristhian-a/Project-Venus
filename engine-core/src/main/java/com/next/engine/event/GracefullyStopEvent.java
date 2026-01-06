@@ -1,6 +1,6 @@
 package com.next.engine.event;
 
-import com.next.engine.Loop;
+import com.next.engine.Conductor;
 
 /**
  * When fired, makes the game loop safely stops after the current update cycle.
@@ -8,14 +8,14 @@ import com.next.engine.Loop;
 public record GracefullyStopEvent() implements GameEvent {
 
     public static final class Handler {
-        private final Loop loop;
+        private final Conductor conductor;
 
-        public Handler(Loop loop) {
-            this.loop = loop;
+        public Handler(Conductor conductor) {
+            this.conductor = conductor;
         }
 
         public void onFire(GracefullyStopEvent event) {
-            loop.gracefullyStop();
+            conductor.gracefullyStop();
         }
     }
 }

@@ -4,7 +4,7 @@ import com.next.engine.Global;
 import com.next.engine.data.Registry;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
-import com.next.system.Settings.VideoSettings;
+import com.next.engine.system.Settings.VideoSettings;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
