@@ -5,11 +5,7 @@ import com.next.engine.graphics.RenderPosition;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.physics.CollisionBox;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
 /**
  * The Debugger class provides functionality for managing and rendering debugging information,
@@ -23,16 +19,20 @@ public class Debugger {
 
     public static final Debugger INSTANCE = new Debugger();
 
-    private final Set<DebugChannel> enabledChannels;
     private volatile Map<String, DebugRenderInstruction> renderQueue;
-    private  Map<String, DebugRenderInstruction> context;
-    private Map<String, DebugRenderInstruction> current;
+    private final Set<DebugChannel> enabledChannels;
+
+    private Map<String, DebugRenderInstruction> writeBuffer;
+    private Map<String, DebugRenderInstruction> readBuffer;
+    private final Map<String, DebugRenderInstruction> snapshot;
 
     private Debugger() {
-        enabledChannels = Collections.newSetFromMap(new ConcurrentHashMap<>());
-        context = new LinkedHashMap<>();
-        current = new LinkedHashMap<>();
+        enabledChannels = new HashSet<>();
         renderQueue = Map.of();
+
+        writeBuffer = new LinkedHashMap<>();
+        readBuffer = new LinkedHashMap<>();
+        snapshot = new LinkedHashMap<>();
     }
 
     public void toggleChannel(DebugChannel channel) {
@@ -47,20 +47,21 @@ public class Debugger {
     public void update() {
         ProfilerAssistant.collectMemoryInfo();  // TODO move this to another place please
 
-        Map<String, DebugRenderInstruction> snapshot = new LinkedHashMap<>();  // snapshotting to deal with concurrency
-
         // swap to deal with concurrency
-        var temp = current;
-        current = context;
-        context = temp;
+        var temp = readBuffer;
+        readBuffer = writeBuffer;
+        writeBuffer = temp;
+        writeBuffer.clear();
 
-        for (var entry : current.entrySet()) {
+        snapshot.clear();  // snapshotting to deal with concurrency
+
+        for (var entry : readBuffer.entrySet()) {
             if (enabledChannels.contains(entry.getValue().channel)) {
                 snapshot.put(entry.getKey(), entry.getValue());
             }
         }
 
-        context.clear();
+        if (snapshot.isEmpty()) return;
         renderQueue = Map.copyOf(snapshot);
     }
 
@@ -107,7 +108,7 @@ public class Debugger {
     }
 
     public static void publish(String key, DebugValue value, int x, int y, DebugChannel channel) {
-        INSTANCE.context.put(key, new DebugRenderInstruction(x, y, value, channel));
+        INSTANCE.writeBuffer.put(key, new DebugRenderInstruction(x, y, value, channel));
     }
 
     public static void publish(String key, CollisionBox box) {
