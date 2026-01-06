@@ -58,7 +58,8 @@ public class Debugger {
     }
 
     public void enqueueRequests(RenderQueue rq) {
-        var bucket = rq.getBucket(Layer.DEBUG); // or DEBUG layer
+        var screenBucket = rq.getBucket(Layer.DEBUG_SCREEN);
+        var worldBucket = rq.getBucket(Layer.DEBUG_WORLD);
 
         for (var instr : renderQueue.values()) {
 
@@ -69,7 +70,7 @@ public class Debugger {
             // Text debug
             String text = value.displayInfo();
             if (text != null) {
-                bucket.texts.add(
+                screenBucket.texts.add(
                         text,
                         FONT,
                         0xFF00FF00,
@@ -82,7 +83,7 @@ public class Debugger {
             // Collision / geometry debug
             CollisionBox box = value.displayBox();
             if (box != null) {
-                drawCollision(bucket, box);
+                drawCollision(worldBucket, box);
             }
         }
     }

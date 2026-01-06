@@ -6,6 +6,7 @@ import com.next.engine.data.Registry;
 import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
+import com.next.engine.graphics.RenderSpace;
 import com.next.engine.model.Camera;
 import com.next.engine.debug.DebugChannel;
 import com.next.engine.debug.Debugger;
@@ -15,6 +16,9 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 public class Renderer {
+
+    private static final Color OVERLAY_COLOR = new Color(0, 0, 0, 100);
+
     private final UIRenderer uiRenderer;
     private final Director director;
     private final Mailbox mailbox;
@@ -41,60 +45,62 @@ public class Renderer {
         long start = System.nanoTime();
 
         RenderQueue queue = mailbox.receiveRender();
-        Debugger.INSTANCE.enqueueRequests(queue);    // Collecting debug stuff
+        Debugger.INSTANCE.enqueueRequests(queue);
+
         Camera camera = director.getCamera();
-
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        AffineTransform oldScale = g.getTransform();
-        g.scale(settings.SCALE, settings.SCALE);
+        AffineTransform identity = g.getTransform();
 
-        // RENDERING START (very important: preserve order)
-        // 1. Background
-        renderSpriteTable(g, camera, queue.getBucket(Layer.BACKGROUND).sprites);
+        // Filling the background before any actual render
+        applySpace(g, RenderSpace.SCREEN, camera, identity);
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, settings.WIDTH, settings.HEIGHT);
 
-        // 2. World
+        renderLayer(g, Layer.BACKGROUND, queue.getBucket(Layer.BACKGROUND), camera, identity);
+        applySpace(g, RenderSpace.WORLD, camera, identity);
         tileRenderer.render(g, camera);
-        renderSpriteTable(g, camera, queue.getBucket(Layer.WORLD).sprites);
+        renderLayer(g, Layer.WORLD, queue.getBucket(Layer.WORLD), camera, identity);
+        renderLayer(g, Layer.ACTORS, queue.getBucket(Layer.ACTORS), camera, identity);
 
-        // 3. Actors
-        renderSpriteTable(g, camera, queue.getBucket(Layer.ACTORS).sprites);
-
-        // 3.5 Lightning (black magic)
+        // This should be rendered using world space, with camera coordinates (if translate is applied)
         lightningRenderer.render(g, camera, queue.getBucket(Layer.LIGHTS));
 
-        // 4. UI - WORLD (health bars and stuff like that)
-        var uiWorldLayer = queue.getBucket(Layer.UI_WORLD);
-        uiRenderer.renderSpriteTable(g, uiWorldLayer.sprites);
-        uiRenderer.renderRectangleTable(g, uiWorldLayer.rectangles);
-        uiRenderer.renderFilledRectangleTable(g, uiWorldLayer.filledRectangles);
-        uiRenderer.renderFilledRoundRectangleTable(g, uiWorldLayer.filledRoundRects);
-        uiRenderer.renderRoundedStrokeRectTable(g, uiWorldLayer.roundedStrokeRectTable);
-        uiRenderer.renderTextTable(g, uiWorldLayer.texts);
-        uiRenderer.renderMessages(g);
+        renderLayer(g, Layer.UI_WORLD, queue.getBucket(Layer.UI_WORLD), camera, identity);
+        renderLayer(g, Layer.UI_SCREEN, queue.getBucket(Layer.UI_SCREEN), camera, identity);
+        renderLayer(g, Layer.DEBUG_WORLD, queue.getBucket(Layer.DEBUG_WORLD), camera, identity);
+        renderLayer(g, Layer.DEBUG_SCREEN, queue.getBucket(Layer.DEBUG_SCREEN), camera, identity);
 
-        // 5. UI - SCREEN (Hud and stuff like that)
-        var uiLayer = queue.getBucket(Layer.UI_SCREEN);
-        uiRenderer.renderSpriteTable(g, uiLayer.sprites);
-        g.setTransform(oldScale);
-        uiRenderer.renderRectangleTable(g, uiLayer.rectangles);
-        uiRenderer.renderFilledRectangleTable(g, uiLayer.filledRectangles);
-        uiRenderer.renderFilledRoundRectangleTable(g, uiLayer.filledRoundRects);
-        uiRenderer.renderRoundedStrokeRectTable(g, uiLayer.roundedStrokeRectTable);
-        renderOverlayTable(g, uiLayer.overlays);
-        uiRenderer.renderTextTable(g, uiLayer.texts);
         uiRenderer.renderMessages(g);
-
-        // 6. DEBUG
-        var debugLayer = queue.getBucket(Layer.DEBUG);
-        uiRenderer.renderRectangleTable(g, debugLayer.rectangles);
-        uiRenderer.renderFilledRectangleTable(g, debugLayer.filledRectangles);
-        uiRenderer.renderFilledRoundRectangleTable(g, debugLayer.filledRoundRects);
-        uiRenderer.renderRoundedStrokeRectTable(g, debugLayer.roundedStrokeRectTable);
-        renderOverlayTable(g, debugLayer.overlays);
-        uiRenderer.renderTextTable(g, debugLayer.texts);
 
         long end = System.nanoTime();
         Debugger.publish("RENDER", new Debugger.DebugLong(end - start), 200, 30, DebugChannel.INFO);
+    }
+
+    private void renderLayer(Graphics2D g, Layer layer, RenderQueue.LayerBucket bucket, Camera camera, AffineTransform identity) {
+        applySpace(g, layer.space, camera, identity);
+        renderSpriteTable(g, camera, bucket.sprites);
+        uiRenderer.renderRectangleTable(g, bucket.rectangles);
+        uiRenderer.renderFilledRectangleTable(g, bucket.filledRectangles);
+        uiRenderer.renderFilledRoundRectangleTable(g, bucket.filledRoundRects);
+        uiRenderer.renderRoundedStrokeRectTable(g, bucket.roundedStrokeRectTable);
+        renderOverlayTable(g, bucket.overlays);
+        uiRenderer.renderTextTable(g, bucket.texts);
+    }
+
+    private void applySpace(Graphics2D g, RenderSpace space, Camera camera, AffineTransform identity) {
+        g.setTransform(identity);
+
+        switch (space) {
+            case WORLD -> {
+                g.scale(settings.SCALE, settings.SCALE);
+                g.translate(-camera.getX(), -camera.getY());
+            }
+            case UI_WORLD -> {
+                g.scale(settings.SCALE, settings.SCALE);
+            }
+            case SCREEN -> {
+            }
+        }
     }
 
     private void renderSpriteTable(Graphics2D g, Camera camera, RenderQueue.SpriteTable table) {
@@ -102,22 +108,17 @@ public class Renderer {
             var sprite = Registry.sprites.get(table.spriteId[i]);
             g.drawImage(
                     sprite.texture(),
-                    camera.worldToScreenX(table.x[i] - sprite.pivotX()),
-                    camera.worldToScreenY(table.y[i] - sprite.pivotY()),
+                    (int) (table.x[i] - sprite.pivotX()),
+                    (int) (table.y[i] - sprite.pivotY()),
                     null
             );
         }
     }
 
-    private void renderTextTable(Graphics2D g, RenderQueue.TextTable table) {
-        for (int i = 0; i < table.count; i++) {
-            // TODO
-        }
-    }
-
     private void renderOverlayTable(Graphics2D g, RenderQueue.OverlayTable table) {
+        if (table.count == 0) return;
+        g.setColor(OVERLAY_COLOR);
         for (int i = 0; i < table.count; i++) {
-            g.setColor(new Color(0, 0, 0, 100));
             g.fillRect(table.x[i], table.y[i], settings.WIDTH, settings.HEIGHT);
         }
     }

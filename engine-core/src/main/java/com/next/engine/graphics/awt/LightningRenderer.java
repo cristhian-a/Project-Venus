@@ -21,7 +21,7 @@ class LightningRenderer {
     private final int COMPOSITE_BUCKETS = 16;
     private final int AMBIENT_BUCKETS = 16;
 
-    private float ambient = 0.4f;
+    private float ambient = 0.5f;
 
     private BufferedImage cachedColoredLight;
 
@@ -129,7 +129,7 @@ class LightningRenderer {
         punchLightMap(camera, bucket.lights);
 
         g.setComposite(AlphaComposite.SrcOver);
-        g.drawImage(lightMap, 0, 0, null);
+        g.drawImage(lightMap, (int) camera.getX(), (int) camera.getY(), null);
     }
 
     private BufferedImage makeColoredLight(BufferedImage mask, Color color) {

@@ -28,6 +28,7 @@ public class AwtPanel extends JPanel implements ComponentListener, GamePanel {
         setBackground(Color.BLACK);
         setDoubleBuffered(true);
         setFocusable(true);
+        setOpaque(true);
         requestFocus();
         setFocusTraversalKeysEnabled(false);
     }
@@ -50,7 +51,6 @@ public class AwtPanel extends JPanel implements ComponentListener, GamePanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
         renderer.render((Graphics2D) g);
     }
 

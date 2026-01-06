@@ -47,15 +47,12 @@ final class TileRenderer {
                 int tileIndex = tileMap[row][col];
                 Tile tile = tiles[tileIndex];
 
-                int worldX = col * TILE_SIZE;
-                int worldY = row * TILE_SIZE;
-                int screenX = camera.worldToScreenX(worldX);
-                int screenY = camera.worldToScreenY(worldY);
+                int x = col * TILE_SIZE;
+                int y = row * TILE_SIZE;
 
-                g.drawImage(
-                        Registry.sprites.get(tile.spriteId()).texture(),
-                        screenX,
-                        screenY,
+                g.drawImage(Registry.sprites.get(
+                        tile.spriteId()).texture(),
+                        x, y,
                         null
                 );
             }
