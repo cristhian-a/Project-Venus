@@ -3,9 +3,9 @@ package com.next.game;
 import com.next.engine.Director;
 import com.next.engine.data.Registry;
 import com.next.engine.data.AtlasImporter;
+import com.next.engine.debug.*;
 import com.next.engine.event.*;
 import com.next.engine.model.*;
-import com.next.engine.debug.DebugChannel;
 import com.next.game.event.DisplayStatsEvent;
 import com.next.game.event.FallDamageEvent;
 import com.next.game.event.PauseEvent;
@@ -17,7 +17,6 @@ import com.next.engine.physics.Physics;
 import com.next.game.io.Loader;
 import com.next.game.model.*;
 import com.next.game.model.factory.*;
-import com.next.engine.debug.Debugger;
 import com.next.engine.system.Input;
 import com.next.engine.system.Settings;
 import com.next.game.ui.GameplayUIState;
@@ -34,6 +33,9 @@ import java.io.IOException;
 
 @Getter
 public class Game implements Director {
+
+    // debug related stuff
+    private static final DebugTimer updateTimer = DebugTimers.GAME;
 
     // Dependencies
     private final Input input;
@@ -117,7 +119,7 @@ public class Game implements Director {
 
     @Override
     public void update(double delta) {
-        long start = System.nanoTime();
+        updateTimer.begin();
 
         mailbox.beginFrame();
         processInputs();
@@ -127,8 +129,21 @@ public class Game implements Director {
         ui.submit(mailbox.postRender());
 
         mailbox.publish();
-        long end = System.nanoTime();
-        Debugger.publish("UPDATE", new Debugger.DebugLong(end - start), 500, 30, DebugChannel.INFO);
+
+        updateTimer.end();
+        Debugger.publish(
+                "UPDATE",
+                new Debugger.DebugText(
+                        String.format(
+                                "avg: %.2f ms | max: %.2f ms",
+                                updateTimer.stat().mean() / 1e6f,
+                                updateTimer.stat().max() / 1e6f
+                        )
+                ),
+                650,
+                30,
+                DebugChannel.INFO
+        );
     }
 
     public Scene loadScene(String worldFile, String levelFile, String map) throws IOException {

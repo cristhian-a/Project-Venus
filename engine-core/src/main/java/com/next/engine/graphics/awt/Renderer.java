@@ -3,13 +3,12 @@ package com.next.engine.graphics.awt;
 import com.next.engine.Director;
 import com.next.engine.data.Mailbox;
 import com.next.engine.data.Registry;
+import com.next.engine.debug.*;
 import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.graphics.RenderSpace;
 import com.next.engine.model.Camera;
-import com.next.engine.debug.DebugChannel;
-import com.next.engine.debug.Debugger;
 import com.next.engine.system.Settings.VideoSettings;
 
 import java.awt.*;
@@ -17,6 +16,10 @@ import java.awt.geom.AffineTransform;
 
 public class Renderer {
 
+    // debug stuff
+    private static final DebugTimer renderTimer = DebugTimers.RENDERER;
+
+    // static pre-computed stuff
     private static final Color OVERLAY_COLOR = new Color(0, 0, 0, 100);
 
     private final UIRenderer uiRenderer;
@@ -42,7 +45,7 @@ public class Renderer {
     }
 
     public void render(Graphics2D g) {
-        long start = System.nanoTime();
+        renderTimer.begin();
 
         RenderQueue queue = mailbox.receiveRender();
         Debugger.INSTANCE.enqueueRequests(queue);
@@ -72,8 +75,20 @@ public class Renderer {
 
         uiRenderer.renderMessages(g);
 
-        long end = System.nanoTime();
-        Debugger.publish("RENDER", new Debugger.DebugLong(end - start), 200, 30, DebugChannel.INFO);
+        renderTimer.end();
+        Debugger.publish(
+                "RENDER",
+                new Debugger.DebugText(
+                        String.format(
+                                "avg: %.2f ms | max: %.2f ms",
+                                renderTimer.stat().mean() / 1e6f,
+                                renderTimer.stat().max() / 1e6f
+                        )
+                ),
+                200,
+                30,
+                DebugChannel.INFO
+        );
     }
 
     private void renderLayer(Graphics2D g, Layer layer, RenderQueue.LayerBucket bucket, Camera camera, AffineTransform identity) {
