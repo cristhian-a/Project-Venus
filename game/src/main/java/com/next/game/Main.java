@@ -1,6 +1,7 @@
 package com.next.game;
 
-import com.next.engine.Loop;
+import com.next.engine.Conductor;
+import com.next.engine.Director;
 import com.next.engine.data.Mailbox;
 import com.next.engine.data.Registry;
 import com.next.engine.event.EventDispatcher;
@@ -13,9 +14,9 @@ import com.next.engine.graphics.awt.Renderer;
 import com.next.engine.io.AwtInputListener;
 import com.next.engine.sound.*;
 import com.next.engine.sound.jxsound.JavaSoundBackend;
+import com.next.engine.system.*;
 import com.next.game.io.Loader;
-import com.next.engine.system.Input;
-import com.next.engine.system.Settings;
+import com.next.game.util.Inputs;
 
 public class Main {
 
@@ -29,23 +30,25 @@ public class Main {
         Input input = new Input();
         var keyboardDevice = new AwtInputListener();
         input.mapActions(Loader.Controls.loadActionMap(), keyboardDevice);
+        InputBindings inputBindings = new InputBindings(input);
+        inputBindings.bindActionToChannel(Inputs.DEBUG_MODE_1, DebugChannel.INFO);
 
         // Communication channels
         Mailbox mailbox = new Mailbox();
         EventDispatcher centralDispatcher = new EventDispatcher();
 
         // Loop setup
-        Game game = new Game(input, mailbox, settings, centralDispatcher);
+        Director game = new Game(input, mailbox, settings, centralDispatcher);
         Renderer renderer = new Renderer(game, mailbox, settings.video);
         GamePanel panel = new AwtPanel(keyboardDevice, settings.video, renderer);
 
-        Loop gameLoop = new Loop(game, panel, input);
+        Conductor loop = new Conductor(game, panel, input, inputBindings);
 
         // Setting default listeners up
         AudioBackend audio = new JavaSoundBackend(Registry.audioTracks);
         SoundSystem sound = new SoundSystem(audio);
 
-        GracefullyStopEvent.Handler G = new GracefullyStopEvent.Handler(gameLoop);
+        GracefullyStopEvent.Handler G = new GracefullyStopEvent.Handler(loop);
         ExitEvent.Handler E = new ExitEvent.Handler();
 
         centralDispatcher.register(GracefullyStopEvent.class, G::onFire);
@@ -57,6 +60,9 @@ public class Main {
         centralDispatcher.register(PauseSound.class, sound::fire);
         centralDispatcher.register(RestartSound.class, sound::fire);
 
-        gameLoop.start();   // loop start should always happen last, to guarantee that listeners are properly set up
+//        Debugger.actionToChannel.put(Inputs.DEBUG_MODE_1, DebugChannel.INFO);
+//        Debugger.actionToChannel.put(Inputs.DEBUG_MODE_1, DebugChannel.COLLISION);
+
+        loop.start();   // loop start should always happen last, to guarantee that listeners are properly set up
     }
 }

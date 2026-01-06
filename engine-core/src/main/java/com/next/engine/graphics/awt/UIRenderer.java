@@ -5,6 +5,7 @@ import com.next.engine.graphics.*;
 import com.next.engine.physics.AABB;
 import com.next.engine.model.Camera;
 import com.next.engine.physics.CollisionBox;
+import com.next.engine.system.DebugChannel;
 import com.next.engine.system.Debugger;
 import com.next.engine.system.Settings.VideoSettings;
 
@@ -18,6 +19,8 @@ class UIRenderer {
 
     private final List<UIMessage> messages;
     private final Stroke collisionStroke = new BasicStroke(1);
+
+    private final Font debugFont = new Font("Arial", Font.PLAIN, 30);
 
     protected UIRenderer(VideoSettings settings) {
         this.settings = settings;
@@ -125,15 +128,15 @@ class UIRenderer {
 
     protected void renderDebugInfo(Graphics2D g, Camera camera) {
         var debug = Debugger.getRenderQueue();
-//        g.setFont(assets.getFont(Fonts.DEFAULT));
-//        g.setColor(assets.getColor(Colors.GREEN));
+        g.setFont(debugFont);
+        g.setColor(Color.GREEN);
         g.setStroke(collisionStroke);
 
         for (String key : debug.keySet()) {
             var renderInfo = debug.get(key);
-            if (renderInfo.type() == Debugger.TYPE.INFO) {
+            if (renderInfo.channel() == DebugChannel.INFO) {
                 g.drawString(key + ": " + renderInfo.value().displayInfo(), renderInfo.x(), renderInfo.y());
-            } else if (renderInfo.type() == Debugger.TYPE.COLLISION) {
+            } else if (renderInfo.channel() == DebugChannel.COLLISION) {
                 CollisionBox box = renderInfo.value().displayBox();
                 AABB bounds = box.getBounds();
 

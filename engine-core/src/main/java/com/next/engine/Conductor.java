@@ -3,20 +3,26 @@ package com.next.engine;
 import com.next.engine.graphics.GamePanel;
 import com.next.engine.system.Debugger;
 import com.next.engine.system.Input;
+import com.next.engine.system.InputBindings;
 
-public class Loop implements Runnable {
+/**
+ * Manages the main game loop and synchronizes everything.
+ */
+public class Conductor implements Runnable {
 
     private final Director director;
     private final Input input;
     private final GamePanel panel;
+    private final InputBindings inputBindings;
 
     private Thread mainThread;
     private boolean running;
 
-    public Loop(Director director, GamePanel panel, Input input) {
+    public Conductor(Director director, GamePanel panel, Input input, InputBindings inputBindings) {
         this.director = director;
         this.panel = panel;
         this.input = input;
+        this.inputBindings = inputBindings;
     }
 
     public void start() {
@@ -68,7 +74,9 @@ public class Loop implements Runnable {
 
             while (accumulator >= fixedDelta) {
                 input.poll();
-                Debugger.update(input);
+                inputBindings.process();
+
+                Debugger.INSTANCE.update();
                 director.update(fixedDelta);
 
                 accumulator -= fixedDelta;
