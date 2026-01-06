@@ -2,6 +2,10 @@ package com.next.engine.graphics.awt;
 
 import com.next.engine.Global;
 import com.next.engine.data.Registry;
+import com.next.engine.debug.DebugChannel;
+import com.next.engine.debug.DebugTimer;
+import com.next.engine.debug.DebugTimers;
+import com.next.engine.debug.Debugger;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
 import com.next.engine.system.Settings.VideoSettings;
@@ -11,6 +15,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 class LightningRenderer {
+
+    private static final DebugTimer debugtimer = DebugTimers.LIGHTS;
+    private static final float EPSILON = 0.0001f;
+
     private final VideoSettings settings;
     private final BufferedImage lightMap;
     private final Graphics2D lightGraphics;
@@ -126,10 +134,28 @@ class LightningRenderer {
     }
 
     public void render(Graphics2D g, Camera camera, RenderQueue.LayerBucket bucket) {
-        punchLightMap(camera, bucket.lights);
+        debugtimer.begin();
 
+        punchLightMap(camera, bucket.lights);
         g.setComposite(AlphaComposite.SrcOver);
-        g.drawImage(lightMap, (int) camera.getX(), (int) camera.getY(), null);
+
+        // A fix is needed to avoid the light map being pixels off in the bottom and right corners.
+        g.drawImage(lightMap, (int) (camera.getX()), (int) (camera.getY()), null);
+
+        debugtimer.end();
+        Debugger.publish(
+                "LIGHTS",
+                new Debugger.DebugText(
+                        String.format(
+                                "avg: %.2f ms | p95: %.2f ms",
+                                debugtimer.stat().mean() / 1e6f,
+                                debugtimer.stat().percentile(0.95f) / 1e6f
+                        )
+                ),
+                690,
+                90,
+                DebugChannel.INFO
+        );
     }
 
     private BufferedImage makeColoredLight(BufferedImage mask, Color color) {
@@ -176,7 +202,6 @@ class LightningRenderer {
         float t = alpha / 255f;
 
         // EPSILON provides better falloffs but a very edgy sharp
-        final float EPSILON = 0.0001f;
         if (t < EPSILON) return alpha;
         float out = threshold + (t - threshold) / ratio;
 

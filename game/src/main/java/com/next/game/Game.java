@@ -141,7 +141,7 @@ public class Game implements Director {
                         )
                 ),
                 690,
-                90,
+                200,
                 DebugChannel.INFO
         );
     }
