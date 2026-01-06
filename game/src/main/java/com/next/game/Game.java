@@ -131,19 +131,6 @@ public class Game implements Director {
         mailbox.publish();
 
         updateTimer.end();
-        Debugger.publish(
-                "UPDATE",
-                new Debugger.DebugText(
-                        String.format(
-                                "avg: %.2f ms | max: %.2f ms",
-                                updateTimer.stat().mean() / 1e6f,
-                                updateTimer.stat().max() / 1e6f
-                        )
-                ),
-                690,
-                200,
-                DebugChannel.INFO
-        );
     }
 
     public Scene loadScene(String worldFile, String levelFile, String map) throws IOException {

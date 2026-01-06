@@ -1,10 +1,8 @@
 package com.next.engine.graphics.awt;
 
 import com.next.engine.data.Registry;
-import com.next.engine.debug.DebugChannel;
 import com.next.engine.debug.DebugTimer;
 import com.next.engine.debug.DebugTimers;
-import com.next.engine.debug.Debugger;
 import com.next.engine.model.Camera;
 import com.next.engine.scene.Tile;
 import com.next.engine.scene.World;
@@ -67,18 +65,5 @@ final class TileRenderer {
         }
 
         debugtimer.end();
-        Debugger.publish(
-                "TILE RENDER",
-                new Debugger.DebugText(
-                        String.format(
-                                "avg: %.2f ms | p95: %.2f ms",
-                                debugtimer.stat().mean() / 1e6f,
-                                debugtimer.stat().percentile(0.95f) / 1e6f
-                        )
-                ),
-                690,
-                60,
-                DebugChannel.INFO
-        );
     }
 }

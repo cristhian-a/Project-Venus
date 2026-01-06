@@ -2,10 +2,8 @@ package com.next.engine.graphics.awt;
 
 import com.next.engine.Global;
 import com.next.engine.data.Registry;
-import com.next.engine.debug.DebugChannel;
 import com.next.engine.debug.DebugTimer;
 import com.next.engine.debug.DebugTimers;
-import com.next.engine.debug.Debugger;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
 import com.next.engine.system.Settings.VideoSettings;
@@ -143,19 +141,6 @@ class LightningRenderer {
         g.drawImage(lightMap, (int) (camera.getX()), (int) (camera.getY()), null);
 
         debugtimer.end();
-        Debugger.publish(
-                "LIGHTS",
-                new Debugger.DebugText(
-                        String.format(
-                                "avg: %.2f ms | p95: %.2f ms",
-                                debugtimer.stat().mean() / 1e6f,
-                                debugtimer.stat().percentile(0.95f) / 1e6f
-                        )
-                ),
-                690,
-                90,
-                DebugChannel.INFO
-        );
     }
 
     private BufferedImage makeColoredLight(BufferedImage mask, Color color) {

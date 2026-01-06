@@ -3,7 +3,9 @@ package com.next.engine.graphics.awt;
 import com.next.engine.Director;
 import com.next.engine.data.Mailbox;
 import com.next.engine.data.Registry;
-import com.next.engine.debug.*;
+import com.next.engine.debug.DebugTimer;
+import com.next.engine.debug.DebugTimers;
+import com.next.engine.debug.Debugger;
 import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
@@ -76,19 +78,6 @@ public class Renderer {
         uiRenderer.renderMessages(g);
 
         renderTimer.end();
-        Debugger.publish(
-                "RENDER",
-                new Debugger.DebugText(
-                        String.format(
-                                "avg: %.2f ms | p95: %.2f ms",
-                                renderTimer.stat().mean() / 1e6f,
-                                renderTimer.stat().percentile(0.95f) / 1e6f
-                        )
-                ),
-                690,
-                30,
-                DebugChannel.INFO
-        );
     }
 
     private void renderLayer(Graphics2D g, Layer layer, RenderQueue.LayerBucket bucket, Camera camera, AffineTransform identity) {

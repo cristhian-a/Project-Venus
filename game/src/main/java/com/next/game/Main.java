@@ -7,6 +7,7 @@ import com.next.engine.data.Registry;
 import com.next.engine.debug.DebugChannel;
 import com.next.engine.debug.DevToolkit;
 import com.next.engine.debug.MemoryTool;
+import com.next.engine.debug.PerformanceTool;
 import com.next.engine.event.EventDispatcher;
 import com.next.engine.event.ExitEvent;
 import com.next.engine.event.GracefullyStopEvent;
@@ -40,6 +41,7 @@ public class Main {
 
         // Debug tools registering (for now I'll do it here, but this should be moved elsewhere latter)
         DevToolkit.register(new MemoryTool());
+        DevToolkit.register(new PerformanceTool());
 
         // Communication channels
         Mailbox mailbox = new Mailbox();

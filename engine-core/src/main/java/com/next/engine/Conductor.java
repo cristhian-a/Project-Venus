@@ -88,7 +88,7 @@ public class Conductor implements Runnable {
                 shouldRender = true;
 
                 frames++;   // Debug info *(frame rate)*
-                Debugger.publish("FPS", new Debugger.DebugInt(framesLastSecond), 10, 30, DebugChannel.INFO);
+//                Debugger.publish("FPS", new Debugger.DebugInt(framesLastSecond), 10, 30, DebugChannel.INFO);
             }
 
             if (shouldRender) {

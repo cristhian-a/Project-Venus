@@ -1,0 +1,68 @@
+package com.next.engine.debug;
+
+public final class PerformanceTool implements DevTool {
+
+    public static final String FPS = "performance.fps";
+    public static final String RENDER_TOTAL = "performance.render.total";
+    public static final String RENDER_TILES = "performance.render.tiles";
+    public static final String RENDER_LIGHTS = "performance.render.lights";
+    public static final String DIRECTOR_UPDATE = "performance.director.update";
+
+    private static final String AVG_P95 = "avg(120): %.2f ms | p95: %.2f ms";
+    private static final String FPS_LABEL = "FPS: ";
+
+    private int frameCounter = 0;
+
+    private String renderTotal;
+    private String renderTiles;
+    private String renderLights;
+    private String directorUpdate;
+    private String fpsLabel;
+
+    @Override
+    public void update() {
+        if (frameCounter++ % 60 != 0) return;
+
+        var renderTimer = DebugTimers.RENDERER.stat();
+        long renderingAvg = renderTimer.mean();
+        long renderingP95 = renderTimer.percentile(0.95f);
+        renderTotal = String.format(AVG_P95, renderingAvg / 1e6f, renderingP95 / 1e6f);
+
+        long fps = (long) (1e9 / renderTimer.percentile(0.5f));
+        fpsLabel = FPS_LABEL + fps;
+
+        var lightTimer = DebugTimers.LIGHTS.stat();
+        long lightingAvg = lightTimer.mean();
+        long lightingP95 = lightTimer.percentile(0.95f);
+        renderLights = String.format(AVG_P95, lightingAvg / 1e6f, lightingP95 / 1e6f);
+
+        var tileTimer = DebugTimers.TILES.stat();
+        long tileAvg = tileTimer.mean();
+        long tileP95 = tileTimer.percentile(0.95f);
+        renderTiles = String.format(AVG_P95, tileAvg / 1e6f, tileP95 / 1e6f);
+
+        var gameTimer = DebugTimers.GAME.stat();
+        long gameAvg = gameTimer.mean();
+        long gameP95 = gameTimer.percentile(0.95f);
+        directorUpdate = String.format(AVG_P95, gameAvg / 1e6f, gameP95 / 1e6f);
+    }
+
+    @Override
+    public void emit(DebugSink sink) {
+        sink.text(RENDER_TOTAL, renderTotal, 660, 30, channel());
+        sink.text(RENDER_TILES, renderTiles, 660, 60, channel());
+        sink.text(RENDER_LIGHTS, renderLights, 660, 90, channel());
+        sink.text(DIRECTOR_UPDATE, directorUpdate, 660, 200, channel());
+        sink.text(FPS, fpsLabel, 10, 30, channel());
+    }
+
+    @Override
+    public DebugChannel channel() {
+        return DebugChannel.INFO;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+}
