@@ -28,4 +28,5 @@ module engine.core {
     exports com.next.engine.dto;
     exports com.next.engine.animation;
     exports com.next.engine.util;
+    exports com.next.engine.debug;
 }

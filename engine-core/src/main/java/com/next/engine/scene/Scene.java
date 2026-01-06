@@ -4,7 +4,7 @@ import com.next.engine.data.Mailbox;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.*;
 import com.next.engine.physics.Body;
-import com.next.engine.system.Debugger;
+import com.next.engine.debug.Debugger;
 import lombok.Getter;
 
 import java.util.Arrays;

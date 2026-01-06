@@ -4,6 +4,7 @@ import com.next.engine.Conductor;
 import com.next.engine.Director;
 import com.next.engine.data.Mailbox;
 import com.next.engine.data.Registry;
+import com.next.engine.debug.DebugChannel;
 import com.next.engine.event.EventDispatcher;
 import com.next.engine.event.ExitEvent;
 import com.next.engine.event.GracefullyStopEvent;

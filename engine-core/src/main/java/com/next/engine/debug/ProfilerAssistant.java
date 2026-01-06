@@ -1,4 +1,4 @@
-package com.next.engine.system;
+package com.next.engine.debug;
 
 import java.lang.management.*;
 

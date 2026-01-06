@@ -7,8 +7,8 @@ import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
-import com.next.engine.system.DebugChannel;
-import com.next.engine.system.Debugger;
+import com.next.engine.debug.DebugChannel;
+import com.next.engine.debug.Debugger;
 import com.next.engine.system.Settings.VideoSettings;
 
 import java.awt.*;

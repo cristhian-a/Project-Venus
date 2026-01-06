@@ -1,8 +1,8 @@
 package com.next.engine;
 
 import com.next.engine.graphics.GamePanel;
-import com.next.engine.system.DebugChannel;
-import com.next.engine.system.Debugger;
+import com.next.engine.debug.DebugChannel;
+import com.next.engine.debug.Debugger;
 import com.next.engine.system.Input;
 import com.next.engine.system.InputBindings;
 

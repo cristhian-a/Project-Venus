@@ -1,4 +1,4 @@
-package com.next.engine.system;
+package com.next.engine.debug;
 
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderPosition;

@@ -1,5 +1,8 @@
 package com.next.engine.system;
 
+import com.next.engine.debug.DebugChannel;
+import com.next.engine.debug.Debugger;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

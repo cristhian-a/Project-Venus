@@ -2,11 +2,6 @@ package com.next.engine.graphics.awt;
 
 import com.next.engine.data.Registry;
 import com.next.engine.graphics.*;
-import com.next.engine.physics.AABB;
-import com.next.engine.model.Camera;
-import com.next.engine.physics.CollisionBox;
-import com.next.engine.system.DebugChannel;
-import com.next.engine.system.Debugger;
 import com.next.engine.system.Settings.VideoSettings;
 
 import java.awt.*;
