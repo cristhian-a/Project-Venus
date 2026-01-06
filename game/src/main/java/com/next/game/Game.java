@@ -5,6 +5,7 @@ import com.next.engine.data.Registry;
 import com.next.engine.data.AtlasImporter;
 import com.next.engine.event.*;
 import com.next.engine.model.*;
+import com.next.engine.system.DebugChannel;
 import com.next.game.event.DisplayStatsEvent;
 import com.next.game.event.FallDamageEvent;
 import com.next.game.event.PauseEvent;
@@ -127,7 +128,7 @@ public class Game implements Director {
 
         mailbox.publish();
         long end = System.nanoTime();
-        Debugger.publish("UPDATE", new Debugger.DebugLong(end - start), 500, 30, Debugger.TYPE.INFO);
+        Debugger.publish("UPDATE", new Debugger.DebugLong(end - start), 500, 30, DebugChannel.INFO);
     }
 
     public Scene loadScene(String worldFile, String levelFile, String map) throws IOException {

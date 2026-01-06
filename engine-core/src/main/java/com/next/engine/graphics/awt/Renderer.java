@@ -7,6 +7,7 @@ import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
+import com.next.engine.system.DebugChannel;
 import com.next.engine.system.Debugger;
 import com.next.engine.system.Settings.VideoSettings;
 
@@ -40,6 +41,7 @@ public class Renderer {
         long start = System.nanoTime();
 
         RenderQueue queue = mailbox.receiveRender();
+        Debugger.INSTANCE.enqueueRequests(queue);    // Collecting debug stuff
         Camera camera = director.getCamera();
 
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
@@ -83,10 +85,16 @@ public class Renderer {
         uiRenderer.renderMessages(g);
 
         // 6. DEBUG
-        uiRenderer.renderDebugInfo(g, camera);  // TODO also
+        var debugLayer = queue.getBucket(Layer.DEBUG);
+        uiRenderer.renderRectangleTable(g, debugLayer.rectangles);
+        uiRenderer.renderFilledRectangleTable(g, debugLayer.filledRectangles);
+        uiRenderer.renderFilledRoundRectangleTable(g, debugLayer.filledRoundRects);
+        uiRenderer.renderRoundedStrokeRectTable(g, debugLayer.roundedStrokeRectTable);
+        renderOverlayTable(g, debugLayer.overlays);
+        uiRenderer.renderTextTable(g, debugLayer.texts);
 
         long end = System.nanoTime();
-        Debugger.publish("RENDER", new Debugger.DebugLong(end - start), 200, 30, Debugger.TYPE.INFO);
+        Debugger.publish("RENDER", new Debugger.DebugLong(end - start), 200, 30, DebugChannel.INFO);
     }
 
     private void renderSpriteTable(Graphics2D g, Camera camera, RenderQueue.SpriteTable table) {

@@ -1,6 +1,7 @@
 package com.next.engine;
 
 import com.next.engine.graphics.GamePanel;
+import com.next.engine.system.DebugChannel;
 import com.next.engine.system.Debugger;
 import com.next.engine.system.Input;
 import com.next.engine.system.InputBindings;
@@ -83,7 +84,7 @@ public class Conductor implements Runnable {
                 shouldRender = true;
 
                 frames++;   // Debug info *(frame rate)*
-                Debugger.publish("FPS", new Debugger.DebugInt(framesLastSecond), 10, 30, Debugger.TYPE.INFO);
+                Debugger.publish("FPS", new Debugger.DebugInt(framesLastSecond), 10, 30, DebugChannel.INFO);
             }
 
             if (shouldRender) {

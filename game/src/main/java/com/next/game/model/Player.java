@@ -10,6 +10,7 @@ import com.next.engine.model.AnimatedActor;
 import com.next.engine.model.HitboxSpec;
 import com.next.engine.physics.*;
 import com.next.engine.scene.Direction;
+import com.next.engine.system.DebugChannel;
 import com.next.engine.system.Debugger;
 import com.next.game.event.AttackEvent;
 import com.next.game.model.factory.HitboxFactory;
@@ -138,8 +139,8 @@ public class Player extends AnimatedActor implements Combatant {
         dx = 0;
         dy = 0;
 
-        Debugger.publish("PLAYER", new Debugger.DebugText("X: " + worldX + ", Y: " + worldY), 10, 90, Debugger.TYPE.INFO);
-        Debugger.publish("HITBOX", new Debugger.DebugText("X: " + collisionBox.getBounds().x + ", Y: " + collisionBox.getBounds().y + ", Width: " + collisionBox.getBounds().width + ", Height: " + collisionBox.getBounds().height), 10, 120, Debugger.TYPE.INFO);
+        Debugger.publish("PLAYER", new Debugger.DebugText("X: " + worldX + ", Y: " + worldY), 10, 90, DebugChannel.INFO);
+        Debugger.publish("HITBOX", new Debugger.DebugText("X: " + collisionBox.getBounds().x + ", Y: " + collisionBox.getBounds().y + ", Width: " + collisionBox.getBounds().width + ", Height: " + collisionBox.getBounds().height), 10, 120, DebugChannel.INFO);
     }
 
     @Override

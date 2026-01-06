@@ -32,6 +32,8 @@ public class Main {
         input.mapActions(Loader.Controls.loadActionMap(), keyboardDevice);
         InputBindings inputBindings = new InputBindings(input);
         inputBindings.bindActionToChannel(Inputs.DEBUG_MODE_1, DebugChannel.INFO);
+        inputBindings.bindActionToChannel(Inputs.DEBUG_MEMORY, DebugChannel.MEMORY);
+        inputBindings.bindActionToChannel(Inputs.DEBUG_COLLISIONS, DebugChannel.COLLISION);
 
         // Communication channels
         Mailbox mailbox = new Mailbox();
@@ -59,9 +61,6 @@ public class Main {
         centralDispatcher.register(SetVolume.class, sound::fire);
         centralDispatcher.register(PauseSound.class, sound::fire);
         centralDispatcher.register(RestartSound.class, sound::fire);
-
-//        Debugger.actionToChannel.put(Inputs.DEBUG_MODE_1, DebugChannel.INFO);
-//        Debugger.actionToChannel.put(Inputs.DEBUG_MODE_1, DebugChannel.COLLISION);
 
         loop.start();   // loop start should always happen last, to guarantee that listeners are properly set up
     }

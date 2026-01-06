@@ -1,5 +1,6 @@
 package com.next.engine.model;
 
+import com.next.engine.system.DebugChannel;
 import com.next.engine.system.Debugger;
 import lombok.Getter;
 
@@ -24,7 +25,7 @@ public class Camera {
 
     public void follow(Entity e) {
         follow(e.worldX, e.worldY);
-        Debugger.publish("CAMERA", new Debugger.DebugText("X: " + x + ", Y: " + y), 10, 60, Debugger.TYPE.INFO);
+        Debugger.publish("CAMERA", new Debugger.DebugText("X: " + x + ", Y: " + y), 10, 60, DebugChannel.INFO);
     }
 
     public void follow(float targetX, float targetY) {

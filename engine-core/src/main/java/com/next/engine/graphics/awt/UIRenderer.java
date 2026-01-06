@@ -126,33 +126,33 @@ class UIRenderer {
         }
     }
 
-    protected void renderDebugInfo(Graphics2D g, Camera camera) {
-        var debug = Debugger.getRenderQueue();
-        g.setFont(debugFont);
-        g.setColor(Color.GREEN);
-        g.setStroke(collisionStroke);
-
-        for (String key : debug.keySet()) {
-            var renderInfo = debug.get(key);
-            if (renderInfo.channel() == DebugChannel.INFO) {
-                g.drawString(key + ": " + renderInfo.value().displayInfo(), renderInfo.x(), renderInfo.y());
-            } else if (renderInfo.channel() == DebugChannel.COLLISION) {
-                CollisionBox box = renderInfo.value().displayBox();
-                AABB bounds = box.getBounds();
-
-                int screenX = camera.worldToScreenX((int) bounds.x);
-                int screenY = camera.worldToScreenY((int) bounds.y);
-
-                var oldScale = g.getTransform();
-                g.scale(settings.SCALE, settings.SCALE);  // TODO: get scale from the right place
-                g.setColor(Color.RED);
-
-                g.drawRect(screenX, screenY, (int) bounds.width, (int) bounds.height);
-
-                // returning to old config
-                g.setTransform(oldScale);
-                g.setColor(Color.GREEN);
-            }
-        }
-    }
+//    protected void renderDebugInfo(Graphics2D g, Camera camera) {
+//        var debug = Debugger.getRenderQueue();
+//        g.setFont(debugFont);
+//        g.setColor(Color.GREEN);
+//        g.setStroke(collisionStroke);
+//
+//        for (String key : debug.keySet()) {
+//            var renderInfo = debug.get(key);
+//            if (renderInfo.channel() == DebugChannel.INFO) {
+//                g.drawString(key + ": " + renderInfo.value().displayInfo(), renderInfo.x(), renderInfo.y());
+//            } else if (renderInfo.channel() == DebugChannel.COLLISION) {
+//                CollisionBox box = renderInfo.value().displayBox();
+//                AABB bounds = box.getBounds();
+//
+//                int screenX = camera.worldToScreenX((int) bounds.x);
+//                int screenY = camera.worldToScreenY((int) bounds.y);
+//
+//                var oldScale = g.getTransform();
+//                g.scale(settings.SCALE, settings.SCALE);  // TODO: get scale from the right place
+//                g.setColor(Color.RED);
+//
+//                g.drawRect(screenX, screenY, (int) bounds.width, (int) bounds.height);
+//
+//                // returning to old config
+//                g.setTransform(oldScale);
+//                g.setColor(Color.GREEN);
+//            }
+//        }
+//    }
 }

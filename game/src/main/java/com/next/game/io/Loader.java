@@ -57,6 +57,7 @@ public final class Loader {
         public static void register() {
             try (InputStream is = load()) {
                 var f = Font.createFont(Font.TRUETYPE_FONT, is);
+                Registry.fonts.put(Fonts.DEBUG, f.deriveFont(Font.PLAIN, 32f));
                 Registry.fonts.put(Fonts.DEFAULT, f.deriveFont(Font.PLAIN, 32f));
                 Registry.fonts.put(Fonts.DEFAULT_80_BOLD, f.deriveFont(Font.BOLD, 80f));
             } catch (IOException | FontFormatException e) {

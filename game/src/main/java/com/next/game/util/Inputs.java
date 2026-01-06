@@ -9,4 +9,6 @@ public class Inputs {
     public static final String PAUSE = "pause";
     public static final String DISPLAY_STATS = "displayStats";
     public static final String DEBUG_MODE_1 = "debugMode1";
+    public static final String DEBUG_MEMORY = "debugMemory";
+    public static final String DEBUG_COLLISIONS = "debugCollisions";
 }

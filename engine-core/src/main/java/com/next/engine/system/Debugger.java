@@ -1,5 +1,8 @@
 package com.next.engine.system;
 
+import com.next.engine.graphics.Layer;
+import com.next.engine.graphics.RenderPosition;
+import com.next.engine.graphics.RenderQueue;
 import com.next.engine.physics.CollisionBox;
 
 import java.util.Collections;
@@ -16,9 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Debugger {
 
-    public enum TYPE {
-        INFO, COLLISION
-    }
+    private static final String FONT = "debug";
 
     public static final Debugger INSTANCE = new Debugger();
 
@@ -56,22 +57,58 @@ public class Debugger {
         renderQueue = Map.copyOf(snapshot);
     }
 
-    public static void publish(String key, DebugValue value, int x, int y, TYPE type) {
-        DebugChannel channel = type == TYPE.COLLISION ? DebugChannel.COLLISION : DebugChannel.INFO;
+    public void enqueueRequests(RenderQueue rq) {
+        var bucket = rq.getBucket(Layer.DEBUG); // or DEBUG layer
+
+        for (var instr : renderQueue.values()) {
+
+            DebugValue value = instr.value();
+            int x = instr.x();
+            int y = instr.y();
+
+            // Text debug
+            String text = value.displayInfo();
+            if (text != null) {
+                bucket.texts.add(
+                        text,
+                        FONT,
+                        0xFF00FF00,
+                        x, y,
+                        0,
+                        RenderPosition.AXIS
+                );
+            }
+
+            // Collision / geometry debug
+            CollisionBox box = value.displayBox();
+            if (box != null) {
+                drawCollision(bucket, box);
+            }
+        }
+    }
+
+    private void drawCollision(RenderQueue.LayerBucket bucket, CollisionBox box) {
+        var aabb = box.getBounds();
+        bucket.rectangles.add(
+                aabb.x,
+                aabb.y,
+                aabb.width,
+                aabb.height,
+                0xFFFF0000  // green
+        );
+    }
+
+    public static void publish(String key, DebugValue value, int x, int y, DebugChannel channel) {
         INSTANCE.context.put(key, new DebugRenderInstruction(x, y, value, channel));
     }
 
     public static void publish(String key, CollisionBox box) {
-        publish(key, new DebugCollision(box), 0, 0, TYPE.COLLISION);
-    }
-
-    public static Map<String, DebugRenderInstruction> getRenderQueue() {
-        return INSTANCE.renderQueue;
+        publish(key, new DebugCollision(box), 0, 0, DebugChannel.COLLISION);
     }
 
     public sealed interface DebugValue {
         default String displayInfo() {
-            return toString();
+            return null;
         }
 
         default CollisionBox displayBox() {
