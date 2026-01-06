@@ -1,5 +1,6 @@
 package com.next.engine;
 
+import com.next.engine.debug.DevToolkit;
 import com.next.engine.graphics.GamePanel;
 import com.next.engine.debug.DebugChannel;
 import com.next.engine.debug.Debugger;
@@ -77,7 +78,10 @@ public class Conductor implements Runnable {
                 input.poll();
                 inputBindings.process();
 
+                DevToolkit.update();
+                DevToolkit.emit(Debugger.INSTANCE);
                 Debugger.INSTANCE.update();
+
                 director.update(fixedDelta);
 
                 accumulator -= fixedDelta;

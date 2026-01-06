@@ -5,6 +5,8 @@ import com.next.engine.Director;
 import com.next.engine.data.Mailbox;
 import com.next.engine.data.Registry;
 import com.next.engine.debug.DebugChannel;
+import com.next.engine.debug.DevToolkit;
+import com.next.engine.debug.MemoryTool;
 import com.next.engine.event.EventDispatcher;
 import com.next.engine.event.ExitEvent;
 import com.next.engine.event.GracefullyStopEvent;
@@ -35,6 +37,9 @@ public class Main {
         inputBindings.bindActionToChannel(Inputs.DEBUG_MODE_1, DebugChannel.INFO);
         inputBindings.bindActionToChannel(Inputs.DEBUG_MEMORY, DebugChannel.MEMORY);
         inputBindings.bindActionToChannel(Inputs.DEBUG_COLLISIONS, DebugChannel.COLLISION);
+
+        // Debug tools registering (for now I'll do it here, but this should be moved elsewhere latter)
+        DevToolkit.register(new MemoryTool());
 
         // Communication channels
         Mailbox mailbox = new Mailbox();

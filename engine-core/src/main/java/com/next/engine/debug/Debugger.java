@@ -13,7 +13,7 @@ import java.util.*;
  * It maintains a set of enabled debug channels and provides methods to publish debug instructions
  * to be rendered on screen. Debugger uses a singleton pattern through the public static {@code INSTANCE}.
  */
-public class Debugger {
+public class Debugger implements DebugSink {
 
     private static final String FONT = "debug";
 
@@ -45,8 +45,6 @@ public class Debugger {
     }
 
     public void update() {
-        ProfilerAssistant.collectMemoryInfo();  // TODO move this to another place please
-
         // swap to deal with concurrency
         var temp = readBuffer;
         readBuffer = writeBuffer;
@@ -61,7 +59,6 @@ public class Debugger {
             }
         }
 
-        if (snapshot.isEmpty()) return;
         renderQueue = Map.copyOf(snapshot);
     }
 
@@ -107,6 +104,21 @@ public class Debugger {
         );
     }
 
+    @Override
+    public void text(String id, String text, int x, int y, DebugChannel channel) {
+        writeBuffer.put(id, new DebugRenderInstruction(x, y, new DebugText(text), channel));
+    }
+
+    @Override
+    public void value(String id, long value, int x, int y, DebugChannel channel) {
+        writeBuffer.put(id, new DebugRenderInstruction(x, y, new DebugLong(value), channel));
+    }
+
+    @Override
+    public void value(String id, double value, int x, int y, DebugChannel channel) {
+        writeBuffer.put(id, new DebugRenderInstruction(x, y, new DebugDouble(value), channel));
+    }
+
     public static void publish(String key, DebugValue value, int x, int y, DebugChannel channel) {
         INSTANCE.writeBuffer.put(key, new DebugRenderInstruction(x, y, value, channel));
     }
@@ -132,7 +144,7 @@ public class Debugger {
         }
     }
 
-    public record DebugFloat(float value) implements DebugValue {
+    public record DebugDouble(double value) implements DebugValue {
         @Override
         public String displayInfo() {
             return String.valueOf(value);
