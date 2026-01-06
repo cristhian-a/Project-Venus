@@ -24,12 +24,14 @@ public class Debugger {
     public static final Debugger INSTANCE = new Debugger();
 
     private final Set<DebugChannel> enabledChannels;
-    private final Map<String, DebugRenderInstruction> context;
     private volatile Map<String, DebugRenderInstruction> renderQueue;
+    private  Map<String, DebugRenderInstruction> context;
+    private Map<String, DebugRenderInstruction> current;
 
     private Debugger() {
         enabledChannels = Collections.newSetFromMap(new ConcurrentHashMap<>());
         context = new LinkedHashMap<>();
+        current = new LinkedHashMap<>();
         renderQueue = Map.of();
     }
 
@@ -47,7 +49,12 @@ public class Debugger {
 
         Map<String, DebugRenderInstruction> snapshot = new LinkedHashMap<>();  // snapshotting to deal with concurrency
 
-        for (var entry : context.entrySet()) {
+        // swap to deal with concurrency
+        var temp = current;
+        current = context;
+        context = temp;
+
+        for (var entry : current.entrySet()) {
             if (enabledChannels.contains(entry.getValue().channel)) {
                 snapshot.put(entry.getKey(), entry.getValue());
             }
