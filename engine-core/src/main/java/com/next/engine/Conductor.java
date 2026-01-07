@@ -5,6 +5,8 @@ import com.next.engine.graphics.GamePanel;
 import com.next.engine.system.Input;
 import com.next.engine.system.InputBindings;
 
+import javax.swing.*;
+
 /**
  * Manages the main game loop and synchronizes everything.
  */
@@ -30,7 +32,8 @@ public class Conductor implements Runnable {
         mainThread = new Thread(this, "Game Conductor Thread");
 
         director.init();
-        panel.openWindow();
+        // This invokeLater should be moved elsewhere as well to not couple swing here
+        SwingUtilities.invokeLater(panel::openWindow);  // let the window creation happen on EDT
         mainThread.start();
     }
 

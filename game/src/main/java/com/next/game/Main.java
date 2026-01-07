@@ -10,7 +10,7 @@ import com.next.engine.event.ExitEvent;
 import com.next.engine.event.GracefullyStopEvent;
 import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.GamePanel;
-import com.next.engine.graphics.awt.AwtPanel;
+import com.next.engine.graphics.awt.AwtCanvas;
 import com.next.engine.graphics.awt.Renderer;
 import com.next.engine.io.AwtInputListener;
 import com.next.engine.sound.*;
@@ -46,7 +46,7 @@ public class Main {
         // Loop setup
         Director game = new Game(input, mailbox, settings, centralDispatcher);
         Renderer renderer = new Renderer(game, mailbox, settings.video);
-        GamePanel panel = new AwtPanel(keyboardDevice, settings.video, renderer);
+        GamePanel panel = new AwtCanvas(renderer, settings.video, keyboardDevice);
 
         Conductor loop = new Conductor(game, panel, input, inputBindings);
 
