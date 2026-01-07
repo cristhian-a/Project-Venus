@@ -1,5 +1,6 @@
 package com.next.engine.physics;
 
+import com.next.engine.debug.DebugTimers;
 import com.next.engine.event.EventCollector;
 import com.next.engine.model.Sensor;
 import com.next.engine.scene.Scene;
@@ -187,18 +188,20 @@ public class Physics implements SpatialGridHandler {
      * @param collector collects all events produced during collision resolution (see {@link EventCollector}).
      */
     public void apply(double delta, MotionQueue queue, EventCollector collector) {
-        beginFrame();
+        try (var _ = DebugTimers.scope(DebugTimers.PHYSICS)) {
+            beginFrame();
 
-        grid.clear();
-        scene.forEachBody(grid::insert);
+            grid.clear();
+            scene.forEachBody(grid::insert);
 
-        for (int i = 0; i < queue.size(); i++) {
-            integrateMotion(Axis.X, delta, queue.actorIds[i], queue.deltaX[i]);
-            integrateMotion(Axis.Y, delta, queue.actorIds[i], queue.deltaY[i]);
+            for (int i = 0; i < queue.size(); i++) {
+                integrateMotion(Axis.X, delta, queue.actorIds[i], queue.deltaX[i]);
+                integrateMotion(Axis.Y, delta, queue.actorIds[i], queue.deltaY[i]);
+            }
+
+            collectStaticBodies(scene, grid);
+            notify(collector);
         }
-
-        collectStaticBodies(scene, grid);
-        notify(collector);
     }
 
     private void integrateMotion(Axis axis, double deltaTime, int entityId, float motionDelta) {

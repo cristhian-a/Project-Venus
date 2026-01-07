@@ -1,6 +1,7 @@
 package com.next.engine.scene;
 
 import com.next.engine.data.Mailbox;
+import com.next.engine.debug.Tools;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.*;
 import com.next.engine.physics.Body;
@@ -46,6 +47,9 @@ public class Scene {
         this.sensors = new Sensor[16];
 
         this.entitiesById = new Entity[16];
+
+        Tools.SCENE_TOOL.setEntityCount(0);     // debug stuff
+        Tools.SCENE_TOOL.setDisposedActors(0);
     }
 
     public void addAll(Entity[] entities) {
@@ -100,13 +104,6 @@ public class Scene {
         }
     }
 
-    public Body findBodyById(int id) {
-        for (Body b : bodies) {
-            if (b.getId() == id) return b;
-        }
-        return null;
-    }
-
     public Entity getEntity(int id) {
         return entitiesById[id];
     }
@@ -119,6 +116,8 @@ public class Scene {
         for (int i = 0; i < sensorCount; i++) {
             sensors[i].update(delta);
         }
+
+        Tools.SCENE_TOOL.setEntityCount(entityCount);   // debug stuff
     }
 
     public void submitRender(RenderQueue queue) {
@@ -165,6 +164,8 @@ public class Scene {
                 actors[actorCount - 1] = null;
                 actorCount--;
                 i--;
+
+                Tools.SCENE_TOOL.onDispose();   // debug stuff
             }
         }
 
@@ -190,14 +191,8 @@ public class Scene {
 
     public void forEachBody(Consumer<Body> consumer) {
         for (int i = 0; i < bodyCount; i++) {
-            Debugger.publish("HITBOX" + bodies[i].getId(), bodies[i].getCollisionBox());
+            Debugger.publish("physics.collision.box" + bodies[i].getId(), bodies[i].getCollisionBox());
             consumer.accept(bodies[i]);
-        }
-    }
-
-    public void forEachSensor(Consumer<Sensor> consumer) {
-        for (int i = 0; i < sensorCount; i++) {
-            consumer.accept(sensors[i]);
         }
     }
 

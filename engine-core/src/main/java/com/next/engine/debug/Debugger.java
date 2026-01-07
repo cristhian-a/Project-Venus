@@ -124,7 +124,7 @@ public class Debugger implements DebugSink {
     }
 
     public static void publish(String key, CollisionBox box) {
-        publish(key, new DebugCollision(box), 0, 0, DebugChannel.COLLISION);
+        publish(key, new DebugCollision(box), 0, 0, DebugChannel.PHYSICS);
     }
 
     public sealed interface DebugValue {

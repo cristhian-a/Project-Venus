@@ -3,6 +3,7 @@ package com.next.engine.debug;
 public final class PerformanceTool implements DevTool {
 
     public static final String FPS = "performance.fps";
+    public static final String PHYSICS = "performance.physics";
     public static final String RENDER_TOTAL = "performance.render.total";
     public static final String RENDER_TILES = "performance.render.tiles";
     public static final String RENDER_LIGHTS = "performance.render.lights";
@@ -17,6 +18,7 @@ public final class PerformanceTool implements DevTool {
     private String renderTiles;
     private String renderLights;
     private String directorUpdate;
+    private String physicsUpdate;
     private String fpsLabel;
 
     @Override
@@ -45,6 +47,11 @@ public final class PerformanceTool implements DevTool {
         long gameAvg = gameTimer.mean();
         long gameP95 = gameTimer.percentile(0.95f);
         directorUpdate = String.format(AVG_P95, gameAvg / 1e6f, gameP95 / 1e6f);
+
+        var physicsTimer = DebugTimers.of(DebugTimers.PHYSICS).stat();
+        long physicsAvg = physicsTimer.mean();
+        long physicsP95 = physicsTimer.percentile(0.95f);
+        physicsUpdate = String.format(AVG_P95, physicsAvg / 1e6f, physicsP95 / 1e6f);
     }
 
     @Override
@@ -53,6 +60,7 @@ public final class PerformanceTool implements DevTool {
         sink.text(RENDER_TILES, renderTiles, 660, 60, channel());
         sink.text(RENDER_LIGHTS, renderLights, 660, 90, channel());
         sink.text(DIRECTOR_UPDATE, directorUpdate, 660, 200, channel());
+        sink.text(PHYSICS, physicsUpdate, 660, 230, channel());
         sink.text(FPS, fpsLabel, 10, 30, channel());
     }
 

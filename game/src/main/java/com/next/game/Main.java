@@ -4,10 +4,7 @@ import com.next.engine.Conductor;
 import com.next.engine.Director;
 import com.next.engine.data.Mailbox;
 import com.next.engine.data.Registry;
-import com.next.engine.debug.DebugChannel;
-import com.next.engine.debug.DevToolkit;
-import com.next.engine.debug.MemoryTool;
-import com.next.engine.debug.PerformanceTool;
+import com.next.engine.debug.*;
 import com.next.engine.event.EventDispatcher;
 import com.next.engine.event.ExitEvent;
 import com.next.engine.event.GracefullyStopEvent;
@@ -37,11 +34,10 @@ public class Main {
         InputBindings inputBindings = new InputBindings(input);
         inputBindings.bindActionToChannel(Inputs.DEBUG_MODE_1, DebugChannel.INFO);
         inputBindings.bindActionToChannel(Inputs.DEBUG_MEMORY, DebugChannel.MEMORY);
-        inputBindings.bindActionToChannel(Inputs.DEBUG_COLLISIONS, DebugChannel.COLLISION);
+        inputBindings.bindActionToChannel(Inputs.DEBUG_COLLISIONS, DebugChannel.PHYSICS);
 
         // Debug tools registering (for now I'll do it here, but this should be moved elsewhere latter)
-        DevToolkit.register(new MemoryTool());
-        DevToolkit.register(new PerformanceTool());
+        Tools.registerTools();  // This utility class, I gotta think twice about it
 
         // Communication channels
         Mailbox mailbox = new Mailbox();

@@ -31,7 +31,6 @@ public final class DebugChannel {
     public static final DebugChannel INFO = register("INFO");
     public static final DebugChannel MEMORY = register("MEMORY");
     public static final DebugChannel PHYSICS = register("PHYSICS");
-    public static final DebugChannel COLLISION = register("COLLISION");
 
     private final String name;
     private DebugChannel(String name) { this.name = name; }

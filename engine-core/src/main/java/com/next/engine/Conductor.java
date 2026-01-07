@@ -1,10 +1,7 @@
 package com.next.engine;
 
-import com.next.engine.debug.DevToolkit;
-import com.next.engine.debug.UpdateRateTool;
+import com.next.engine.debug.*;
 import com.next.engine.graphics.GamePanel;
-import com.next.engine.debug.DebugChannel;
-import com.next.engine.debug.Debugger;
 import com.next.engine.system.Input;
 import com.next.engine.system.InputBindings;
 
@@ -18,8 +15,6 @@ public class Conductor implements Runnable {
     private final GamePanel panel;
     private final InputBindings inputBindings;
 
-    private final UpdateRateTool updateRateTool = new UpdateRateTool();
-
     private Thread mainThread;
     private boolean running;
 
@@ -31,8 +26,6 @@ public class Conductor implements Runnable {
     }
 
     public void start() {
-        DevToolkit.register(updateRateTool);
-
         running = true;
         mainThread = new Thread(this, "Game Conductor Thread");
 
@@ -93,7 +86,7 @@ public class Conductor implements Runnable {
                 shouldRender = true;
 
                 frames++;   // Debug info *(frame rate)*
-                updateRateTool.setUps(updatesLastSecond);
+                Tools.UPDATE_RATE_TOOL.setUps(updatesLastSecond);
             }
 
             if (shouldRender) {

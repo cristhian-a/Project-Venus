@@ -140,7 +140,6 @@ public class Player extends AnimatedActor implements Combatant {
         dy = 0;
 
         Debugger.publish("PLAYER", new Debugger.DebugText("X: " + worldX + ", Y: " + worldY), 10, 90, DebugChannel.INFO);
-        Debugger.publish("HITBOX", new Debugger.DebugText("X: " + collisionBox.getBounds().x + ", Y: " + collisionBox.getBounds().y + ", Width: " + collisionBox.getBounds().width + ", Height: " + collisionBox.getBounds().height), 10, 120, DebugChannel.INFO);
     }
 
     @Override

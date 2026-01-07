@@ -10,14 +10,16 @@ public final class DebugTimers {
     public static final String RENDER_TILES = "render.tiles";
     public static final String UPDATE = "director.update";
     public static final String RENDERER = "render.total";
+    public static final String PHYSICS = "physics.total";
 
     private static final Map<String, DebugTimer> TIMERS = new HashMap<>();
 
     static {
-        TIMERS.put(RENDERER, new DebugTimer(120));
         TIMERS.put(RENDER_LIGHTS, new DebugTimer(120));
         TIMERS.put(RENDER_TILES, new DebugTimer(120));
+        TIMERS.put(RENDERER, new DebugTimer(120));
         TIMERS.put(UPDATE, new DebugTimer(120));
+        TIMERS.put(PHYSICS, new DebugTimer(120));
     }
 
     public static DebugTimerScope scope(String id) {
