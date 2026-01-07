@@ -13,7 +13,7 @@ public final class PhysicsTool implements DevTool {
 
     @Override
     public DebugChannel channel() {
-        return null;
+        return DebugChannel.PHYSICS;
     }
 
     @Override
