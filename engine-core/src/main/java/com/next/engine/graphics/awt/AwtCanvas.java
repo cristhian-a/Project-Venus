@@ -42,13 +42,15 @@ public class AwtCanvas extends Canvas implements GamePanel, ComponentListener {
 
     @Override
     public void openWindow() {
-        window.setLocationRelativeTo(null);
-        window.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            window.setLocationRelativeTo(null);
+            window.setVisible(true);
 
-        setFocusable(true);
-        requestFocusInWindow();
-        addKeyListener(input);
-        setFocusTraversalKeysEnabled(false);
+            setFocusable(true);
+            requestFocusInWindow();
+            addKeyListener(input);
+            setFocusTraversalKeysEnabled(false);
+        });
     }
 
     @Override
