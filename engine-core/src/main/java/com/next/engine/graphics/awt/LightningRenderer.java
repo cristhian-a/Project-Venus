@@ -2,6 +2,8 @@ package com.next.engine.graphics.awt;
 
 import com.next.engine.Global;
 import com.next.engine.data.Registry;
+import com.next.engine.debug.DebugTimer;
+import com.next.engine.debug.DebugTimers;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
 import com.next.engine.system.Settings.VideoSettings;
@@ -11,6 +13,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 class LightningRenderer {
+
+    private static final DebugTimer debugtimer = DebugTimers.of(DebugTimers.RENDER_LIGHTS);
+    private static final float EPSILON = 0.0001f;
+
     private final VideoSettings settings;
     private final BufferedImage lightMap;
     private final Graphics2D lightGraphics;
@@ -21,7 +27,7 @@ class LightningRenderer {
     private final int COMPOSITE_BUCKETS = 16;
     private final int AMBIENT_BUCKETS = 16;
 
-    private float ambient = 0.4f;
+    private float ambient = 0.5f;
 
     private BufferedImage cachedColoredLight;
 
@@ -126,10 +132,13 @@ class LightningRenderer {
     }
 
     public void render(Graphics2D g, Camera camera, RenderQueue.LayerBucket bucket) {
-        punchLightMap(camera, bucket.lights);
+        try (var _ = DebugTimers.scope(DebugTimers.RENDER_LIGHTS)) {
+            punchLightMap(camera, bucket.lights);
+            g.setComposite(AlphaComposite.SrcOver);
 
-        g.setComposite(AlphaComposite.SrcOver);
-        g.drawImage(lightMap, 0, 0, null);
+            // A fix is needed to avoid the light map being pixels off in the bottom and right corners.
+            g.drawImage(lightMap, (int) (camera.getX()), (int) (camera.getY()), null);
+        }
     }
 
     private BufferedImage makeColoredLight(BufferedImage mask, Color color) {
@@ -176,7 +185,6 @@ class LightningRenderer {
         float t = alpha / 255f;
 
         // EPSILON provides better falloffs but a very edgy sharp
-        final float EPSILON = 0.0001f;
         if (t < EPSILON) return alpha;
         float out = threshold + (t - threshold) / ratio;
 

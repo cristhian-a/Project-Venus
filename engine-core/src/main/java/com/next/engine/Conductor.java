@@ -1,8 +1,7 @@
 package com.next.engine;
 
+import com.next.engine.debug.*;
 import com.next.engine.graphics.GamePanel;
-import com.next.engine.debug.DebugChannel;
-import com.next.engine.debug.Debugger;
 import com.next.engine.system.Input;
 import com.next.engine.system.InputBindings;
 
@@ -60,7 +59,7 @@ public class Conductor implements Runnable {
         // Debug info *(frame rate)*
         int frames = 0;
         double timer = System.currentTimeMillis();
-        int framesLastSecond = 0;
+        int updatesLastSecond = 0;
 
         boolean shouldRender = false;
 
@@ -77,14 +76,17 @@ public class Conductor implements Runnable {
                 input.poll();
                 inputBindings.process();
 
+                DevToolkit.update();
+                DevToolkit.emit(Debugger.INSTANCE);
                 Debugger.INSTANCE.update();
+
                 director.update(fixedDelta);
 
                 accumulator -= fixedDelta;
                 shouldRender = true;
 
                 frames++;   // Debug info *(frame rate)*
-                Debugger.publish("FPS", new Debugger.DebugInt(framesLastSecond), 10, 30, DebugChannel.INFO);
+                Tools.UPDATE_RATE_TOOL.setUps(updatesLastSecond);
             }
 
             if (shouldRender) {
@@ -94,7 +96,7 @@ public class Conductor implements Runnable {
 
             // Debug info *(frame rate)*
             if (System.currentTimeMillis() - timer >= 1000) {
-                framesLastSecond = frames;
+                updatesLastSecond = frames;
                 frames = 0;
                 timer = System.currentTimeMillis();
             }

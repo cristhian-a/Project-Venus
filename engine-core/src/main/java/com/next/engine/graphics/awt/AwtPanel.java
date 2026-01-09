@@ -9,6 +9,12 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyListener;
 
+/**
+ * @deprecated Use {@link AwtCanvas} instead <br/>
+ * This was the original implementation of {@link GamePanel}, an awt bridge to my renderer, but I switched to Canvas as
+ * soon as I realized Swing drags performance heavily. No hate on Swing, though, it just isn't fit for this project.
+ */
+@Deprecated
 public class AwtPanel extends JPanel implements ComponentListener, GamePanel {
     private final KeyListener input;
     private final Renderer renderer;
@@ -28,6 +34,7 @@ public class AwtPanel extends JPanel implements ComponentListener, GamePanel {
         setBackground(Color.BLACK);
         setDoubleBuffered(true);
         setFocusable(true);
+        setOpaque(true);
         requestFocus();
         setFocusTraversalKeysEnabled(false);
     }
@@ -50,7 +57,6 @@ public class AwtPanel extends JPanel implements ComponentListener, GamePanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
         renderer.render((Graphics2D) g);
     }
 

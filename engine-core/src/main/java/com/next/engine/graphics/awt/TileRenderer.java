@@ -1,6 +1,8 @@
 package com.next.engine.graphics.awt;
 
 import com.next.engine.data.Registry;
+import com.next.engine.debug.DebugTimer;
+import com.next.engine.debug.DebugTimers;
 import com.next.engine.model.Camera;
 import com.next.engine.scene.Tile;
 import com.next.engine.scene.World;
@@ -8,6 +10,8 @@ import com.next.engine.scene.World;
 import java.awt.*;
 
 final class TileRenderer {
+
+    private static final DebugTimer debugtimer = DebugTimers.of(DebugTimers.RENDER_TILES);
 
     private World world;
     private Tile[] tiles;
@@ -31,6 +35,8 @@ final class TileRenderer {
     }
 
     public void render(Graphics2D g, Camera camera) {
+        debugtimer.begin();
+
         if (!render) return;
 
         final int TILE_SIZE = world.getTileSize();
@@ -47,18 +53,17 @@ final class TileRenderer {
                 int tileIndex = tileMap[row][col];
                 Tile tile = tiles[tileIndex];
 
-                int worldX = col * TILE_SIZE;
-                int worldY = row * TILE_SIZE;
-                int screenX = camera.worldToScreenX(worldX);
-                int screenY = camera.worldToScreenY(worldY);
+                int x = col * TILE_SIZE;
+                int y = row * TILE_SIZE;
 
-                g.drawImage(
-                        Registry.sprites.get(tile.spriteId()).texture(),
-                        screenX,
-                        screenY,
+                g.drawImage(Registry.sprites.get(
+                        tile.spriteId()).texture(),
+                        x, y,
                         null
                 );
             }
         }
+
+        debugtimer.end();
     }
 }

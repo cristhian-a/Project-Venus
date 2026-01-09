@@ -34,10 +34,10 @@ public class Camera {
     }
 
     public int worldToScreenX(float worldX) {
-        return Math.round(worldX - x);
+        return (int) (worldX - x);
     }
 
     public int worldToScreenY(float worldY) {
-        return Math.round(worldY - y);
+        return (int) (worldY - y);
     }
 }

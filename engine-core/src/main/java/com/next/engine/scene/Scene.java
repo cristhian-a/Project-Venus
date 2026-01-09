@@ -4,7 +4,6 @@ import com.next.engine.data.Mailbox;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.*;
 import com.next.engine.physics.Body;
-import com.next.engine.debug.Debugger;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -19,7 +18,7 @@ public class Scene {
     public Camera camera;
 
     @Getter private Entity[] entities;  // everyone
-    private int entityCount;
+    @Getter private int entityCount;
 
     @Getter private Actor[] actors; // every subject of update + rendering
     private int actorCount;
@@ -98,13 +97,6 @@ public class Scene {
 
             sensors[sensorCount++] = sensor;
         }
-    }
-
-    public Body findBodyById(int id) {
-        for (Body b : bodies) {
-            if (b.getId() == id) return b;
-        }
-        return null;
     }
 
     public Entity getEntity(int id) {
@@ -190,14 +182,7 @@ public class Scene {
 
     public void forEachBody(Consumer<Body> consumer) {
         for (int i = 0; i < bodyCount; i++) {
-            Debugger.publish("HITBOX" + bodies[i].getId(), bodies[i].getCollisionBox());
             consumer.accept(bodies[i]);
-        }
-    }
-
-    public void forEachSensor(Consumer<Sensor> consumer) {
-        for (int i = 0; i < sensorCount; i++) {
-            consumer.accept(sensors[i]);
         }
     }
 

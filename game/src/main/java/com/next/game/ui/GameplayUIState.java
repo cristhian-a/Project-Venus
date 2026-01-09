@@ -123,17 +123,17 @@ public class GameplayUIState implements UIState {
         int xOffset = 16;
 
         for (int i = 0; i < fullHearts; i++) {
-            renderQueue.submit(Layer.UI_WORLD, 5 + c * xOffset, 5, fullHeart);
+            renderQueue.submit(Layer.UI_WORLD, 16 + c * xOffset, 16, fullHeart);
             c++;
         }
 
         for (int i = 0; i < halfHearts; i++) {
-            renderQueue.submit(Layer.UI_WORLD, 5 + c * xOffset, 5, halfHeart);
+            renderQueue.submit(Layer.UI_WORLD, 16 + c * xOffset, 16, halfHeart);
             c++;
         }
 
         for (int i = 0; i < emptyHearts; i++) {
-            renderQueue.submit(Layer.UI_WORLD, 5 + c * xOffset, 5, emptyHeart);
+            renderQueue.submit(Layer.UI_WORLD, 16 + c * xOffset, 16, emptyHeart);
             c++;
         }
     }

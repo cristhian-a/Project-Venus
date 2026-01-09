@@ -3,13 +3,9 @@ package com.next.engine.debug;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderPosition;
 import com.next.engine.graphics.RenderQueue;
-import com.next.engine.physics.CollisionBox;
+import com.next.engine.physics.AABB;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
 /**
  * The Debugger class provides functionality for managing and rendering debugging information,
@@ -17,20 +13,26 @@ import java.util.concurrent.ConcurrentHashMap;
  * It maintains a set of enabled debug channels and provides methods to publish debug instructions
  * to be rendered on screen. Debugger uses a singleton pattern through the public static {@code INSTANCE}.
  */
-public class Debugger {
+public class Debugger implements DebugSink {
 
     private static final String FONT = "debug";
 
     public static final Debugger INSTANCE = new Debugger();
 
-    private final Set<DebugChannel> enabledChannels;
-    private final Map<String, DebugRenderInstruction> context;
     private volatile Map<String, DebugRenderInstruction> renderQueue;
+    private final Set<DebugChannel> enabledChannels;
+
+    private Map<String, DebugRenderInstruction> writeBuffer;
+    private Map<String, DebugRenderInstruction> readBuffer;
+    private final Map<String, DebugRenderInstruction> snapshot;
 
     private Debugger() {
-        enabledChannels = Collections.newSetFromMap(new ConcurrentHashMap<>());
-        context = new LinkedHashMap<>();
+        enabledChannels = new HashSet<>();
         renderQueue = Map.of();
+
+        writeBuffer = new LinkedHashMap<>();
+        readBuffer = new LinkedHashMap<>();
+        snapshot = new LinkedHashMap<>();
     }
 
     public void toggleChannel(DebugChannel channel) {
@@ -43,22 +45,26 @@ public class Debugger {
     }
 
     public void update() {
-        ProfilerAssistant.collectMemoryInfo();  // TODO move this to another place please
+        // swap to deal with concurrency
+        var temp = readBuffer;
+        readBuffer = writeBuffer;
+        writeBuffer = temp;
+        writeBuffer.clear();
 
-        Map<String, DebugRenderInstruction> snapshot = new LinkedHashMap<>();  // snapshotting to deal with concurrency
+        snapshot.clear();  // snapshotting to deal with concurrency
 
-        for (var entry : context.entrySet()) {
+        for (var entry : readBuffer.entrySet()) {
             if (enabledChannels.contains(entry.getValue().channel)) {
                 snapshot.put(entry.getKey(), entry.getValue());
             }
         }
 
-        context.clear();
         renderQueue = Map.copyOf(snapshot);
     }
 
     public void enqueueRequests(RenderQueue rq) {
-        var bucket = rq.getBucket(Layer.DEBUG); // or DEBUG layer
+        var screenBucket = rq.getBucket(Layer.DEBUG_SCREEN);
+        var worldBucket = rq.getBucket(Layer.DEBUG_WORLD);
 
         for (var instr : renderQueue.values()) {
 
@@ -69,7 +75,7 @@ public class Debugger {
             // Text debug
             String text = value.displayInfo();
             if (text != null) {
-                bucket.texts.add(
+                screenBucket.texts.add(
                         text,
                         FONT,
                         0xFF00FF00,
@@ -80,15 +86,14 @@ public class Debugger {
             }
 
             // Collision / geometry debug
-            CollisionBox box = value.displayBox();
+            AABB box = value.displayBox();
             if (box != null) {
-                drawCollision(bucket, box);
+                drawCollision(worldBucket, box);
             }
         }
     }
 
-    private void drawCollision(RenderQueue.LayerBucket bucket, CollisionBox box) {
-        var aabb = box.getBounds();
+    private void drawCollision(RenderQueue.LayerBucket bucket, AABB aabb) {
         bucket.rectangles.add(
                 aabb.x,
                 aabb.y,
@@ -98,20 +103,49 @@ public class Debugger {
         );
     }
 
-    public static void publish(String key, DebugValue value, int x, int y, DebugChannel channel) {
-        INSTANCE.context.put(key, new DebugRenderInstruction(x, y, value, channel));
+    @Override
+    public void box(String id, AABB bounds, DebugChannel channel) {
+        writeBuffer.put(id, new DebugRenderInstruction(0, 0, new DebugCollision(bounds), channel));
     }
 
-    public static void publish(String key, CollisionBox box) {
-        publish(key, new DebugCollision(box), 0, 0, DebugChannel.COLLISION);
+    @Override
+    public void text(String id, String text, int x, int y, DebugChannel channel) {
+        writeBuffer.put(id, new DebugRenderInstruction(x, y, new DebugText(text), channel));
+    }
+
+    @Override
+    public void value(String id, long value, int x, int y, DebugChannel channel) {
+        writeBuffer.put(id, new DebugRenderInstruction(x, y, new DebugLong(value), channel));
+    }
+
+    @Override
+    public void value(String id, double value, int x, int y, DebugChannel channel) {
+        writeBuffer.put(id, new DebugRenderInstruction(x, y, new DebugDouble(value), channel));
+    }
+
+    /**
+     * Publishes a debug render instruction to the internal write buffer, associating it with the
+     * specified key. This method is used to queue a combination of positional and visual debug data
+     * to a specified debug channel.
+     *
+     * @param key      The unique identifier for the debug element. It serves as a key to track and
+     *                 manage debug information.
+     * @param value    The debug value to be associated with the key. It encapsulates the data or
+     *                 visual representation to be rendered.
+     * @param x        The x-coordinate of the debug element's position.
+     * @param y        The y-coordinate of the debug element's position.
+     * @param channel  The debug channel to which the render instruction is assigned. Used to categorize
+     *                 and manage debug elements.
+     */
+    public static void publish(String key, DebugValue value, int x, int y, DebugChannel channel) {
+        INSTANCE.writeBuffer.put(key, new DebugRenderInstruction(x, y, value, channel));
     }
 
     public sealed interface DebugValue {
         default String displayInfo() {
             return null;
         }
-
-        default CollisionBox displayBox() {
+        default AABB displayBox() {
             return null;
         }
     }
@@ -123,7 +157,7 @@ public class Debugger {
         }
     }
 
-    public record DebugFloat(float value) implements DebugValue {
+    public record DebugDouble(double value) implements DebugValue {
         @Override
         public String displayInfo() {
             return String.valueOf(value);
@@ -144,9 +178,9 @@ public class Debugger {
         }
     }
 
-    public record DebugCollision(CollisionBox box) implements DebugValue {
+    public record DebugCollision(AABB box) implements DebugValue {
         @Override
-        public CollisionBox displayBox() {
+        public AABB displayBox() {
             return box;
         }
     }
