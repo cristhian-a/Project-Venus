@@ -129,6 +129,8 @@ public class Game implements Director {
         ui.submit(mailbox.postRender());
 
         mailbox.publish();
+        Tools.SCENE_TOOL.gatherInfo(scene);     // TODO this whole debugging be rethink
+        Tools.PHYSICS_TOOL.gatherInfo(scene);
 
         updateTimer.end();
     }

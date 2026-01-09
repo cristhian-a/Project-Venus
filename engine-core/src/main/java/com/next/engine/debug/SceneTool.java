@@ -1,5 +1,7 @@
 package com.next.engine.debug;
 
+import com.next.engine.scene.Scene;
+
 public final class SceneTool implements DevTool {
 
     public static final String ENTITY_COUNT = "scene.entity.count";
@@ -8,23 +10,14 @@ public final class SceneTool implements DevTool {
     private static final String entityCountLabel = "ENTITIES: ";
     private static final String disposedCountLabel = "DIS. ACTORS: ";
 
-    private int disposedActors;
-
+    private int entities;
     private String entityCountMsg;
-    private String disposedCountMsg;
 
-    public void setEntityCount(int entityCount) {
-        entityCountMsg = entityCountLabel + entityCount;
-    }
-
-    public void setDisposedActors(int disposedActors) {
-        this.disposedActors = disposedActors;
-        disposedCountMsg = disposedCountLabel + disposedActors;
-    }
-
-    public void onDispose() {
-        disposedActors++;
-        disposedCountMsg = disposedCountLabel + disposedActors;
+    public void gatherInfo(Scene scene) {
+        if (scene.getEntityCount() != entities) {
+            entities = scene.getEntityCount();
+            entityCountMsg = entityCountLabel + entities;
+        }
     }
 
     @Override
@@ -34,7 +27,6 @@ public final class SceneTool implements DevTool {
     @Override
     public void emit(DebugSink sink) {
         sink.text(ENTITY_COUNT, entityCountMsg, 10, 400, channel());
-        sink.text(DISPOSED_ACTORS, disposedCountMsg, 10, 430, channel());
     }
 
     @Override

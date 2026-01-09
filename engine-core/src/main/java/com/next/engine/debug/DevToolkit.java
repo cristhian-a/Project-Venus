@@ -13,6 +13,10 @@ public final class DevToolkit {
         tools.add(tool);
     }
 
+    public static void unregister(DevTool tool) {
+        tools.remove(tool);
+    }
+
     public static void update() {
         for (int i = 0; i < tools.size(); i++) {
             DevTool tool = tools.get(i);

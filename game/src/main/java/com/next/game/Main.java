@@ -37,7 +37,7 @@ public class Main {
         inputBindings.bindActionToChannel(Inputs.DEBUG_COLLISIONS, DebugChannel.PHYSICS);
 
         // Debug tools registering (for now I'll do it here, but this should be moved elsewhere latter)
-        Tools.registerTools();  // This utility class, I gotta think twice about it
+        Tools.registerTools();  // This utility class, I have to think twice about it
 
         // Communication channels
         Mailbox mailbox = new Mailbox();

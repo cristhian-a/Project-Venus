@@ -3,7 +3,7 @@ package com.next.engine.debug;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderPosition;
 import com.next.engine.graphics.RenderQueue;
-import com.next.engine.physics.CollisionBox;
+import com.next.engine.physics.AABB;
 
 import java.util.*;
 
@@ -86,15 +86,14 @@ public class Debugger implements DebugSink {
             }
 
             // Collision / geometry debug
-            CollisionBox box = value.displayBox();
+            AABB box = value.displayBox();
             if (box != null) {
                 drawCollision(worldBucket, box);
             }
         }
     }
 
-    private void drawCollision(RenderQueue.LayerBucket bucket, CollisionBox box) {
-        var aabb = box.getBounds();
+    private void drawCollision(RenderQueue.LayerBucket bucket, AABB aabb) {
         bucket.rectangles.add(
                 aabb.x,
                 aabb.y,
@@ -102,6 +101,11 @@ public class Debugger implements DebugSink {
                 aabb.height,
                 0xFFFF0000  // green
         );
+    }
+
+    @Override
+    public void box(String id, AABB bounds, DebugChannel channel) {
+        writeBuffer.put(id, new DebugRenderInstruction(0, 0, new DebugCollision(bounds), channel));
     }
 
     @Override
@@ -119,20 +123,29 @@ public class Debugger implements DebugSink {
         writeBuffer.put(id, new DebugRenderInstruction(x, y, new DebugDouble(value), channel));
     }
 
+    /**
+     * Publishes a debug render instruction to the internal write buffer, associating it with the
+     * specified key. This method is used to queue a combination of positional and visual debug data
+     * to a specified debug channel.
+     *
+     * @param key      The unique identifier for the debug element. It serves as a key to track and
+     *                 manage debug information.
+     * @param value    The debug value to be associated with the key. It encapsulates the data or
+     *                 visual representation to be rendered.
+     * @param x        The x-coordinate of the debug element's position.
+     * @param y        The y-coordinate of the debug element's position.
+     * @param channel  The debug channel to which the render instruction is assigned. Used to categorize
+     *                 and manage debug elements.
+     */
     public static void publish(String key, DebugValue value, int x, int y, DebugChannel channel) {
         INSTANCE.writeBuffer.put(key, new DebugRenderInstruction(x, y, value, channel));
-    }
-
-    public static void publish(String key, CollisionBox box) {
-        publish(key, new DebugCollision(box), 0, 0, DebugChannel.PHYSICS);
     }
 
     public sealed interface DebugValue {
         default String displayInfo() {
             return null;
         }
-
-        default CollisionBox displayBox() {
+        default AABB displayBox() {
             return null;
         }
     }
@@ -165,9 +178,9 @@ public class Debugger implements DebugSink {
         }
     }
 
-    public record DebugCollision(CollisionBox box) implements DebugValue {
+    public record DebugCollision(AABB box) implements DebugValue {
         @Override
-        public CollisionBox displayBox() {
+        public AABB displayBox() {
             return box;
         }
     }
