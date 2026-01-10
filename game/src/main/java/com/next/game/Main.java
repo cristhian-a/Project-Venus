@@ -60,11 +60,11 @@ public class Main {
         centralDispatcher.register(GracefullyStopEvent.class, G::onFire);
         centralDispatcher.register(ExitEvent.class, E::onFire);
         centralDispatcher.register(WorldTransitionEvent.class, renderer::onWorldTransition);
-        centralDispatcher.register(PlaySound.class, sound::fire);
-        centralDispatcher.register(StopSound.class, sound::fire);
-        centralDispatcher.register(SetVolume.class, sound::fire);
-        centralDispatcher.register(PauseSound.class, sound::fire);
-        centralDispatcher.register(RestartSound.class, sound::fire);
+//        centralDispatcher.register(PlaySound.class, sound::fire);
+//        centralDispatcher.register(StopSound.class, sound::fire);
+//        centralDispatcher.register(SetVolume.class, sound::fire);
+//        centralDispatcher.register(PauseSound.class, sound::fire);
+//        centralDispatcher.register(RestartSound.class, sound::fire);
 
         loop.start();   // loop start should always happen last, to guarantee that listeners are properly set up
     }

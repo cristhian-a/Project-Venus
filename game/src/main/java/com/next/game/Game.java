@@ -146,19 +146,12 @@ public class Game implements Director {
         NpcDummy npc = new NpcFactory().createDummy();
         ObjectFireCamp fc = ObjectFactory.create();
 
-        Light light = LightFactory.create(376, 344);
-        Light lightB = LightFactory.create(376, 344);
-        Light lightC = LightFactory.create(376, 344);
-        Light light2 = LightFactory.create(300, 344);
-
         Scene s = new Scene(world);
         s.addAll(props);
         s.add(npc);
         s.add(fc);
-        s.add(light);
-//        s.add(lightB);
-//        s.add(lightC);
-//        s.add(light2);
+        s.add(LightFactory.create(376, 344));
+//        s.add(LightFactory.create(300, 344));
         s.add(MobFactory.create(342, 649));
         s.add(MobFactory.create(380, 610));
         s.add(MobFactory.create(420, 610));
