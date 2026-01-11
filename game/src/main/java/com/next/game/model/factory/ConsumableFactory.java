@@ -1,7 +1,7 @@
 package com.next.game.model.factory;
 
 import com.next.engine.data.Registry;
-import com.next.game.model.ConsumableAction;
+import com.next.game.rules.ConsumableAction;
 import com.next.game.model.ConsumableBasic;
 import com.next.game.model.Player;
 

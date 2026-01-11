@@ -1,5 +1,7 @@
 package com.next.game.model;
 
+import com.next.game.rules.ConsumableAction;
+
 public class ConsumableBasic implements Consumable {
 
     private final int iconId;
