@@ -1,20 +1,28 @@
 package com.next.game.ui;
 
+import com.next.engine.data.Registry;
+import com.next.engine.system.Input;
 import com.next.game.Game;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderPosition;
 import com.next.engine.graphics.RenderQueue;
-import com.next.game.model.Player;
+import com.next.game.model.*;
+import com.next.game.rules.data.Inventory;
 import com.next.game.util.Colors;
 import com.next.game.util.Fonts;
+import com.next.game.util.Inputs;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class StatsViewUIState implements UIState {
 
     // Box rectangles and stroke info
-    private static final int arc = 65;
+    private static final int arc = 25;
     private static final int thickness = 5;
     private static final int x = 50, y = 100;
-    private static final int w = 400, h = 400;
+    private static final int w = 400, h = 558;
     private static final int bx = x + (thickness >> 1), by = y + (thickness >> 1);
     private static final int bw = w - thickness + 1, bh = h - thickness + 1;
     private static final int bArc = Math.max(0, arc - thickness);
@@ -36,6 +44,7 @@ public class StatsViewUIState implements UIState {
     private static final int t8Y = ty + (incrY * 7);
     private static final int t9Y = ty + (incrY * 8);
 
+    private static final String EMPTY_TXT = "";
     private static final String STATS = "- YOUR STATS -";
     private static final String HP = "Health: ";
     private static final String GEAR = "Gear: ";
@@ -61,6 +70,26 @@ public class StatsViewUIState implements UIState {
     private final Game game;
     private final Player player;
 
+    // ** Inventory related stuff **
+    private final ViewInventory inventoryView;
+    private final ViewItemInfo itemInfoView;
+    private final List<Item> inventoryItems = new ArrayList<>();
+    private final Inventory inventory;
+
+    // Info panel stuff
+    private static final String OPT_EQUIP = "Equip";
+    private static final String OPT_USE =   "Use";
+    private static final String OPT_DROP =  "Drop";
+    private static final String OPT_BACK =  "Back";
+    private String[] options;
+    private int optCursor = 0;
+
+    // cursor
+    private int cursorColumn;
+    private int cursorRow;
+    private Item cursorItem;
+    private boolean itemSelected;
+
     public StatsViewUIState(Game game) {
         this.game = game;
         this.player = game.getPlayer();
@@ -77,10 +106,89 @@ public class StatsViewUIState implements UIState {
         xp = XP + attributes.xp;
         nextLevel = NEXT_LEVEL + attributes.lupXP;
         coins = COIN + attributes.coin;
+
+        itemInfoView = new ViewItemInfo();
+        inventoryView = new ViewInventory(this.player);
+        inventory = player.getInventory();
+        player.getInventory().forEach(x -> inventoryItems.add(x));
     }
 
     @Override
     public void update(double delta) {
+        Input input = game.getInput();
+
+        int cursorIndex = cursorRow * 4 + cursorColumn;
+        cursorItem = inventory.get(cursorIndex).orElse(null);
+
+        if (itemSelected) {
+            handleItemSelectedInput(input);
+        } else {
+            if (input.isTyped(Inputs.RIGHT)) {
+                cursorColumn++;
+                cursorColumn = cursorColumn % 4;
+            } else if (input.isTyped(Inputs.LEFT)) {
+                cursorColumn--;
+                if (cursorColumn < 0) cursorColumn = 3;
+                cursorColumn = cursorColumn % 4;
+            } else if (input.isTyped(Inputs.DOWN)) {
+                cursorRow++;
+                cursorRow = cursorRow % 4;
+            } else if (input.isTyped(Inputs.UP)) {
+                cursorRow--;
+                if (cursorRow < 0) cursorRow = 3;
+                cursorRow = cursorRow % 4;
+            } else if (input.isTyped(Inputs.TALK)) {
+                if (cursorItem != null) {
+                    itemSelected = true;
+                    optCursor = 0;
+
+                    if (cursorItem == player.getActiveGear().weapon || cursorItem == player.getActiveGear().shield) {
+                        options = new String[] { OPT_BACK };
+                    } else if (cursorItem instanceof Equip) {
+                        options = new String[]{OPT_EQUIP, OPT_DROP, OPT_BACK};
+                    } else if (cursorItem instanceof Consumable) {
+                        options = new String[] {OPT_USE, OPT_DROP, OPT_BACK};
+                    } else {
+                        options = new String[] { OPT_DROP, OPT_BACK };
+                    }
+                }
+            }
+        }
+    }
+
+    private void handleItemSelectedInput(Input input) {
+        if (input.isTyped(Inputs.TALK)) {
+            if (Objects.equals(options[optCursor], OPT_BACK)) {
+                this.itemSelected = false;
+            } else if (Objects.equals(options[optCursor], OPT_EQUIP)) {
+                if (cursorItem instanceof Weapon weapon) {
+                    player.getActiveGear().weapon = weapon;
+                } else if (cursorItem instanceof Armor armor) {
+                    player.getActiveGear().shield = armor;
+                }
+                this.itemSelected = false;
+            } else if (Objects.equals(options[optCursor], OPT_DROP)) {
+                player.getInventory().pop(cursorItem);
+                inventoryItems.remove(cursorItem);
+                this.itemSelected = false;
+                cursorItem = null;
+            } else if (Objects.equals(options[optCursor], OPT_USE)) {
+                if (cursorItem instanceof Consumable consumable) {
+                    consumable.use();
+                }
+                player.getInventory().pop(cursorItem);
+                inventoryItems.remove(cursorItem);
+                this.itemSelected = false;
+                cursorItem = null;
+            }
+        } else if (input.isTyped(Inputs.RIGHT)) {
+            optCursor++;
+            optCursor %= options.length;
+        } else if (input.isTyped(Inputs.LEFT)) {
+            optCursor--;
+            if (optCursor < 0) optCursor = options.length - 1;
+            optCursor = optCursor % options.length;
+        }
     }
 
     @Override
@@ -117,5 +225,45 @@ public class StatsViewUIState implements UIState {
         queue.submit(l, xp,         f, c, tx, t7Y, rp, fr);
         queue.submit(l, nextLevel,  f, c, tx, t8Y, rp, fr);
         queue.submit(l, coins,      f, c, tx, t9Y, rp, fr);
+
+        renderInventory(queue);
+    }
+
+    private void renderInventory(RenderQueue queue) {
+        inventoryView.render(queue);    // frame/view
+
+        final int startX = 152;
+        final int startY = 38;
+        final int incr = 16 + 6;
+        final int cursorWidth = 16 + 2;
+        final int cursorHeight = 16 + 2;
+
+        int cursorX = -1 + startX + (incr * cursorColumn);
+        int cursorY = -1 + startY + (incr * cursorRow) ;
+
+        queue.roundStrokeRect(Layer.UI_SCR_SCALED, cursorX, cursorY, cursorWidth, cursorHeight, 1, Colors.WHITE, 4);
+
+        int row = 0, col = 0;
+        for (int i = 0; i < inventoryItems.size(); i++) {
+            Item item = inventoryItems.get(i);
+
+            int x = startX + (incr * row);
+            int y = startY + (incr * col);
+
+            if (item == player.getActiveGear().weapon || item == player.getActiveGear().shield) {
+                queue.fillRoundRect(Layer.UI_SCR_SCALED, x - 1, y - 1, cursorWidth, cursorHeight, Colors.GOLDEN, 4);
+            }
+
+            x += Math.round(Registry.sprites.get(item.getIcon()).pivotX());
+            y += Math.round(Registry.sprites.get(item.getIcon()).pivotY());
+            queue.submit(Layer.UI_SCR_SCALED, x, y, item.getIcon());
+
+            row++;
+            row %= 4;
+            if (row == 0) col++;
+        }
+
+        itemInfoView.update(cursorItem, itemSelected, options, optCursor);
+        itemInfoView.render(queue);
     }
 }

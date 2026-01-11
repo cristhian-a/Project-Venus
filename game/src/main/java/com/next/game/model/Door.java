@@ -18,7 +18,8 @@ public class Door extends Prop {
     @Override
     public void onCollision(Body other, EventCollector collector) {
         if (other instanceof Player player) {
-            if (!player.getHeldKeys().isEmpty()) {
+            var key = player.getInventory().get(Key.class);
+            if (key.isPresent()) {
                 collector.post( () -> new DoorUnlockedEvent(this, player));
             } else {
                 collector.post(NoKeysEvent::new);

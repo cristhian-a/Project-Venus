@@ -379,9 +379,9 @@ public class Physics implements SpatialGridHandler {
     }
 
     private static final class CollisionTable {
-        long[] keys = new long[64];     // when a stack overflow happens, we should reconsider our strategy
-        Body[] bodiesA = new Body[64];  // to use hashes instead of linear scanning (when adding)
-        Body[] bodiesB = new Body[64];
+        long[] keys = new long[32];     // when a stack overflow happens, we should reconsider our strategy
+        Body[] bodiesA = new Body[32];  // to use hashes instead of linear scanning (when adding)
+        Body[] bodiesB = new Body[32];
         int size = 0;
 
         void clear() {

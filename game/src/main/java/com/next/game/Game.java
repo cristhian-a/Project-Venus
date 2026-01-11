@@ -68,7 +68,7 @@ public class Game implements Director {
 
         new PitFallEvent.Handler(dispatcher);
         new FallDamageEvent.Handler(dispatcher);
-        new DoorHandler(dispatcher, mailbox);
+        new ItemHandler(dispatcher, mailbox);
         new SpellHandler(dispatcher, mailbox);
         combatHandler = new CombatHandler(mailbox, dispatcher);
         gameFlowHandler = new GameFlowHandler(dispatcher, this);
@@ -162,6 +162,10 @@ public class Game implements Director {
         player = new PlayerFactory(world, level, hitboxFactory).create();
         player.setInput(input); // TODO meh
         s.add(player);
+
+        ConsumableFactory consumableFactory = new ConsumableFactory(player);
+        var apple = consumableFactory.createApple();
+        player.getInventory().add(apple);
 
         // TODO take care: the same rule, for now, share state within multiple sensors, that means a once-use is REALLY once,
         // TODO don't matter how many sensors receive that policy instance (TriggerRule)

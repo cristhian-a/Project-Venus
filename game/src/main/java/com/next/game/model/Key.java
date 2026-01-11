@@ -1,24 +1,17 @@
 package com.next.game.model;
 
-import com.next.engine.model.Prop;
-import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
-import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
-import com.next.game.event.KeyPickedUpEvent;
 
-public class Key extends Prop {
+public class Key extends WorldItem {
+
+    private static final String NAME = "Key";
+    private static final String DESCRIPTION = "Use it to open doors.";
 
     public Key(int spriteId, int worldX, int worldY, CollisionType collisionType) {
         CollisionBox box = new CollisionBox(worldX, worldY, -8, -8, 16, 16);
-        super(spriteId, worldX, worldY, collisionType, box);
-    }
-
-    @Override
-    public void onCollision(Body other, EventCollector collector) {
-        if (other instanceof Player player) {
-            collector.post(() -> new KeyPickedUpEvent(this, player));
-        }
+        super(spriteId, NAME, DESCRIPTION, worldX, worldY, null, collisionType, box);
+        this.inventoryVersion = this;
     }
 
 }

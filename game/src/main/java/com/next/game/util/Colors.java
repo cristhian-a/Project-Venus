@@ -11,6 +11,7 @@ public class Colors {
     public static final int PINK    = 0xffffc0cb;
     public static final int GRAY    = 0xff808080;
     public static final int MAGENTA = 0xffff00ff;
+    public static final int GOLDEN = 0xfff0be5a;
     public static final int CYAN    = 0xff00ffff;
     public static final int TRANSPARENT = 0;
     public static final int FADED_BLACK = 0xCf000000;

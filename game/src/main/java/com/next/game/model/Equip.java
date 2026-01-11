@@ -1,6 +1,4 @@
 package com.next.game.model;
 
-public interface Equip {
-    default int getMight() { return 0; }
-    default int getResistance() { return 0; }
+public interface Equip extends Item {
 }

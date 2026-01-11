@@ -1,18 +1,21 @@
 package com.next.engine.graphics;
 
 public enum Layer {
-    BACKGROUND(RenderSpace.WORLD),
-    WORLD(RenderSpace.WORLD),
-    ACTORS(RenderSpace.WORLD),
-    LIGHTS(RenderSpace.WORLD),
-    UI_WORLD(RenderSpace.UI_WORLD),
-    UI_SCREEN(RenderSpace.SCREEN),
-    DEBUG_WORLD(RenderSpace.WORLD),
-    DEBUG_SCREEN(RenderSpace.SCREEN);
+    BACKGROUND(     RenderSpace.WORLD,true),
+    WORLD(          RenderSpace.WORLD,true),
+    ACTORS(         RenderSpace.WORLD,true),
+    LIGHTS(         RenderSpace.WORLD,true),
+    UI_WORLD(       RenderSpace.SCREEN,true),
+    UI_SCREEN(      RenderSpace.SCREEN,false),
+    UI_SCR_SCALED(  RenderSpace.SCREEN,true),   // TODO this is the lazy solution,as I have to review this later anyway
+    DEBUG_WORLD(    RenderSpace.WORLD,true),
+    DEBUG_SCREEN(   RenderSpace.SCREEN,false);
 
     public final RenderSpace space;
+    public final boolean scaled;
 
-    Layer(RenderSpace space) {
+    Layer(RenderSpace space, boolean scaled) {
         this.space = space;
+        this.scaled = scaled;
     }
 }

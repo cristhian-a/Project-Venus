@@ -17,17 +17,16 @@ import com.next.game.model.factory.HitboxFactory;
 import com.next.game.rules.data.ActiveGear;
 import com.next.game.rules.data.Attributes;
 import com.next.engine.system.Input;
+import com.next.game.rules.data.Inventory;
 import com.next.game.util.Inputs;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class Player extends AnimatedActor implements Combatant {
 
-    @Getter private final List<Key> heldKeys = new ArrayList<>();
+    @Getter private final Inventory inventory = new Inventory();
     @Setter private Input input;
     private final HitboxFactory hitboxFactory;
 
@@ -70,8 +69,8 @@ public class Player extends AnimatedActor implements Combatant {
 
         // Gear and stuff
         this.activeGear = new ActiveGear();
-        activeGear.weapon = new EquipSword();
-        activeGear.shield = new EquipShieldWood();
+        activeGear.weapon = new WeaponSword();
+        activeGear.shield = new ArmorShieldWood();
 
         this.attributes = new Attributes();
         attributes.strength = 1;
@@ -79,6 +78,9 @@ public class Player extends AnimatedActor implements Combatant {
         attributes.coin = 0;
         attributes.level = 1;
         attributes.xp = 0;
+
+        inventory.add(activeGear.weapon);
+        inventory.add(activeGear.shield);
     }
 
     @Override
