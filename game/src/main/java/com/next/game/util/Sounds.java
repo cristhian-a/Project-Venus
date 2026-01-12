@@ -2,7 +2,9 @@ package com.next.game.util;
 
 import com.next.engine.sound.SoundClip;
 
-public class Sounds {
+public final class Sounds {
+    private Sounds() {}
+
     public static final SoundClip FANFARE = new SoundClip("end");
     public static final SoundClip WIND = new SoundClip("wind");
     public static final SoundClip PICK_UP = new SoundClip("pick_up");

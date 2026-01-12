@@ -1,5 +1,8 @@
 package com.next.engine.model;
 
+import lombok.Builder;
+
+@Builder
 public record HitboxSpec(
         float offsetX, float offsetY, float width, float height,
         double durationSeconds,

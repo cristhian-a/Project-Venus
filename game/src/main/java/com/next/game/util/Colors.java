@@ -1,6 +1,8 @@
 package com.next.game.util;
 
-public class Colors {
+public final class Colors {
+    private Colors() {}
+
     public static final int WHITE   = 0xffffffff;
     public static final int BLACK   = 0xff000000;
     public static final int RED     = 0xffff0000;

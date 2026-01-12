@@ -32,6 +32,12 @@ public class Scene {
     @Getter private Sensor[] sensors;
     @Getter private int sensorCount;
 
+    private Updatable[] updatables;
+    private int updatableCount;
+
+    private Renderable[] renderables;
+    private int renderableCount;
+
     private Entity[] entitiesById;
     private int nextId = 0;
 
@@ -43,6 +49,8 @@ public class Scene {
         this.bodies = new Body[16];
         this.lights = new Light[16];
         this.sensors = new Sensor[16];
+        this.updatables = new Updatable[16];
+        this.renderables = new Renderable[16];
 
         this.entitiesById = new Entity[16];
     }
@@ -97,6 +105,22 @@ public class Scene {
 
             sensors[sensorCount++] = sensor;
         }
+
+        if (entity instanceof Updatable updatable) {
+            if (updatableCount >= updatables.length) {
+                updatables = Arrays.copyOf(updatables, updatables.length * 2);
+            }
+
+            updatables[updatableCount++] = updatable;
+        }
+
+        if (entity instanceof Renderable renderable) {
+            if (renderableCount >= renderables.length) {
+                renderables = Arrays.copyOf(renderables, renderables.length * 2);
+            }
+
+            renderables[renderableCount++] = renderable;
+        }
     }
 
     public Entity getEntity(int id) {
@@ -110,6 +134,10 @@ public class Scene {
 
         for (int i = 0; i < sensorCount; i++) {
             sensors[i].update(delta);
+        }
+
+        for (int i = 0; i < updatableCount; i++) {
+            updatables[i].update(delta);
         }
     }
 
@@ -130,6 +158,10 @@ public class Scene {
                     lights[i].getIntensity(),
                     lights[i].getTextureId()
             );
+        }
+
+        for (int i = 0; i < renderableCount; i++) {
+            renderables[i].collectRender(queue);
         }
     }
 
@@ -176,6 +208,25 @@ public class Scene {
                 sensors[sensorCount - 1] = null;
                 sensorCount--;
                 i--;
+            }
+        }
+
+        for (int i = 0; i < updatableCount; i++) {
+            Entity e = (Entity) updatables[i];
+            if (e.isDisposed()) {
+                updatables[i] = updatables[updatableCount - 1];
+                updatables[updatableCount - 1] = null;
+                updatableCount--;
+                i--;
+            }
+        }
+
+        for (int i = 0; i < renderableCount; i++) {
+            Entity e = (Entity) renderables[i];
+            if (e.isDisposed()) {
+                renderables[i] = renderables[renderableCount - 1];
+                renderables[renderableCount - 1] = null;
+                renderableCount--;
             }
         }
     }

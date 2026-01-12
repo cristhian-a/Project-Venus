@@ -65,7 +65,7 @@ public class Mob extends AnimatedActor implements Combatant {
 
     @Override
     public void onCollision(Body other, EventCollector collector) {
-        if (other instanceof Player p) {
+        if (other instanceof Player p && !isDead()) {
             collector.post(() -> new FallDamageEvent(p, 1));
         }
     }

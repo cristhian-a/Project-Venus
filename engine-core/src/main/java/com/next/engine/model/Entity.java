@@ -12,9 +12,10 @@ public abstract class Entity {
     /**
      * Marks this entity for disposal but does not do it immediately.
      */
-    public void dispose() {
+    public final void dispose() {
         this.disposed = true;
     }
+    public final boolean isDisposed() { return disposed; }
 
     public abstract void onDispose();
 }

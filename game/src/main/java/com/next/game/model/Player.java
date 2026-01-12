@@ -4,10 +4,12 @@ import com.next.engine.Global;
 import com.next.engine.animation.Animation;
 import com.next.engine.animation.AnimationState;
 import com.next.engine.data.Mailbox;
+import com.next.engine.data.Registry;
 import com.next.engine.event.EventCollector;
 import com.next.engine.event.TriggerRules;
 import com.next.engine.model.AnimatedActor;
 import com.next.engine.model.HitboxSpec;
+import com.next.engine.model.ProjectileSpec;
 import com.next.engine.physics.*;
 import com.next.engine.scene.Direction;
 import com.next.engine.debug.DebugChannel;
@@ -104,6 +106,8 @@ public class Player extends AnimatedActor implements Combatant {
         if (input.isTyped(Inputs.TALK) && !talking && !attacking) {
             attacking = true;
             attackingFrames = 39;
+        } else if (input.isTyped(Inputs.FIRE) && !talking && !attacking) {
+            shot();
         } else if (!talking & !attacking) {
             if (input.isDown(Inputs.UP)) {
                 dy -= speed;
@@ -248,5 +252,42 @@ public class Player extends AnimatedActor implements Combatant {
         }
 
         throw new RuntimeException("Invalid direction");
+    }
+
+    private void shot() {
+        var hbBuilder = HitboxSpec.builder()
+                .width(8).height(8)
+                .durationSeconds(1d)
+                .damage(1).knockbackX(0).knockbackY(0)
+                .collisionLayer(collisionMask).oneHitPerTarget(true)
+                .followOwner(false)
+                .offsetX(-4).offsetY(-4);
+
+        float offsetX = 0f;
+        float offsetY = 0f;
+
+        var projBuilder = ProjectileSpec.builder()
+                .penetrable(false)
+                .vx(0f).vy(0f);
+
+        switch (direction) {
+            case UP -> {
+                projBuilder.vy(-180f);
+            }
+            case DOWN -> {
+                projBuilder.vy(180f);
+            }
+            case LEFT -> {
+                projBuilder.vx(-180f);
+            }
+            case RIGHT -> {
+                projBuilder.vx(180f);
+            }
+        }
+
+        projBuilder.hitboxSpec(hbBuilder.build());
+
+        var sprite = Registry.textureIds.get("spell-shot.png");
+        hitboxFactory.projectile(worldX + offsetX, worldY + offsetY, this, projBuilder.build(), sprite);
     }
 }

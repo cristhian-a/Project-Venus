@@ -21,7 +21,7 @@ import com.next.game.util.Inputs;
 
 public class Main {
 
-    static void main(String[] args) {
+    void main() {
         // IO operations
         Loader.Founts.register();
         Loader.Colours.register();

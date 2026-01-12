@@ -5,7 +5,7 @@ import com.next.game.rules.ConsumableAction;
 import com.next.game.model.ConsumableBasic;
 import com.next.game.model.Player;
 
-public class ConsumableFactory {
+public final class ConsumableFactory {
     private final Player player;
 
     public ConsumableFactory(Player player) {
@@ -15,8 +15,8 @@ public class ConsumableFactory {
     public ConsumableBasic createApple() {
         int texture = Registry.textureIds.get("apple.png");
         String name = "Apple";
-        String description = "Biting it will make you feel better.";
-        ConsumableAction action = (consumable) -> {
+        String description = "Biting it will make you feel a \nlittle better.";
+        ConsumableAction action = (x) -> {
             int hp = player.getHealth();
             hp += 2;
             hp = Math.clamp(hp, 0, player.getMaxHealth());
