@@ -11,9 +11,6 @@ public class Prop extends Actor {
         this.spriteId = spriteId;
         this.collisionType = collisionType;
 
-        this.layer = 1;
-        this.collisionMask = 0;
-
         this.collisionBox = collisionBox;
         setPosition(worldX, worldY);
     }
@@ -23,9 +20,6 @@ public class Prop extends Actor {
     ) {
         this.spriteId = spriteId;
         this.collisionType = collisionType;
-
-        this.layer = 1;
-        this.collisionMask = 0;
 
         collisionBox = new CollisionBox(offsetX, offSetY, width, height);
         setPosition(worldX, worldY);

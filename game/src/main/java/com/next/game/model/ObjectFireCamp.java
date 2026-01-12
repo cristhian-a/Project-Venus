@@ -8,6 +8,7 @@ import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
+import com.next.game.rules.Layers;
 
 import java.util.HashMap;
 
@@ -22,19 +23,13 @@ public class ObjectFireCamp extends AnimatedActor {
         this.animationState = AnimationState.IDLE;
         this.collisionType = CollisionType.SOLID;
         this.collisionBox = new CollisionBox(x, y, offsetX, offsetY, width, height);
-        this.layer = 1;
+        this.layer = Layers.WALL;
         this.collisionMask = 0;
     }
 
     @Override
     public void update(double delta, Mailbox mailbox) {
         animate();
-    }
-
-    @Override
-    public void animate() {
-        animator.set(animations.get(animationState));
-        spriteId = animator.update();
     }
 
     @Override

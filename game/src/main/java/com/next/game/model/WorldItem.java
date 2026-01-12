@@ -6,6 +6,7 @@ import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.physics.CollisionType;
 import com.next.game.event.ItemPickedUpEvent;
+import com.next.game.rules.Layers;
 import lombok.Getter;
 
 public class WorldItem extends Prop implements Item {
@@ -19,10 +20,12 @@ public class WorldItem extends Prop implements Item {
                      Item inventoryVersion,
                      CollisionType collisionType, CollisionBox collisionBox
     ) {
-        super(spriteId, worldX, worldY, collisionType, collisionBox);
         this.name = name;
         this.description = description;
         this.inventoryVersion = inventoryVersion;
+
+        super(spriteId, worldX, worldY, collisionType, collisionBox);
+        this.layer = Layers.ITEM;
     }
 
     @Override

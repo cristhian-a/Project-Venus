@@ -309,7 +309,8 @@ public class Physics implements SpatialGridHandler {
 
     @Override
     public void handleNeighbor(Body self, Body neighbor) {
-        if (neighbor.getCollisionBox().getBounds().intersects(processingSensorBox)) {
+        // neighbor.getCollisionBox().getBounds().intersects(processingSensorBox)
+        if (inspector.isColliding(self, neighbor)) {
             frameCollisions.add(self, neighbor);
         }
     }

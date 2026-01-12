@@ -10,6 +10,7 @@ import com.next.engine.physics.CollisionBox;
 import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
 import com.next.game.event.FallDamageEvent;
+import com.next.game.rules.Layers;
 import com.next.game.rules.data.Attributes;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,7 +36,8 @@ public class Mob extends AnimatedActor implements Combatant {
         this.animationState = AnimationState.IDLE;
         this.collisionType = CollisionType.SOLID;
         this.collisionBox = new CollisionBox(x, y, offsetX, offsetY, width, height);
-        this.layer = 1;
+        this.layer = Layers.ENEMY;
+        this.collisionMask = Layers.PLAYER | Layers.WALL;
 
         this.attributes = new Attributes();
         attributes.strength = 1;

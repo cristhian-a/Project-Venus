@@ -74,7 +74,7 @@ public class PropFactory {
         props.add(createDoor(10 * world.getTileSize() + pivot, 11 * world.getTileSize() + pivot));
         props.add(createKey(37 * world.getTileSize() + pivot, 9 * world.getTileSize() + pivot));
         props.add(createSpell(37 * world.getTileSize() + pivot, 42 * world.getTileSize() + pivot));
-        props.add(createStoneBlock(23 * world.getTileSize() + pivot, 23 * world.getTileSize() + pivot));
+//        props.add(createStoneBlock(23 * world.getTileSize() + pivot, 23 * world.getTileSize() + pivot));
 
         props.add(createBasicAxe(23 * world.getTileSize() + pivot, 7 * world.getTileSize() + pivot));
         props.add(createVenusShield(23 * world.getTileSize() + pivot, 40 * world.getTileSize() + pivot));

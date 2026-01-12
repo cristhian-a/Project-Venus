@@ -16,6 +16,7 @@ import com.next.engine.debug.DebugChannel;
 import com.next.engine.debug.Debugger;
 import com.next.game.event.AttackEvent;
 import com.next.game.model.factory.HitboxFactory;
+import com.next.game.rules.Layers;
 import com.next.game.rules.data.ActiveGear;
 import com.next.game.rules.data.Attributes;
 import com.next.engine.system.Input;
@@ -56,8 +57,8 @@ public class Player extends AnimatedActor implements Combatant {
         this.worldX = worldX;
         this.worldY = worldY;
 
-        layer = 1;
-        collisionMask = 1;
+        layer = Layers.PLAYER;
+        collisionMask = Layers.NPC | Layers.WALL | Layers.ITEM | Layers.ENEMY;
         this.mass = 1f;
 
         this.collisionBox = collisionBox;
@@ -221,7 +222,7 @@ public class Player extends AnimatedActor implements Combatant {
                 if (downSpec == null) {
                     downSpec = new HitboxSpec(-2, 7, 5, 14,
                             duration, 1, 0, knockback,
-                            collisionMask, true, true);
+                            Layers.ENEMY | Layers.WALL, true, true);
                 }
                 return downSpec;
             }
@@ -229,7 +230,7 @@ public class Player extends AnimatedActor implements Combatant {
                 if (upSpec == null) {
                     upSpec = new HitboxSpec(-2, -18, 5, 14,
                             duration, 1, 0, -knockback,
-                            collisionMask, true, true);
+                            Layers.ENEMY | Layers.WALL, true, true);
                 }
                 return upSpec;
             }
@@ -237,7 +238,7 @@ public class Player extends AnimatedActor implements Combatant {
                 if (leftSpec == null) {
                     leftSpec = new HitboxSpec(-20, 0, 14, 5,
                             duration, 1, -knockback, 0,
-                            collisionMask, true, true);
+                            Layers.ENEMY | Layers.WALL, true, true);
                 }
                 return leftSpec;
             }
@@ -245,7 +246,7 @@ public class Player extends AnimatedActor implements Combatant {
                 if (rightSpec == null) {
                     rightSpec = new HitboxSpec(6, 0, 14, 5,
                             duration, 1, knockback, 0,
-                            collisionMask, true, true);
+                            Layers.ENEMY | Layers.WALL, true, true);
                 }
                 return rightSpec;
             }
@@ -259,7 +260,7 @@ public class Player extends AnimatedActor implements Combatant {
                 .width(8).height(8)
                 .durationSeconds(1d)
                 .damage(1).knockbackX(0).knockbackY(0)
-                .collisionLayer(collisionMask).oneHitPerTarget(true)
+                .collisionLayer(Layers.ENEMY | Layers.WALL).oneHitPerTarget(true)
                 .followOwner(false)
                 .offsetX(-4).offsetY(-4);
 

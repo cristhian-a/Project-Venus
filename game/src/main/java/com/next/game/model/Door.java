@@ -7,12 +7,14 @@ import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
 import com.next.game.event.NoKeysEvent;
 import com.next.game.event.DoorUnlockedEvent;
+import com.next.game.rules.Layers;
 
 public class Door extends Prop {
 
     public Door(int spriteId, int worldX, int worldY, CollisionType collisionType) {
         CollisionBox box = new CollisionBox(worldX, worldY, -8, -8, 16, 16);
         super(spriteId, worldX, worldY, collisionType, box);
+        this.layer = Layers.WALL;
     }
 
     @Override

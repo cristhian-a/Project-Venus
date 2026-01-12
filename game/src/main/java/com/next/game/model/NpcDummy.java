@@ -7,6 +7,7 @@ import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
+import com.next.game.rules.Layers;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,8 +26,8 @@ public class NpcDummy extends Npc {
         this.animationState = AnimationState.IDLE;
         this.collisionBox = new CollisionBox(-5, -4, 10, 12);
 
-        this.layer = 1;
-        this.collisionMask = 1;
+        this.layer = Layers.NPC;
+        this.collisionMask = Layers.PLAYER | Layers.WALL;
 
         setPosition(worldX, worldY);
     }
