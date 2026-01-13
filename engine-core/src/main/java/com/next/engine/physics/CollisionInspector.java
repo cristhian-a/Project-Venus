@@ -20,8 +20,8 @@ class CollisionInspector {
         this.tileSize = scene.world.getTileSize();
     }
 
-    public boolean isCollidingWithTile(Body actor) {
-        AABB box = actor.getCollisionBox().getBounds();
+    public boolean isCollidingWithTile(Body agent) {
+        AABB box = agent.getCollisionBox().getBounds();
 
         // EPSILON is required to adjust right and bottom sides to not collide prematurely
         // in relation to the left and top sides.
@@ -36,7 +36,7 @@ class CollisionInspector {
 
         for (int row = top; row <= bottom; row++) {
             for (int col = left; col <= right; col++) {
-                if (scene.world.isSolid(row, col)) {
+                if (scene.world.makesContact(row, col, agent)) {
                     return true;
                 }
             }

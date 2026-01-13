@@ -4,8 +4,10 @@ import com.next.engine.data.Registry;
 import com.next.engine.dto.TextureMetadata;
 import com.next.engine.io.FileReader;
 import com.next.engine.io.JsonReader;
+import com.next.engine.scene.Tile;
 import com.next.engine.sound.SoundClip;
 import com.next.engine.sound.SoundData;
+import com.next.game.rules.Layers;
 import com.next.game.util.Colors;
 import com.next.game.util.Fonts;
 import com.next.game.util.Sounds;
@@ -85,6 +87,20 @@ public final class Loader {
         public static WorldRules load(String fileName) throws IOException {
             var file = FileReader.getFile("/configuration/" + fileName);
             return JsonReader.readObject(file, WorldRules.class);
+        }
+
+        public static Tile[] tiles() {
+            var tiles = new Tile[10];
+            tiles[0] = new Tile(Registry.textureIds.get("grass-1.png"), 0, 0);
+            tiles[1] = new Tile(Registry.textureIds.get("wall-1.png"), Layers.WALL, 0);
+            tiles[2] = new Tile(Registry.textureIds.get("water-1.png"), Layers.WALL, 0);
+            tiles[3] = new Tile(Registry.textureIds.get("dirt-1.png"), 0, 0);
+            tiles[4] = new Tile(Registry.textureIds.get("mid-trees.png"), Layers.WALL, 0);
+            tiles[5] = new Tile(Registry.textureIds.get("sand-1.png"), 0, 0);
+            tiles[6] = new Tile(Registry.textureIds.get("top-trees.png"), Layers.WALL, 0);
+            tiles[7] = new Tile(Registry.textureIds.get("bottom-trees.png"), Layers.WALL, 0);
+
+            return tiles;
         }
 
         public static Integer[][] map1() {

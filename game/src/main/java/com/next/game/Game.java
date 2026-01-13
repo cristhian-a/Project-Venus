@@ -140,7 +140,7 @@ public class Game implements Director {
         WorldRules rules = Loader.Worlds.load(worldFile);
         LevelData level = Loader.Levels.load(levelFile);
 
-        var world = new World(rules, Loader.Worlds.map1());
+        var world = new World(rules, Loader.Worlds.map1(), Loader.Worlds.tiles());
         // TODO I might want to change to make player goes inside Actor's array
         Entity[] props = new PropFactory(world, level).createScene1Props().toArray(new Entity[0]);
         NpcDummy npc = new NpcFactory().createDummy();
