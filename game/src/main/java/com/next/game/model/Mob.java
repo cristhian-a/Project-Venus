@@ -46,7 +46,7 @@ public class Mob extends AnimatedActor implements Combatant {
     }
 
     @Override
-    public void update(double delta, Mailbox mailbox) {
+    public void update(double delta) {
         if (deathTimer > 0d) {
             deathTimer -= delta;
             if (deathTimer <= 0d) {
@@ -61,7 +61,7 @@ public class Mob extends AnimatedActor implements Combatant {
             return;
         }
 
-        behave(mailbox);
+        behave();
         animate();
     }
 
@@ -106,7 +106,7 @@ public class Mob extends AnimatedActor implements Combatant {
         deathTimer = Global.fixedDelta * 45;
     }
 
-    private void behave(Mailbox mailbox) {
+    private void behave() {
         if (health <= 0) return;
 
         long n = System.nanoTime();
@@ -141,6 +141,6 @@ public class Mob extends AnimatedActor implements Combatant {
             dy += speed;
         }
 
-        mailbox.motionQueue.submit(this.id, dx, dy, 0f);
+        context.mailbox().motionQueue.submit(this.id, dx, dy, 0f);
     }
 }

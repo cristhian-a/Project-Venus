@@ -24,7 +24,7 @@ public final class RunningMode implements GameMode {
         Scene scene = game.getScene();
         Mailbox mailbox = game.getMailbox();
 
-        scene.update(delta, mailbox);
+        scene.update(delta);
         game.getCombatHandler().update(delta);
         game.getPhysics().apply(delta, mailbox.motionQueue, mailbox);
 

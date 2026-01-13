@@ -2,7 +2,6 @@ package com.next.game.model;
 
 import com.next.engine.animation.Animation;
 import com.next.engine.animation.AnimationState;
-import com.next.engine.data.Mailbox;
 import com.next.engine.model.AnimatedActor;
 import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
@@ -28,7 +27,7 @@ public class ObjectFireCamp extends AnimatedActor {
     }
 
     @Override
-    public void update(double delta, Mailbox mailbox) {
+    public void update(double delta) {
         animate();
     }
 

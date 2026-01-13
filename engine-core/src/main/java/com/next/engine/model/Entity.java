@@ -1,5 +1,6 @@
 package com.next.engine.model;
 
+import com.next.engine.scene.SceneContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ public abstract class Entity {
     @Setter protected int id;
     protected boolean disposed;
     protected float worldX, worldY;
+    @Setter protected SceneContext context;
 
     /**
      * Marks this entity for disposal but does not do it immediately.

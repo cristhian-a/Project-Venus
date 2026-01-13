@@ -146,7 +146,7 @@ public class Game implements Director {
         NpcDummy npc = new NpcFactory().createDummy();
         ObjectFireCamp fc = ObjectFactory.create();
 
-        Scene s = new Scene(world);
+        Scene s = new Scene(world, mailbox);
         s.addAll(props);
         s.add(npc);
         s.add(fc);

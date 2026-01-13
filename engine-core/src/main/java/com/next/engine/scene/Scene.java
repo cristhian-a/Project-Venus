@@ -13,7 +13,10 @@ import java.util.function.Consumer;
 /**
  * A {@code Scene} holds all the runtime entities relevant to the current scene.
  */
-public class Scene {
+public class Scene implements SceneContext {
+
+    private final Mailbox mailbox;
+
     public final World world;
     public Camera camera;
 
@@ -41,8 +44,9 @@ public class Scene {
     private Entity[] entitiesById;
     private int nextId = 0;
 
-    public Scene(World world) {
+    public Scene(World world, Mailbox mailbox) {
         this.world = world;
+        this.mailbox = mailbox;
 
         this.entities = new Entity[16];
         this.actors = new Actor[16];
@@ -63,6 +67,7 @@ public class Scene {
 
     public void add(Entity entity) {
         entity.setId(nextId++);
+        entity.setContext(this);
 
         if (entityCount >= entities.length) {
             entities = Arrays.copyOf(entities, entities.length * 2);
@@ -127,9 +132,9 @@ public class Scene {
         return entitiesById[id];
     }
 
-    public void update(double delta, Mailbox mailbox) {
+    public void update(double delta) {
         for (int i = 0; i < actorCount; i++) {
-            actors[i].update(delta, mailbox);
+            actors[i].update(delta);
         }
 
         for (int i = 0; i < sensorCount; i++) {
@@ -237,4 +242,8 @@ public class Scene {
         }
     }
 
+    @Override
+    public Mailbox mailbox() {
+        return this.mailbox;
+    }
 }

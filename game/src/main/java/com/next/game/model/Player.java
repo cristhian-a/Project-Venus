@@ -3,7 +3,6 @@ package com.next.game.model;
 import com.next.engine.Global;
 import com.next.engine.animation.Animation;
 import com.next.engine.animation.AnimationState;
-import com.next.engine.data.Mailbox;
 import com.next.engine.data.Registry;
 import com.next.engine.event.EventCollector;
 import com.next.engine.event.TriggerRules;
@@ -87,7 +86,7 @@ public class Player extends AnimatedActor implements Combatant {
     }
 
     @Override
-    public void update(double delta, Mailbox mailbox) {
+    public void update(double delta) {
 
         if (invincible) invincibilityFrames--;
         invincible = invincibilityFrames > 0;
@@ -130,7 +129,7 @@ public class Player extends AnimatedActor implements Combatant {
         }
 
         if (dx != 0 || dy != 0)
-            mailbox.motionQueue.submit(this.id, dx, dy, 0f);
+            context.mailbox().motionQueue.submit(this.id, dx, dy, 0f);
         else {
             if (!attacking) {
                 switch (direction) {

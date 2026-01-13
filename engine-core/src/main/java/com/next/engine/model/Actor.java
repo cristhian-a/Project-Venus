@@ -40,7 +40,7 @@ public abstract class Actor extends Entity implements Body {
         return isImmovable() ? 0f : 1f / mass;
     }
 
-    public void update(double delta, Mailbox mailbox) {
+    public void update(double delta) {
     }
 
     public void submitRender(@NonNull RenderQueue queue) {

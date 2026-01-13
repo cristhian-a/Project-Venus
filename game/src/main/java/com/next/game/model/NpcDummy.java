@@ -2,7 +2,6 @@ package com.next.game.model;
 
 import com.next.engine.animation.Animation;
 import com.next.engine.animation.AnimationState;
-import com.next.engine.data.Mailbox;
 import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.event.EventCollector;
@@ -38,8 +37,8 @@ public class NpcDummy extends Npc {
     }
 
     @Override
-    public void update(double delta, Mailbox mailbox) {
-        if (behave) behave(mailbox);
+    public void update(double delta) {
+        if (behave) behave();
 
         animate();
     }
@@ -48,7 +47,7 @@ public class NpcDummy extends Npc {
     public void onCollision(Body other, EventCollector collector) {
     }
 
-    private void behave(Mailbox mailbox) {
+    private void behave() {
         long n = System.nanoTime();
         long rng = n % 35;
 
@@ -87,7 +86,7 @@ public class NpcDummy extends Npc {
             animationState = AnimationState.WALK_DOWN;
         }
 
-        mailbox.motionQueue.submit(this.id, dx, dy, 0f);
+        context.mailbox().motionQueue.submit(this.id, dx, dy, 0f);
     }
 
 }
