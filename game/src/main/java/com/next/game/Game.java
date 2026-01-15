@@ -70,6 +70,7 @@ public class Game implements Director {
         new FallDamageEvent.Handler(dispatcher);
         new ItemHandler(dispatcher, mailbox);
         new SpellHandler(dispatcher, mailbox);
+        new MobHandler(this, mailbox, dispatcher);
         combatHandler = new CombatHandler(mailbox, dispatcher);
         gameFlowHandler = new GameFlowHandler(dispatcher, this);
 

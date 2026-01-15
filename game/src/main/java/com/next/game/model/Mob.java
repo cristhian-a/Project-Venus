@@ -10,6 +10,7 @@ import com.next.engine.physics.CollisionBox;
 import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
 import com.next.game.event.FallDamageEvent;
+import com.next.game.event.MobDeathEvent;
 import com.next.game.rules.Layers;
 import com.next.game.rules.data.Attributes;
 import lombok.Getter;
@@ -50,6 +51,7 @@ public class Mob extends AnimatedActor implements Combatant {
         if (deathTimer > 0d) {
             deathTimer -= delta;
             if (deathTimer <= 0d) {
+                context.mailbox().eventSuppliers.add(() -> new MobDeathEvent(this));
                 dispose();
                 return;
             }

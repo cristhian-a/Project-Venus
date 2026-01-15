@@ -4,35 +4,35 @@ import com.next.engine.event.EventCollector;
 import com.next.engine.event.TriggerRule;
 import com.next.engine.physics.*;
 
-public class Sensor extends Entity implements Body {
+public class Sensor extends Entity implements Body, Updatable {
 
     protected float worldX;
     protected float worldY;
 
-    protected int layer = 1;
-    protected int collisionMask = 2;
+    protected int layer;
+    protected int collisionMask;
     protected int lastQueryId = -1;
     protected CollisionBox collisionBox;
 
-    protected TriggerRule rule;
+    protected TriggerRule onCollision;
     protected TriggerRule enterRule;
     protected TriggerRule exitRule;
 
     public Sensor() {
     }
 
-    public Sensor(float worldX, float worldY, float width, float height, TriggerRule rule) {
+    public Sensor(float worldX, float worldY, float width, float height, TriggerRule onCollision) {
         this.worldX = worldX;
         this.worldY = worldY;
-        this.rule = rule;
+        this.onCollision = onCollision;
 
         collisionBox = new CollisionBox(worldX, worldY, 0, 0, width, height);
     }
 
     @Override
     public void onCollision(Body other, EventCollector collector) {
-        if (rule != null && rule.shouldFire(this, other))
-            collector.post(() -> rule.getEvent(this, other));
+        if (onCollision != null && onCollision.shouldFire(this, other))
+            collector.post(() -> onCollision.getEvent(this, other));
     }
 
     @Override
@@ -49,6 +49,7 @@ public class Sensor extends Entity implements Body {
         }
     }
 
+    @Override
     public void update(double delta) {
     }
 

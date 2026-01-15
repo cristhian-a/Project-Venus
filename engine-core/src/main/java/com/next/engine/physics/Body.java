@@ -18,7 +18,7 @@ public interface Body {
     CollisionType getCollisionType();
 
     void setPosition(float x, float y);
-    void onCollision(Body other, EventCollector collector);
+    default void onCollision(Body other, EventCollector collector) {}
     default void onEnter(Body other, EventCollector collector) {}
     default void onExit(Body other, EventCollector collector) {}
 

@@ -36,7 +36,7 @@ public class Player extends AnimatedActor implements Combatant {
 
     private float speed = 1;
     @Getter @Setter private int maxHealth = 6;
-    @Getter @Setter private int health = maxHealth;
+    @Getter private int health = maxHealth;
     private Direction direction = Direction.DOWN;
 
     private float dx;
@@ -180,6 +180,12 @@ public class Player extends AnimatedActor implements Combatant {
 
     public void boostSpeed(float boost) {
         speed += boost;
+    }
+
+    @Override
+    public void setHealth(int health) {
+        health = Math.clamp(health, 0, maxHealth);
+        this.health = health;
     }
 
     @Override

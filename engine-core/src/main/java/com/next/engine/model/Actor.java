@@ -1,15 +1,13 @@
 package com.next.engine.model;
 
-import com.next.engine.data.Mailbox;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.physics.*;
 import com.next.engine.graphics.Layer;
 import lombok.Getter;
 import lombok.Setter;
-import org.jspecify.annotations.NonNull;
 
 @Getter
-public abstract class Actor extends Entity implements Body {
+public abstract class Actor extends Entity implements Body, Updatable, Renderable {
     protected int spriteId;
 
     protected int layer;
@@ -40,10 +38,12 @@ public abstract class Actor extends Entity implements Body {
         return isImmovable() ? 0f : 1f / mass;
     }
 
+    @Override
     public void update(double delta) {
     }
 
-    public void submitRender(@NonNull RenderQueue queue) {
+    @Override
+    public void collectRender(RenderQueue queue) {
         queue.submit(Layer.ACTORS, (int) worldX, (int) worldY, spriteId);
     }
 

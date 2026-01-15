@@ -13,19 +13,19 @@ public class SingleUseSensor extends Sensor {
 
     protected boolean active = true;
 
-    public SingleUseSensor(float worldX, float worldY, float width, float height, TriggerRule rule) {
-        super(worldX, worldY, width, height, rule);
+    public SingleUseSensor(float worldX, float worldY, float width, float height, TriggerRule onCollision) {
+        super(worldX, worldY, width, height, onCollision);
     }
 
     @Override
     public void onCollision(Body other, EventCollector collector) {
-        if (!active || !rule.shouldFire(this, other))
+        if (!active || !onCollision.shouldFire(this, other))
             return;
 
         collector.post(() -> {
             this.dispose();
             active = false;
-            return rule.getEvent(this, other);
+            return onCollision.getEvent(this, other);
         });
     }
 }
