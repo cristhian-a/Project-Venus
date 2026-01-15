@@ -207,57 +207,12 @@ public class Player extends AnimatedActor implements Combatant {
         }
 
         if (attackingFrames == 30) {
-            var spec = getWeaponSpecs();
+            var spec = activeGear.weapon.getSpec(direction);
             var rule = TriggerRules
                     .when((s, other) -> other instanceof Combatant)
                     .then((s, other) -> new AttackEvent(this, (Combatant) other, spec));
             hitboxFactory.spawnHitbox(this, spec, rule);
         }
-    }
-
-    // weapon specs
-    private HitboxSpec downSpec, upSpec, leftSpec, rightSpec;
-
-    public HitboxSpec getWeaponSpecs() {
-        double duration = Global.fixedDelta * 30d;
-        float knockback = 0.5f * speed;
-
-        switch (direction) {
-            case DOWN -> {
-                if (downSpec == null) {
-                    downSpec = new HitboxSpec(-2, 7, 5, 14,
-                            duration, 1, 0, knockback,
-                            Layers.ENEMY | Layers.WALL, true, true);
-                }
-                return downSpec;
-            }
-            case UP -> {
-                if (upSpec == null) {
-                    upSpec = new HitboxSpec(-2, -18, 5, 14,
-                            duration, 1, 0, -knockback,
-                            Layers.ENEMY | Layers.WALL, true, true);
-                }
-                return upSpec;
-            }
-            case LEFT -> {
-                if (leftSpec == null) {
-                    leftSpec = new HitboxSpec(-20, 0, 14, 5,
-                            duration, 1, -knockback, 0,
-                            Layers.ENEMY | Layers.WALL, true, true);
-                }
-                return leftSpec;
-            }
-            case RIGHT -> {
-                if (rightSpec == null) {
-                    rightSpec = new HitboxSpec(6, 0, 14, 5,
-                            duration, 1, knockback, 0,
-                            Layers.ENEMY | Layers.WALL, true, true);
-                }
-                return rightSpec;
-            }
-        }
-
-        throw new RuntimeException("Invalid direction");
     }
 
     private void shot() {

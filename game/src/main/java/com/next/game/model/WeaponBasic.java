@@ -1,5 +1,8 @@
 package com.next.game.model;
 
+import com.next.engine.model.HitboxSpec;
+import com.next.engine.scene.Direction;
+
 public class WeaponBasic implements Weapon {
 
     private final int might;
@@ -17,6 +20,11 @@ public class WeaponBasic implements Weapon {
     @Override
     public int getMight() {
         return might;
+    }
+
+    @Override
+    public HitboxSpec getSpec(Direction direction) {
+        return null;
     }
 
     @Override
