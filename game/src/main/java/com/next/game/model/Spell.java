@@ -11,9 +11,9 @@ import com.next.game.rules.Layers;
 public class Spell extends Prop {
 
     public Spell(int spriteId, int worldX, int worldY, CollisionType collisionType) {
-        CollisionBox box = new CollisionBox(worldX, worldY, -8, -8, 16, 16);
-        super(spriteId, worldX, worldY, collisionType, box);
-        this.layer = Layers.ITEM;
+        var layer = Layers.ITEM;
+        var box = new CollisionBox(worldX, worldY, -8, -8, 16, 16);
+        super(spriteId, worldX, worldY, layer, collisionType, box);
     }
 
     @Override

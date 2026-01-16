@@ -23,9 +23,8 @@ public class WorldItem extends Prop implements Item {
         this.name = name;
         this.description = description;
         this.inventoryVersion = inventoryVersion;
-
-        super(spriteId, worldX, worldY, collisionType, collisionBox);
-        this.layer = Layers.ITEM;
+        var layer = Layers.ITEM;
+        super(spriteId, worldX, worldY, layer, collisionType, collisionBox);
     }
 
     @Override

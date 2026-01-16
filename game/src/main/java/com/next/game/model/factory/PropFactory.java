@@ -55,10 +55,6 @@ public class PropFactory {
         return new WorldItem(texture, name, description, worldX, worldY, inventoryVersion, CollisionType.TRIGGER, box);
     }
 
-    public Prop createStoneBlock(int worldX, int worldY) {
-        return new Prop(Registry.textureIds.get("stone-block-1.png"), worldX, worldY, 1f, CollisionType.SOLID, -6, -6, 12, 12);
-    }
-
     public DisplayHeart createHeart(int worldX, int worldY) {
         int full = Registry.textureIds.get("heart-1.png");
         int half = Registry.textureIds.get("heart-2.png");
@@ -74,8 +70,6 @@ public class PropFactory {
         props.add(createDoor(10 * world.getTileSize() + pivot, 11 * world.getTileSize() + pivot));
         props.add(createKey(37 * world.getTileSize() + pivot, 9 * world.getTileSize() + pivot));
         props.add(createSpell(37 * world.getTileSize() + pivot, 42 * world.getTileSize() + pivot));
-//        props.add(createStoneBlock(23 * world.getTileSize() + pivot, 23 * world.getTileSize() + pivot));
-
         props.add(createBasicAxe(23 * world.getTileSize() + pivot, 7 * world.getTileSize() + pivot));
         props.add(createVenusShield(23 * world.getTileSize() + pivot, 40 * world.getTileSize() + pivot));
         return props;

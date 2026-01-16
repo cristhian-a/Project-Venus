@@ -12,9 +12,9 @@ import com.next.game.rules.Layers;
 public class Door extends Prop {
 
     public Door(int spriteId, int worldX, int worldY, CollisionType collisionType) {
-        CollisionBox box = new CollisionBox(worldX, worldY, -8, -8, 16, 16);
-        super(spriteId, worldX, worldY, collisionType, box);
-        this.layer = Layers.WALL;
+        var layer = Layers.WALL;
+        var box = new CollisionBox(worldX, worldY, -8, -8, 16, 16);
+        super(spriteId, worldX, worldY, layer, collisionType, box);
     }
 
     @Override

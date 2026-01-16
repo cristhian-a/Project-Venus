@@ -56,13 +56,6 @@ public abstract class Actor extends Entity implements Body, Updatable, Renderabl
         }
     }
 
-    /**
-     * Should be called when effectively discarded. By default, it does nothing. Override it whenever any behavior upon
-     * disposing is needed.
-     */
-    @Override
-    public void onDispose() {}
-
     @Override
     public float getX() {
         return worldX;
