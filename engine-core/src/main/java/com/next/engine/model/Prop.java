@@ -60,7 +60,8 @@ public abstract class Prop extends Entity implements Body, Renderable {
     public void setPosition(float x, float y) {
         worldX = x;
         worldY = y;
-        collisionBox.update(worldX, worldY);
+        if (collisionBox != null)
+            collisionBox.update(worldX, worldY);
     }
 
     @Override
