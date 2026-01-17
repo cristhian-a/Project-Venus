@@ -6,14 +6,17 @@ import com.next.engine.model.Prop;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.physics.CollisionType;
 import com.next.game.rules.Layers;
+import lombok.Getter;
 
 public class DestructibleTile extends Prop implements Damageable {
 
-    private int health;
+    @Getter private int health;
+    @Getter private final String type;
     private final int intactTileId;
     private final int brokenTileId;
 
     public DestructibleTile(
+            String type,
             int intactTileId, int brokenTileId, int health,
             float worldX, float worldY,
             CollisionBox collisionBox
@@ -22,6 +25,7 @@ public class DestructibleTile extends Prop implements Damageable {
         var collisionType = CollisionType.SOLID;
 
         super(intactTileId, worldX, worldY, layer, collisionType, collisionBox);
+        this.type = type;
         this.intactTileId = intactTileId;
         this.brokenTileId = brokenTileId;
         this.health = health;

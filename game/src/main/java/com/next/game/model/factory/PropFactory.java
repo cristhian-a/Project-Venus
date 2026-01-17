@@ -7,6 +7,7 @@ import com.next.engine.physics.CollisionType;
 import com.next.game.model.*;
 import com.next.engine.scene.LevelData;
 import com.next.engine.scene.World;
+import com.next.game.util.Tags;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,12 +70,13 @@ public class PropFactory {
         worldX += pivotX;
         worldY += pivotY;
 
+        String type = Tags.INTERACT_TREE;
         int intactTexture = Registry.textureIds.get("destructible-tree-1.png");
         int brokenTexture = Registry.textureIds.get("remaining-tree.png");
         var box = new CollisionBox(worldX, worldY, -pivotX, -23, 16, 22);
         int hp = 10;
 
-        return new DestructibleTile(intactTexture, brokenTexture, hp, worldX, worldY, box);
+        return new DestructibleTile(type, intactTexture, brokenTexture, hp, worldX, worldY, box);
     }
 
     public List<Prop> createScene1Props() {

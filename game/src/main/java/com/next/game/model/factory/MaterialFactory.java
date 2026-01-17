@@ -13,11 +13,21 @@ public class MaterialFactory {
         return new MaterialBasic(spriteId, name, description);
     }
 
-    public static MaterialBasic createCoin() {
-        final int sprite = Registry.textureIds.get("silver-coin.png");
-        final String name = "Silver Coin";
-        final String description = "A small piece of metal that \ncan be traded in a merchant";
+    public static MaterialBasic woodLogMaterial() {
+        final int sprite = Registry.textureIds.get("wood_log.png");
+        final String name = "Wood Log";
+        final String description = "A log made from wood";
         return create(sprite, name, description);
+    }
+
+    public static WorldItem woodLogWorldItem(float x, float y) {
+        final int sprite = Registry.textureIds.get("wood_log.png");
+        final String name = "Wood Log";
+        final String description = "A log made from wood";
+        CollisionType collisionType = CollisionType.SOLID;
+        CollisionBox box = new CollisionBox(x, y, -4, -4, 8, 12);
+
+        return new WorldItem(sprite, name, description, x, y, woodLogMaterial(), collisionType, box);
     }
 
     public static MaterialBasic purpleEssenceMaterial() {

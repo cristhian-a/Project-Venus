@@ -51,6 +51,7 @@ public class Game implements Director {
     private final GameFlowHandler gameFlowHandler;
     private final CombatHandler combatHandler;
     private PlayerHandler playerHandler;
+    private DropHandler dropHandler;
 
     // States (if needed)
     private GameMode mode;
@@ -117,6 +118,7 @@ public class Game implements Director {
         camera.follow(player);
         physics.ruleOver(scene);
         playerHandler = new PlayerHandler(dispatcher, gameplayUIState);
+        dropHandler = new DropHandler(mailbox, dispatcher, this);
         dispatcher.dispatch(new WorldTransitionEvent(scene.world));
     }
 
