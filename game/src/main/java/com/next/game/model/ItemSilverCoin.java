@@ -4,14 +4,14 @@ import com.next.engine.data.Registry;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.physics.CollisionType;
 
-public class SilverCoin extends WorldItem {
+public class ItemSilverCoin extends WorldItem {
 
     private static final String NAME = "Silver Coin";
     private static final String DESCRIPTION = "A silver coin.";
 
     public int value = 10;
 
-    public SilverCoin(float worldX, float worldY) {
+    public ItemSilverCoin(float worldX, float worldY) {
         CollisionType colType = CollisionType.TRIGGER;
         final int sprite = Registry.textureIds.get("silver-coin.png");
         CollisionBox box = new CollisionBox(worldX, worldY, -4, -8, 8, 16);

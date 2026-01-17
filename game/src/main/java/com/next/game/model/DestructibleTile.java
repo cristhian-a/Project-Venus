@@ -2,13 +2,17 @@ package com.next.game.model;
 
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
+import com.next.engine.model.Entity;
+import com.next.engine.model.HitboxSpec;
 import com.next.engine.model.Prop;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.physics.CollisionType;
+import com.next.game.event.TileHitEvent;
+import com.next.game.event.handlers.InteractionContext;
 import com.next.game.rules.Layers;
 import lombok.Getter;
 
-public class DestructibleTile extends Prop implements Damageable {
+public class DestructibleTile extends Prop implements Damageable, Hittable {
 
     @Getter private int health;
     @Getter private final String type;
@@ -51,5 +55,12 @@ public class DestructibleTile extends Prop implements Damageable {
     @Override
     public void collectRender(RenderQueue queue) {
         queue.submit(Layer.WORLD, (int) worldX, (int) worldY, spriteId);
+    }
+
+    @Override
+    public void onHit(Entity striker, HitboxSpec spec, InteractionContext ctx) {
+        if (striker instanceof Combatant c) {
+            ctx.dispatch(new TileHitEvent(c, this, spec));
+        }
     }
 }

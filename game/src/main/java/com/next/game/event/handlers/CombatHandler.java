@@ -3,6 +3,8 @@ package com.next.game.event.handlers;
 import com.next.engine.Global;
 import com.next.engine.data.Mailbox;
 import com.next.engine.event.EventDispatcher;
+import com.next.engine.event.GameEvent;
+import com.next.engine.model.Entity;
 import com.next.game.event.*;
 import com.next.game.model.Combatant;
 import com.next.game.model.DestructibleTile;
@@ -12,7 +14,7 @@ import lombok.AllArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CombatHandler {
+public class CombatHandler implements InteractionContext {
 
     private final Mailbox mailbox;
     private final EventDispatcher dispatcher;
@@ -23,7 +25,7 @@ public class CombatHandler {
         this.mailbox = mailbox;
         this.dispatcher = dispatcher;
 
-        dispatcher.register(StrikeEvent.class, this::onStrike);
+        dispatcher.register(HitEvent.class, this::onStrike);
         dispatcher.register(AttackEvent.class, this::onAttack);
     }
 
@@ -39,12 +41,8 @@ public class CombatHandler {
         }
     }
 
-    public void onStrike(StrikeEvent event) {
-        if (event.target() instanceof Combatant c) {
-            dispatcher.dispatch(new AttackEvent(event.striker(), c, event.spec()));
-        } else if (event.target() instanceof DestructibleTile d) {
-            dispatcher.dispatch(new TreeHitEvent(event.striker(), d, event.spec()));
-        }
+    public void onStrike(HitEvent event) {
+        event.target().onHit(event.striker(), event.spec(), this);
     }
 
     public void onAttack(AttackEvent event) {
@@ -80,6 +78,11 @@ public class CombatHandler {
         att.lupXP += (att.level * 100);
 
         dispatcher.dispatch(new LevelUpEvent(player));
+    }
+
+    @Override
+    public void dispatch(GameEvent event) {
+        dispatcher.dispatch(event);
     }
 
     @AllArgsConstructor

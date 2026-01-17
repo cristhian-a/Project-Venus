@@ -10,7 +10,7 @@ import com.next.game.event.ItemPickedUpEvent;
 import com.next.game.event.NoKeysEvent;
 import com.next.engine.graphics.Layer;
 import com.next.game.model.Key;
-import com.next.game.model.SilverCoin;
+import com.next.game.model.ItemSilverCoin;
 import com.next.game.util.Colors;
 import com.next.game.util.Fonts;
 import com.next.game.util.Sounds;
@@ -59,7 +59,7 @@ public class ItemHandler {
         var player = event.player();
         var item = event.item();
 
-        if (item instanceof SilverCoin coin) {
+        if (item instanceof ItemSilverCoin coin) {
             player.getAttributes().coin += coin.value;
             coin.dispose();
             return;

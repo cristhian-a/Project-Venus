@@ -3,7 +3,7 @@ package com.next.game.event.handlers;
 import com.next.engine.data.Mailbox;
 import com.next.engine.event.EventDispatcher;
 import com.next.game.event.DropItemEvent;
-import com.next.game.event.TreeHitEvent;
+import com.next.game.event.TileHitEvent;
 import com.next.game.util.Tags;
 
 public class TileInteractionHandler {
@@ -14,10 +14,10 @@ public class TileInteractionHandler {
         this.mailbox = mailbox;
         this.dispatcher = dispatcher;
 
-        dispatcher.register(TreeHitEvent.class, this::onFire);
+        dispatcher.register(TileHitEvent.class, this::onFire);
     }
 
-    public void onFire(TreeHitEvent event) {
+    public void onFire(TileHitEvent event) {
         var tile = event.tile();
         var hbSpc = event.spec();
         tile.takeDamage(hbSpc.damage());

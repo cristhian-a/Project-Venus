@@ -1,6 +1,5 @@
 package com.next.game.model;
 
-import com.next.engine.Global;
 import com.next.engine.animation.Animation;
 import com.next.engine.animation.AnimationState;
 import com.next.engine.data.Registry;
@@ -13,8 +12,7 @@ import com.next.engine.physics.*;
 import com.next.engine.scene.Direction;
 import com.next.engine.debug.DebugChannel;
 import com.next.engine.debug.Debugger;
-import com.next.game.event.AttackEvent;
-import com.next.game.event.StrikeEvent;
+import com.next.game.event.HitEvent;
 import com.next.game.model.factory.HitboxFactory;
 import com.next.game.rules.Layers;
 import com.next.game.rules.data.ActiveGear;
@@ -93,7 +91,7 @@ public class Player extends AnimatedActor implements Combatant {
         invincible = invincibilityFrames > 0;
 
         attacking = attackingFrames > 0;
-        handleAttack();
+        handleAttackAnimation();
         if (attacking) {
             attackingFrames--;
             switch (direction) {
@@ -199,7 +197,7 @@ public class Player extends AnimatedActor implements Combatant {
         return attributes.resistance * activeGear.shield.getResistance();
     }
 
-    public void handleAttack() {
+    private void handleAttackAnimation() {
         if (attacking && attackingFrames > 29) {
             if (direction == Direction.UP) dy -= speed;
             if (direction == Direction.DOWN) dy += speed;
@@ -210,8 +208,8 @@ public class Player extends AnimatedActor implements Combatant {
         if (attackingFrames == 30) {
             var spec = activeGear.weapon.getSpec(direction);
             var rule = TriggerRules
-                    .when((s, other) -> other instanceof Damageable)
-                    .then((s, other) -> new StrikeEvent(this, (Damageable) other, spec));
+                    .when((s, other) -> other instanceof Hittable)
+                    .then((s, other) -> new HitEvent(this, (Hittable) other, spec));
             hitboxFactory.spawnHitbox(this, spec, rule);
         }
     }
@@ -233,18 +231,10 @@ public class Player extends AnimatedActor implements Combatant {
                 .vx(0f).vy(0f);
 
         switch (direction) {
-            case UP -> {
-                projBuilder.vy(-180f);
-            }
-            case DOWN -> {
-                projBuilder.vy(180f);
-            }
-            case LEFT -> {
-                projBuilder.vx(-180f);
-            }
-            case RIGHT -> {
-                projBuilder.vx(180f);
-            }
+            case UP -> projBuilder.vy(-180f);
+            case DOWN -> projBuilder.vy(180f);
+            case LEFT -> projBuilder.vx(-180f);
+            case RIGHT -> projBuilder.vx(180f);
         }
 
         projBuilder.hitboxSpec(hbBuilder.build());

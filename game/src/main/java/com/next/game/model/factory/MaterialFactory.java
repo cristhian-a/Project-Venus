@@ -4,7 +4,7 @@ import com.next.engine.data.Registry;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.physics.CollisionType;
 import com.next.game.model.MaterialBasic;
-import com.next.game.model.SilverCoin;
+import com.next.game.model.ItemSilverCoin;
 import com.next.game.model.WorldItem;
 
 public class MaterialFactory {
@@ -47,8 +47,8 @@ public class MaterialFactory {
         return new WorldItem(sprite, name, description, x, y, purpleEssenceMaterial(), collisionType, box);
     }
 
-    public static SilverCoin silverCoin(float x, float y) {
-        return new SilverCoin(x, y);
+    public static ItemSilverCoin silverCoin(float x, float y) {
+        return new ItemSilverCoin(x, y);
     }
 
 }
