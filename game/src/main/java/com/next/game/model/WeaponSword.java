@@ -27,15 +27,16 @@ public class WeaponSword implements Weapon {
 
     @Override
     public HitboxSpec getSpec(Direction direction) {
+        int layer = Layers.ENEMY;
         double duration = Global.fixedDelta * 30d;
-        float knockback = 50f * (float) Global.fixedDelta;
+        float knockback = 60f * (float) Global.fixedDelta;
 
         switch (direction) {
             case DOWN -> {
                 if (downSpec == null) {
                     downSpec = new HitboxSpec(-2, 7, 5, 14,
                             duration, 1, 0, knockback,
-                            Layers.ENEMY | Layers.WALL, true, true);
+                            layer, true, true);
                 }
                 return downSpec;
             }
@@ -43,7 +44,7 @@ public class WeaponSword implements Weapon {
                 if (upSpec == null) {
                     upSpec = new HitboxSpec(-2, -18, 5, 14,
                             duration, 1, 0, -knockback,
-                            Layers.ENEMY | Layers.WALL, true, true);
+                            layer, true, true);
                 }
                 return upSpec;
             }
@@ -51,7 +52,7 @@ public class WeaponSword implements Weapon {
                 if (leftSpec == null) {
                     leftSpec = new HitboxSpec(-20, 0, 14, 5,
                             duration, 1, -knockback, 0,
-                            Layers.ENEMY | Layers.WALL, true, true);
+                            layer, true, true);
                 }
                 return leftSpec;
             }
@@ -59,7 +60,7 @@ public class WeaponSword implements Weapon {
                 if (rightSpec == null) {
                     rightSpec = new HitboxSpec(6, 0, 14, 5,
                             duration, 1, knockback, 0,
-                            Layers.ENEMY | Layers.WALL, true, true);
+                            layer, true, true);
                 }
                 return rightSpec;
             }

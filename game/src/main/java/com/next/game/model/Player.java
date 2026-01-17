@@ -14,6 +14,7 @@ import com.next.engine.scene.Direction;
 import com.next.engine.debug.DebugChannel;
 import com.next.engine.debug.Debugger;
 import com.next.game.event.AttackEvent;
+import com.next.game.event.StrikeEvent;
 import com.next.game.model.factory.HitboxFactory;
 import com.next.game.rules.Layers;
 import com.next.game.rules.data.ActiveGear;
@@ -209,8 +210,8 @@ public class Player extends AnimatedActor implements Combatant {
         if (attackingFrames == 30) {
             var spec = activeGear.weapon.getSpec(direction);
             var rule = TriggerRules
-                    .when((s, other) -> other instanceof Combatant)
-                    .then((s, other) -> new AttackEvent(this, (Combatant) other, spec));
+                    .when((s, other) -> other instanceof Damageable)
+                    .then((s, other) -> new StrikeEvent(this, (Damageable) other, spec));
             hitboxFactory.spawnHitbox(this, spec, rule);
         }
     }

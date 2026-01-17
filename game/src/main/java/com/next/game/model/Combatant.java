@@ -2,7 +2,7 @@ package com.next.game.model;
 
 import com.next.game.rules.data.Attributes;
 
-public interface Combatant {
+public interface Combatant extends Damageable {
     int getId();
 
     Attributes getAttributes();
@@ -12,6 +12,5 @@ public interface Combatant {
     int getAttack();
     int getDefense();
 
-    void takeDamage(int damage);
     boolean isDead();
 }

@@ -66,11 +66,13 @@ public class Game implements Director {
         this.settings = settings;
         this.dispatcher = dispatcher;
 
+        // Event handlers initialization
         new PitFallEvent.Handler(dispatcher);
         new FallDamageEvent.Handler(dispatcher);
         new ItemHandler(dispatcher, mailbox);
         new SpellHandler(dispatcher, mailbox);
         new MobHandler(this, mailbox, dispatcher);
+        new TileInteractionHandler(mailbox, dispatcher);
         combatHandler = new CombatHandler(mailbox, dispatcher);
         gameFlowHandler = new GameFlowHandler(dispatcher, this);
 

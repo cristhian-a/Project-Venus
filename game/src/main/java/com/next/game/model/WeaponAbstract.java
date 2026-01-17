@@ -3,14 +3,14 @@ package com.next.game.model;
 import com.next.engine.model.HitboxSpec;
 import com.next.engine.scene.Direction;
 
-public class WeaponBasic implements Weapon {
+public abstract class WeaponAbstract implements Weapon {
 
-    private final int might;
-    private final int iconId;
-    private final String name;
-    private final String description;
+    protected final int might;
+    protected final int iconId;
+    protected final String name;
+    protected final String description;
 
-    public WeaponBasic(int might, int iconId, String name, String description) {
+    public WeaponAbstract(int might, int iconId, String name, String description) {
         this.might = might;
         this.iconId = iconId;
         this.name = name;
@@ -23,9 +23,7 @@ public class WeaponBasic implements Weapon {
     }
 
     @Override
-    public HitboxSpec getSpec(Direction direction) {
-        return null;
-    }
+    public abstract HitboxSpec getSpec(Direction direction);
 
     @Override
     public int getIcon() {

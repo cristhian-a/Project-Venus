@@ -51,7 +51,8 @@ public class PropFactory {
         String name = "Basic Axe";
         String description = "Steel axe.";
         CollisionBox box = new CollisionBox(worldX, worldY, -8, -8, 16, 16);
-        Weapon inventoryVersion = new WeaponBasic(2, texture, name, description);
+//        Weapon inventoryVersion = new WeaponAxe(2, texture, name, description);
+        Weapon inventoryVersion = new WeaponAxe();
         return new WorldItem(texture, name, description, worldX, worldY, inventoryVersion, CollisionType.TRIGGER, box);
     }
 
@@ -60,6 +61,20 @@ public class PropFactory {
         int half = Registry.textureIds.get("heart-2.png");
         int empty = Registry.textureIds.get("heart-3.png");
         return new DisplayHeart(full, half, empty);
+    }
+
+    public DestructibleTile destructibleTree(float worldX, float worldY) {
+        int pivotX = 8;
+        int pivotY = 16;
+        worldX += pivotX;
+        worldY += pivotY;
+
+        int intactTexture = Registry.textureIds.get("destructible-tree-1.png");
+        int brokenTexture = Registry.textureIds.get("remaining-tree.png");
+        var box = new CollisionBox(worldX, worldY, -pivotX, -23, 16, 22);
+        int hp = 10;
+
+        return new DestructibleTile(intactTexture, brokenTexture, hp, worldX, worldY, box);
     }
 
     public List<Prop> createScene1Props() {
@@ -72,6 +87,10 @@ public class PropFactory {
         props.add(createSpell(37 * world.getTileSize() + pivot, 42 * world.getTileSize() + pivot));
         props.add(createBasicAxe(23 * world.getTileSize() + pivot, 7 * world.getTileSize() + pivot));
         props.add(createVenusShield(23 * world.getTileSize() + pivot, 40 * world.getTileSize() + pivot));
+        props.add(destructibleTree(36 * world.getTileSize(), 42 * world.getTileSize()));
+        props.add(destructibleTree(33 * world.getTileSize(), 42 * world.getTileSize()));
+        props.add(destructibleTree(34 * world.getTileSize(), 40 * world.getTileSize()));
+        props.add(destructibleTree(37 * world.getTileSize(), 39 * world.getTileSize()));
         return props;
     }
 }
