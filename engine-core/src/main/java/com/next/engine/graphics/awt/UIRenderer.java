@@ -61,8 +61,8 @@ class UIRenderer {
         for (int i = 0; i < table.count; i++) {
             g.drawImage(
                     Registry.sprites.get(table.spriteId[i]).texture(),
-                    table.x[i],
-                    table.y[i],
+                    (int) table.x[i],
+                    (int) table.y[i],
                     null
             );
         }
@@ -71,9 +71,9 @@ class UIRenderer {
     protected void renderTextTable(Graphics2D g, RenderQueue.TextTable table) {
         for (int i = 0; i < table.count; i++) {
             if (table.frames[i] > 0) {
-                messages.add(new UIMessage(table.message[i], table.font[i], table.colors[i], table.x[i], table.y[i], table.positions[i], table.frames[i]));
+                messages.add(new UIMessage(table.message[i], table.font[i], table.colors[i], (int) table.x[i], (int) table.y[i], table.positions[i], table.frames[i]));
             } else {
-                renderText(g, table.message[i], table.x[i], table.y[i], Registry.colors.get(table.colors[i]), Registry.fonts.get(table.font[i]), table.positions[i]);
+                renderText(g, table.message[i], (int) table.x[i], (int) table.y[i], Registry.colors.get(table.colors[i]), Registry.fonts.get(table.font[i]), table.positions[i]);
             }
         }
     }

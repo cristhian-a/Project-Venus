@@ -46,7 +46,7 @@ public final class ParticleSystem implements Updatable, Renderable {
     public void collectRender(RenderQueue queue) {
         for (int i = 0; i < aliveCount; i++) {
             Particle p = particles[i];
-            queue.fillRectangle(Layer.PARTICLES, p.x, p.y, p.size, p.size, p.color);
+            queue.fillRect(Layer.PARTICLES, p.x, p.y, p.size, p.size, p.color);
         }
     }
 }

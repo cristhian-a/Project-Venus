@@ -123,7 +123,7 @@ public class Renderer {
         if (table.count == 0) return;
         g.setColor(OVERLAY_COLOR);
         for (int i = 0; i < table.count; i++) {
-            g.fillRect(table.x[i], table.y[i], settings.WIDTH, settings.HEIGHT);
+            g.fillRect((int) table.x[i], (int) table.y[i], settings.WIDTH, settings.HEIGHT);
         }
     }
 }
