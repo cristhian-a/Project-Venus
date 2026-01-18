@@ -1,4 +1,4 @@
-package com.next.engine.animation;
+package com.next.game.animation;
 
 public enum AnimationState {
     IDLE,

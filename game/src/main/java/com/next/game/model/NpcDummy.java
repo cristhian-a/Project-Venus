@@ -1,30 +1,29 @@
 package com.next.game.model;
 
-import com.next.engine.animation.Animation;
-import com.next.engine.animation.AnimationState;
-import com.next.engine.physics.Body;
+import com.next.game.animation.AnimationState;
+import com.next.engine.animation.Costume;
+import com.next.engine.animation.Dresser;
+import com.next.engine.animation.Wardrobe;
 import com.next.engine.physics.CollisionBox;
-import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
 import com.next.game.rules.Layers;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
-
 public class NpcDummy extends Npc {
+
+    private final Dresser<AnimationState> costume;
 
     @Getter @Setter private boolean behave = true;
     private int movementFrames = 50;
     private int direction = 0;
 
-    public NpcDummy(float worldX, float worldY, Map<AnimationState, Animation> animations) {
-        this.spriteId = 33;
-        this.animations.putAll(animations);
-        this.collisionType = CollisionType.SOLID;
-        this.animationState = AnimationState.IDLE;
-        this.collisionBox = new CollisionBox(-5, -4, 10, 12);
+    public NpcDummy(float worldX, float worldY, Wardrobe<AnimationState> animations) {
+        this.costume = new Dresser<>(animations);
+        costume.wear(AnimationState.IDLE);
 
+        this.collisionType = CollisionType.SOLID;
+        this.collisionBox = new CollisionBox(-5, -4, 10, 12);
         this.layer = Layers.NPC;
         this.collisionMask = Layers.PLAYER | Layers.WALL;
 
@@ -32,19 +31,15 @@ public class NpcDummy extends Npc {
     }
 
     @Override
-    public void animate() {
-        super.animate();
+    public Costume getCostume() {
+        return costume;
     }
 
     @Override
     public void update(double delta) {
         if (behave) behave();
 
-        animate();
-    }
-
-    @Override
-    public void onCollision(Body other, EventCollector collector) {
+        costume.update(delta);
     }
 
     private void behave() {
@@ -70,20 +65,24 @@ public class NpcDummy extends Npc {
         }
 
         float speed = 0.5f;
-        if (direction == 0) {
-            animationState = AnimationState.IDLE;
-        } else if (direction == 1) {
-            dx += speed;
-            animationState = AnimationState.WALK_RIGHT;
-        } else if (direction == 2) {
-            dx -= speed;
-            animationState = AnimationState.WALK_LEFT;
-        } else if (direction == 3) {
-            dy -= speed;
-            animationState = AnimationState.WALK_UP;
-        } else if (direction == 4) {
-            dy += speed;
-            animationState = AnimationState.WALK_DOWN;
+        switch (direction) {
+            case 0 -> costume.wear(AnimationState.IDLE);
+            case 1 -> {
+                dx += speed;
+                costume.wear(AnimationState.WALK_RIGHT);
+            }
+            case 2 -> {
+                dx -= speed;
+                costume.wear(AnimationState.WALK_LEFT);
+            }
+            case 3 -> {
+                dy -= speed;
+                costume.wear(AnimationState.WALK_UP);
+            }
+            case 4 -> {
+                dy += speed;
+                costume.wear(AnimationState.WALK_DOWN);
+            }
         }
 
         context.mailbox().motionQueue.submit(this.id, dx, dy, 0f);

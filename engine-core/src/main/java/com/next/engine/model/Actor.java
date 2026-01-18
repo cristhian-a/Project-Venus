@@ -1,5 +1,6 @@
 package com.next.engine.model;
 
+import com.next.engine.animation.Costume;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.physics.*;
 import com.next.engine.graphics.Layer;
@@ -8,8 +9,6 @@ import lombok.Setter;
 
 @Getter
 public abstract class Actor extends Entity implements Body, Updatable, Renderable {
-    protected int spriteId;
-
     protected int layer;
     protected int collisionMask;
     protected CollisionBox collisionBox;        // TODO: remember to initialize it anytime (or move it to children)
@@ -21,6 +20,8 @@ public abstract class Actor extends Entity implements Body, Updatable, Renderabl
     protected float mass = 1f;
     public float vx;
     public float vy;
+
+    public abstract Costume getCostume();
 
     @Deprecated
     public void setVelocity(float vx, float vy) {
@@ -44,7 +45,7 @@ public abstract class Actor extends Entity implements Body, Updatable, Renderabl
 
     @Override
     public void collectRender(RenderQueue queue) {
-        queue.submit(Layer.ACTORS, (int) worldX, (int) worldY, spriteId);
+        queue.submit(Layer.ACTORS, (int) worldX, (int) worldY, getCostume().texture());
     }
 
     @Override

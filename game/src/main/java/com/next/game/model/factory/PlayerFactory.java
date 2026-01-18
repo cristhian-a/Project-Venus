@@ -1,15 +1,12 @@
 package com.next.game.model.factory;
 
-import com.next.engine.animation.Animation;
-import com.next.engine.animation.AnimationState;
+import com.next.engine.animation.*;
 import com.next.engine.data.Registry;
 import com.next.engine.physics.CollisionBox;
+import com.next.game.animation.AnimationState;
 import com.next.game.model.Player;
 import com.next.engine.scene.LevelData;
 import com.next.engine.scene.World;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class PlayerFactory {
 
@@ -72,24 +69,32 @@ public class PlayerFactory {
         animBuilder.frames(new int[] { atkLeft1, atkLeft2, atkLeft2, atkLeft2 });
         var atkLeftAnimation = animBuilder.build();
 
-        var idleDown = new Animation(new int[]{idleFront}, 0, false);
-        var idleUp = new Animation(new int[]{idleBack}, 0, false);
-        var idleLft = new Animation(new int[]{idleLeft}, 0, false);
-        var idleRgt = new Animation(new int[]{idleRight}, 0, false);
+        Costume idleUpCostume = new StaticCostume(idleBack);
+        Costume idleDownCostume = new StaticCostume(idleFront);
+        Costume idleLeftCostume = new StaticCostume(idleLeft);
+        Costume idleRightCostume = new StaticCostume(idleRight);
+        Costume walkDownCostume = new AnimatedCostume(downAnimation);
+        Costume walkUpCostume = new AnimatedCostume(upAnimation);
+        Costume walkRightCostume = new AnimatedCostume(rightAnimation);
+        Costume walkLeftCostume = new AnimatedCostume(leftAnimation);
+        Costume atkFrontCostume = new AnimatedCostume(atkFrontAnimation);
+        Costume atkBackCostume = new AnimatedCostume(atkBackAnimation);
+        Costume atkRightCostume = new AnimatedCostume(atkRightAnimation);
+        Costume atkLeftCostume = new AnimatedCostume(atkLeftAnimation);
 
-        Map<AnimationState, Animation> animations = new HashMap<>();
-        animations.put(AnimationState.IDLE_DOWN, idleDown);
-        animations.put(AnimationState.IDLE_UP, idleUp);
-        animations.put(AnimationState.IDLE_LEFT, idleLft);
-        animations.put(AnimationState.IDLE_RIGHT, idleRgt);
-        animations.put(AnimationState.WALK_DOWN, downAnimation);
-        animations.put(AnimationState.WALK_UP, upAnimation);
-        animations.put(AnimationState.WALK_RIGHT, rightAnimation);
-        animations.put(AnimationState.WALK_LEFT, leftAnimation);
-        animations.put(AnimationState.ATTACK_UP, atkBackAnimation);
-        animations.put(AnimationState.ATTACK_DOWN, atkFrontAnimation);
-        animations.put(AnimationState.ATTACK_LEFT, atkLeftAnimation);
-        animations.put(AnimationState.ATTACK_RIGHT, atkRightAnimation);
+        Wardrobe<AnimationState> wardrobe = new EnumWardrobe<>(AnimationState.class);
+        wardrobe.add(AnimationState.IDLE_DOWN, idleDownCostume);
+        wardrobe.add(AnimationState.IDLE_UP, idleUpCostume);
+        wardrobe.add(AnimationState.IDLE_LEFT, idleLeftCostume);
+        wardrobe.add(AnimationState.IDLE_RIGHT, idleRightCostume);
+        wardrobe.add(AnimationState.WALK_DOWN, walkDownCostume);
+        wardrobe.add(AnimationState.WALK_UP, walkUpCostume);
+        wardrobe.add(AnimationState.WALK_RIGHT, walkRightCostume);
+        wardrobe.add(AnimationState.WALK_LEFT, walkLeftCostume);
+        wardrobe.add(AnimationState.ATTACK_UP, atkBackCostume);
+        wardrobe.add(AnimationState.ATTACK_DOWN, atkFrontCostume);
+        wardrobe.add(AnimationState.ATTACK_LEFT, atkLeftCostume);
+        wardrobe.add(AnimationState.ATTACK_RIGHT, atkRightCostume);
 
         int spawnX = world.getTileSize() * level.playerSpawnX() + 8;
         int spawnY = world.getTileSize() * level.playerSpawnY() + 8;
@@ -100,7 +105,7 @@ public class PlayerFactory {
         float height = 9;
         CollisionBox box = new CollisionBox(spawnX, spawnY, offsetX, offsetY, width, height);
 
-        return new Player(spawnX, spawnY, animations, box, hitboxFactory);
+        return new Player(spawnX, spawnY, wardrobe, box, hitboxFactory);
     }
 
 }

@@ -1,10 +1,11 @@
 package com.next.game.model;
 
 import com.next.engine.Global;
-import com.next.engine.animation.Animation;
-import com.next.engine.animation.AnimationState;
-import com.next.engine.data.Mailbox;
-import com.next.engine.model.AnimatedActor;
+import com.next.game.animation.AnimationState;
+import com.next.engine.animation.Costume;
+import com.next.engine.animation.Dresser;
+import com.next.engine.animation.Wardrobe;
+import com.next.engine.model.Actor;
 import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.event.EventCollector;
@@ -16,9 +17,9 @@ import com.next.game.rules.data.Attributes;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
+public class Mob extends Actor implements Combatant {
 
-public class Mob extends AnimatedActor implements Combatant {
+    private final Dresser<AnimationState> costume;
 
     @Getter private final int maxHealth = 3;
     @Getter @Setter private int health = maxHealth;
@@ -30,11 +31,12 @@ public class Mob extends AnimatedActor implements Combatant {
     private int movementFrames = 50;
     private int direction = 0;
 
-    public Mob(Map<AnimationState, Animation> animations, float x, float y, float width, float height, float offsetX, float offsetY) {
-        this.animations = animations;
+    public Mob(Wardrobe<AnimationState> animations, float x, float y, float width, float height, float offsetX, float offsetY) {
+        costume = new Dresser<>(animations);
+        costume.wear(AnimationState.IDLE);
+
         this.worldX = x;
         this.worldY = y;
-        this.animationState = AnimationState.IDLE;
         this.collisionType = CollisionType.SOLID;
         this.collisionBox = new CollisionBox(x, y, offsetX, offsetY, width, height);
         this.layer = Layers.ENEMY;
@@ -44,6 +46,11 @@ public class Mob extends AnimatedActor implements Combatant {
         attributes.strength = 1;
         attributes.resistance = 0;
         attributes.level = 1;
+    }
+
+    @Override
+    public Costume getCostume() {
+        return costume;
     }
 
     @Override
@@ -64,7 +71,7 @@ public class Mob extends AnimatedActor implements Combatant {
         }
 
         behave();
-        animate();
+        costume.update(delta);
     }
 
     @Override
@@ -104,7 +111,7 @@ public class Mob extends AnimatedActor implements Combatant {
     }
 
     private void die() {
-        animationState = AnimationState.DEAD;
+        costume.wear(AnimationState.DEAD);
         deathTimer = Global.fixedDelta * 45;
     }
 

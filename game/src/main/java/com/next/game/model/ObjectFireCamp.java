@@ -1,25 +1,25 @@
 package com.next.game.model;
 
-import com.next.engine.animation.Animation;
-import com.next.engine.animation.AnimationState;
-import com.next.engine.model.AnimatedActor;
-import com.next.engine.physics.Body;
+import com.next.engine.animation.*;
+import com.next.engine.model.Actor;
 import com.next.engine.physics.CollisionBox;
-import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
+import com.next.game.animation.AnimationState;
 import com.next.game.rules.Layers;
 
-import java.util.HashMap;
+public class ObjectFireCamp extends Actor {
 
-public class ObjectFireCamp extends AnimatedActor {
+    private final Dresser<AnimationState> costume;
 
     public ObjectFireCamp(Animation animation, int x, int y, int width, int height, int offsetX, int offsetY) {
-        this.animations = new HashMap<>() {{
-            put(AnimationState.IDLE, animation);
-        }};
+        Wardrobe<AnimationState> animations = new EnumWardrobe<>(AnimationState.class);
+        Costume c = new AnimatedCostume(animation);
+        animations.add(AnimationState.IDLE, c);
+        costume = new Dresser<>(animations);
+        costume.wear(AnimationState.IDLE);
+
         this.worldX = x;
         this.worldY = y;
-        this.animationState = AnimationState.IDLE;
         this.collisionType = CollisionType.SOLID;
         this.collisionBox = new CollisionBox(x, y, offsetX, offsetY, width, height);
         this.layer = Layers.WALL;
@@ -27,11 +27,13 @@ public class ObjectFireCamp extends AnimatedActor {
     }
 
     @Override
-    public void update(double delta) {
-        animate();
+    public Costume getCostume() {
+        return costume;
     }
 
     @Override
-    public void onCollision(Body other, EventCollector collector) {
+    public void update(double delta) {
+        costume.update(delta);
     }
+
 }

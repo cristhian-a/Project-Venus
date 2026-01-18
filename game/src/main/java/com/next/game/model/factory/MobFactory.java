@@ -1,12 +1,9 @@
 package com.next.game.model.factory;
 
-import com.next.engine.animation.Animation;
-import com.next.engine.animation.AnimationState;
+import com.next.engine.animation.*;
 import com.next.engine.data.Registry;
+import com.next.game.animation.AnimationState;
 import com.next.game.model.Mob;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class MobFactory {
 
@@ -26,13 +23,16 @@ public class MobFactory {
         death.frameRate = 10;
         death.frames = new int[] { mob1, dead, mob1, dead, dead };
 
-        Map<AnimationState, Animation> animations = new HashMap<>();
-        animations.put(AnimationState.IDLE, animation);
-        animations.put(AnimationState.DEAD, death);
+        Costume idleCostume = new AnimatedCostume(animation);
+        Costume deathCostume = new AnimatedCostume(death);
+
+        Wardrobe<AnimationState> wardrobe = new EnumWardrobe<>(AnimationState.class);
+        wardrobe.add(AnimationState.IDLE, idleCostume);
+        wardrobe.add(AnimationState.DEAD, deathCostume);
 
         int pivot = 8;
         int offsetX = 3 - pivot;
         int offsetY = -pivot;
-        return new Mob(animations, x + pivot, y + pivot, 10, 14, offsetX, offsetY);
+        return new Mob(wardrobe, x + pivot, y + pivot, 10, 14, offsetX, offsetY);
     }
 }
