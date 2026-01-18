@@ -99,11 +99,7 @@ public final class RenderQueue {
     private static sealed abstract class AbstractRenderTable {
         public float[] x, y, z;
         public int count;
-        protected int capacity;
-
-        public void clear() {
-            count = 0;
-        }
+        private int capacity;
 
         protected AbstractRenderTable(int capacity) {
             this.capacity = capacity;
@@ -112,14 +108,34 @@ public final class RenderQueue {
             z = new float[capacity];
         }
 
-        protected abstract void ensureCapacity();
-
-        protected void add(float x, float y, float z) {
-            ensureCapacity();
-            this.x[count] = x;
-            this.y[count] = y;
-            this.z[count] = z;
+        public final void clear() {
+            onClear();
+            count = 0;
         }
+
+        protected void onClear() {}
+
+        protected int nextSlot(float x, float y, float z) {
+            ensureCapacity();
+            int index = count;
+            count++;
+            this.x[index] = x;
+            this.y[index] = y;
+            this.z[index] = z;
+            return index;
+        }
+
+        protected final void ensureCapacity() {
+            if (count >= capacity) {
+                capacity *= 2;
+                x = Arrays.copyOf(x, capacity);
+                y = Arrays.copyOf(y, capacity);
+                z = Arrays.copyOf(z, capacity);
+                resizeArrays(capacity);
+            }
+        }
+
+        protected abstract void resizeArrays(int capacity);
     }
 
     public static final class SpriteTable extends AbstractRenderTable {
@@ -130,21 +146,14 @@ public final class RenderQueue {
             spriteId = new int[capacity];
         }
 
-        @Override
-        protected void ensureCapacity() {
-            if (count >= capacity) {
-                capacity *= 2;
-                x = Arrays.copyOf(x, capacity);
-                y = Arrays.copyOf(y, capacity);
-                z = Arrays.copyOf(z, capacity);
-                spriteId = Arrays.copyOf(spriteId, capacity);
-            }
+        public void add(float x, float y, int spriteId) {
+            int index = nextSlot(x, y, 0);
+            this.spriteId[index] = spriteId;
         }
 
-        public void add(float x, float y, int spriteId) {
-            super.add(x, y, 0);
-            this.spriteId[count] = spriteId;
-            count++;
+        @Override
+        protected void resizeArrays(int capacity) {
+            spriteId = Arrays.copyOf(spriteId, capacity);
         }
     }
 
@@ -163,34 +172,26 @@ public final class RenderQueue {
             frames = new int[capacity];
         }
 
-        @Override
-        protected void ensureCapacity() {
-            if (count >= capacity) {
-                capacity *= 2;
-                x = Arrays.copyOf(x, capacity);
-                y = Arrays.copyOf(y, capacity);
-                z = Arrays.copyOf(z, capacity);
-                positions = Arrays.copyOf(positions, capacity);
-                message = Arrays.copyOf(message, capacity);
-                font = Arrays.copyOf(font, capacity);
-                colors = Arrays.copyOf(colors, capacity);
-                frames = Arrays.copyOf(frames, capacity);
-            }
-        }
-
         public void add(String message, String font, int color, float x, float y, int frames, RenderPosition pos) {
-            super.add(x, y, 0);
-            this.message[count] = message;
-            this.font[count] = font;
-            this.colors[count] = color;
-            this.frames[count] = frames;
-            this.positions[count] = pos;
-            count++;
+            int index = nextSlot(x, y, 0);
+            this.message[index] = message;
+            this.font[index] = font;
+            this.colors[index] = color;
+            this.frames[index] = frames;
+            this.positions[index] = pos;
         }
 
         @Override
-        public void clear() {
-            count = 0;
+        protected void resizeArrays(int capacity) {
+            positions = Arrays.copyOf(positions, capacity);
+            message = Arrays.copyOf(message, capacity);
+            font = Arrays.copyOf(font, capacity);
+            colors = Arrays.copyOf(colors, capacity);
+            frames = Arrays.copyOf(frames, capacity);
+        }
+
+        @Override
+        protected void onClear() {
             Arrays.fill(message, null);
             Arrays.fill(font, null);
         }
@@ -207,25 +208,18 @@ public final class RenderQueue {
             colors = new int[capacity];
         }
 
-        @Override
-        protected void ensureCapacity() {
-            if (count >= capacity) {
-                capacity *= 2;
-                x = Arrays.copyOf(x, capacity);
-                y = Arrays.copyOf(y, capacity);
-                z = Arrays.copyOf(z, capacity);
-                width = Arrays.copyOf(width, capacity);
-                height = Arrays.copyOf(height, capacity);
-                colors = Arrays.copyOf(colors, capacity);
-            }
+        public void add(float x, float y, float width, float height, int color) {
+            int index = nextSlot(x, y, 0);
+            this.width[index] = width;
+            this.height[index] = height;
+            this.colors[index] = color;
         }
 
-        public void add(float x, float y, float width, float height, int color) {
-            super.add(x, y, 0);
-            this.width[count] = width;
-            this.height[count] = height;
-            this.colors[count] = color;
-            count++;
+        @Override
+        protected void resizeArrays(int capacity) {
+            width = Arrays.copyOf(width, capacity);
+            height = Arrays.copyOf(height, capacity);
+            colors = Arrays.copyOf(colors, capacity);
         }
     }
 
@@ -244,29 +238,22 @@ public final class RenderQueue {
             arc = new int[capacity];
         }
 
-        @Override
-        protected void ensureCapacity() {
-            if (count >= capacity) {
-                capacity *= 2;
-                x = Arrays.copyOf(x, capacity);
-                y = Arrays.copyOf(y, capacity);
-                z = Arrays.copyOf(z, capacity);
-                width = Arrays.copyOf(width, capacity);
-                height = Arrays.copyOf(height, capacity);
-                thickness = Arrays.copyOf(thickness, capacity);
-                colors = Arrays.copyOf(colors, capacity);
-                arc = Arrays.copyOf(arc, capacity);
-            }
+        public void add(float x, float y, float width, float height, int thickness, int color, int arc) {
+            int index = nextSlot(x, y, 0);
+            this.width[index] = width;
+            this.height[index] = height;
+            this.thickness[index] = thickness;
+            this.colors[index] = color;
+            this.arc[index] = arc;
         }
 
-        public void add(float x, float y, float width, float height, int thickness, int color, int arc) {
-            super.add(x, y, 0);
-            this.width[count] = width;
-            this.height[count] = height;
-            this.thickness[count] = thickness;
-            this.colors[count] = color;
-            this.arc[count] = arc;
-            count++;
+        @Override
+        protected void resizeArrays(int capacity) {
+            width = Arrays.copyOf(width, capacity);
+            height = Arrays.copyOf(height, capacity);
+            thickness = Arrays.copyOf(thickness, capacity);
+            colors = Arrays.copyOf(colors, capacity);
+            arc = Arrays.copyOf(arc, capacity);
         }
     }
 
@@ -281,25 +268,18 @@ public final class RenderQueue {
             colors = new int[capacity];
         }
 
-        @Override
-        protected void ensureCapacity() {
-            if (count >= capacity) {
-                capacity *= 2;
-                x = Arrays.copyOf(x, capacity);
-                y = Arrays.copyOf(y, capacity);
-                z = Arrays.copyOf(z, capacity);
-                width = Arrays.copyOf(width, capacity);
-                height = Arrays.copyOf(height, capacity);
-                colors = Arrays.copyOf(colors, capacity);
-            }
+        public void add(float x, float y, float width, float height, int color) {
+            int index = nextSlot(x, y, 0);
+            this.width[index] = width;
+            this.height[index] = height;
+            this.colors[index] = color;
         }
 
-        public void add(float x, float y, float width, float height, int color) {
-            super.add(x, y, 0);
-            this.width[count] = width;
-            this.height[count] = height;
-            this.colors[count] = color;
-            count++;
+        @Override
+        protected void resizeArrays(int capacity) {
+            width = Arrays.copyOf(width, capacity);
+            height = Arrays.copyOf(height, capacity);
+            colors = Arrays.copyOf(colors, capacity);
         }
     }
 
@@ -316,50 +296,32 @@ public final class RenderQueue {
             arc = new int[capacity];
         }
 
-        @Override
-        protected void ensureCapacity() {
-            if (count >= capacity) {
-                capacity *= 2;
-                x = Arrays.copyOf(x, capacity);
-                y = Arrays.copyOf(y, capacity);
-                z = Arrays.copyOf(z, capacity);
-                width = Arrays.copyOf(width, capacity);
-                height = Arrays.copyOf(height, capacity);
-                colors = Arrays.copyOf(colors, capacity);
-                arc = Arrays.copyOf(arc, capacity);
-            }
+        public void add(float x, float y, float width, float height, int color, int arc) {
+            int index = nextSlot(x, y, 0);
+            this.width[index] = width;
+            this.height[index] = height;
+            this.colors[index] = color;
+            this.arc[index] = arc;
         }
 
-        public void add(float x, float y, float width, float height, int color, int arc) {
-            super.add(x, y, 0);
-            this.width[count] = width;
-            this.height[count] = height;
-            this.colors[count] = color;
-            this.arc[count] = arc;
-            count++;
+        @Override
+        protected void resizeArrays(int capacity) {
+            width = Arrays.copyOf(width, capacity);
+            height = Arrays.copyOf(height, capacity);
+            colors = Arrays.copyOf(colors, capacity);
+            arc = Arrays.copyOf(arc, capacity);
         }
     }
 
     public static final class OverlayTable extends AbstractRenderTable {
+        public OverlayTable(int capacity) { super(capacity); }
 
-        public OverlayTable(int capacity) {
-            super(capacity);
+        public void add(int x, int y) {
+            nextSlot(x, y, 0);
         }
 
         @Override
-        protected void ensureCapacity() {
-            if (count >= capacity) {
-                capacity *= 2;
-                x = Arrays.copyOf(x, capacity);
-                y = Arrays.copyOf(y, capacity);
-                z = Arrays.copyOf(z, capacity);
-            }
-        }
-
-        public void add(int x, int y) {
-            super.add(x, y, 0);
-            count++;
-        }
+        protected void resizeArrays(int capacity) {}
     }
 
     public static final class LightTable extends AbstractRenderTable {
@@ -374,27 +336,20 @@ public final class RenderQueue {
             intensity = new float[capacity];
         }
 
-        @Override
-        protected void ensureCapacity() {
-            if (count >= capacity) {
-                capacity *= 2;
-                x = Arrays.copyOf(x, capacity);
-                y = Arrays.copyOf(y, capacity);
-                z = Arrays.copyOf(z, capacity);
-                colors = Arrays.copyOf(colors, capacity);
-                radius = Arrays.copyOf(radius, capacity);
-                intensity = Arrays.copyOf(intensity, capacity);
-                textureIds = Arrays.copyOf(textureIds, capacity);
-            }
+        public void add(float x, float y, float color, float radius, float intensity, int texture) {
+            int index = nextSlot(x, y, 0);
+            this.colors[index] = color;
+            this.radius[index] = radius;
+            this.intensity[index] = intensity;
+            this.textureIds[index] = texture;
         }
 
-        public void add(float x, float y, float color, float radius, float intensity, int texture) {
-            super.add(x, y, 0);
-            this.colors[count] = color;
-            this.radius[count] = radius;
-            this.intensity[count] = intensity;
-            this.textureIds[count] = texture;
-            count++;
+        @Override
+        protected void resizeArrays(int capacity) {
+            colors = Arrays.copyOf(colors, capacity);
+            radius = Arrays.copyOf(radius, capacity);
+            intensity = Arrays.copyOf(intensity, capacity);
+            textureIds = Arrays.copyOf(textureIds, capacity);
         }
     }
 
