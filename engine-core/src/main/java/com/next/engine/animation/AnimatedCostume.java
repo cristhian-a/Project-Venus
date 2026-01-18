@@ -2,10 +2,18 @@ package com.next.engine.animation;
 
 public final class AnimatedCostume implements Costume, Animated {
     Animation animation;
-    private int frame;
     private int index;
+    private double accumulator;
 
+    /**
+     *
+     * @param animation
+     * @throws IllegalArgumentException if animation has no frames
+     */
     public AnimatedCostume(Animation animation) {
+        if (animation.frames.length == 0)
+            throw new IllegalArgumentException("Animation must have at least one frame");
+
         this.animation = animation;
     }
 
@@ -16,18 +24,19 @@ public final class AnimatedCostume implements Costume, Animated {
 
     @Override
     public void reset() {
-        frame = 0;
+        accumulator = 0;
         index = 0;
     }
 
     @Override
     public void update(double delta) {
-        if (!animation.loop) return;
+        if (!animation.loop || animation.frameDuration <= 0) return;
 
-        frame++;
-        if (frame >= animation.frameRate) {
-            frame = 0;
-            index = (index + 1) % animation.frames.length;
+        accumulator += delta;
+        if (accumulator >= animation.frameDuration) {
+            int advances = (int) (accumulator / animation.frameDuration);
+            accumulator -= advances * animation.frameDuration;
+            index = (index + advances) % animation.frames.length;
         }
     }
 }

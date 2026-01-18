@@ -21,7 +21,7 @@ public class PlayerFactory {
     }
 
     public Player create() {
-        var animBuilder = Animation.builder().loop(true).frameRate(20);
+        var animBuilder = Animation.builder().loop(true).frameDuration(0.3333f);
 
         int idleFront   = Registry.textureIds.get("char-1.png");
         int walkDown1   = Registry.textureIds.get("char-2.png");
@@ -56,7 +56,7 @@ public class PlayerFactory {
         animBuilder.frames(new int[] { walkLeft1, walkLeft2 });
         var leftAnimation = animBuilder.build();
 
-        animBuilder.frameRate(10);  // adjusted framerate for attacks
+        animBuilder.frameDuration(0.1666f);  // adjusted framerate for attacks
         animBuilder.frames(new int[] { atkFront1, atkFront2, atkFront2, atkFront2 });
         var atkFrontAnimation = animBuilder.build();
 

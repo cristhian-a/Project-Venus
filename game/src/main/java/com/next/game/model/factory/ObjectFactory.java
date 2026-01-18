@@ -13,7 +13,7 @@ public class ObjectFactory {
         int fire3 = Registry.textureIds.get("firecamp-3.png");
 
         Animation animation = new Animation();
-        animation.frameRate = 10;
+        animation.frameDuration = 0.1666f;
         animation.frames = new int[] { fire2, fire1, fire3, fire1 };
         animation.loop = true;
         int offset = 8;

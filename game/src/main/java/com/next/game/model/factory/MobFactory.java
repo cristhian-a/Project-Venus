@@ -15,12 +15,12 @@ public class MobFactory {
 
         Animation animation = new Animation();
         animation.loop = true;
-        animation.frameRate = 10;
+        animation.frameDuration = 0.1666f;
         animation.frames = new int[] { mob1, mob2 };
 
         Animation death = new Animation();
         death.loop = true;
-        death.frameRate = 10;
+        death.frameDuration = 0.1666f;
         death.frames = new int[] { mob1, dead, mob1, dead, dead };
 
         Costume idleCostume = new AnimatedCostume(animation);

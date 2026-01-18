@@ -15,7 +15,7 @@ public class NpcFactory {
         int walk2 = Registry.textureIds.get("soldier-3.png");
 
         Animation walk = new Animation();
-        walk.frameRate = 20;
+        walk.frameDuration = 0.3333f;
         walk.frames = new int[] { walk1, walk2 };
         walk.loop = true;
 
