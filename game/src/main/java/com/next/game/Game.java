@@ -6,6 +6,7 @@ import com.next.engine.data.AtlasImporter;
 import com.next.engine.debug.*;
 import com.next.engine.event.*;
 import com.next.engine.model.*;
+import com.next.engine.scene.*;
 import com.next.game.event.DisplayStatsEvent;
 import com.next.game.event.FallDamageEvent;
 import com.next.game.event.PauseEvent;
@@ -22,10 +23,6 @@ import com.next.engine.system.Settings;
 import com.next.game.ui.GameplayUIState;
 import com.next.game.ui.UISystem;
 import com.next.game.util.Inputs;
-import com.next.engine.scene.LevelData;
-import com.next.engine.scene.Scene;
-import com.next.engine.scene.World;
-import com.next.engine.scene.WorldRules;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -134,7 +131,7 @@ public class Game implements Director {
         ui.submit(mailbox.postRender());
 
         mailbox.publish();
-        Tools.SCENE_TOOL.gatherInfo(scene);     // TODO this whole debugging be rethink
+        Tools.SCENE_TOOL.gatherInfo(scene);     // TODO I should rethink this whole debugging tooling thing
         Tools.PHYSICS_TOOL.gatherInfo(scene);
 
         updateTimer.end();

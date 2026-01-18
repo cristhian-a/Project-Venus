@@ -61,6 +61,7 @@ public class Renderer {
         tileRenderer.render(g, camera);
         renderLayer(g, Layer.WORLD, queue, camera, identity);
         renderLayer(g, Layer.ACTORS, queue, camera, identity);
+        renderLayer(g, Layer.PARTICLES, queue, camera, identity);
 
         // This should be rendered using world space, with camera coordinates (if translate is applied)
         lightningRenderer.render(g, camera, queue.getBucket(Layer.LIGHTS));

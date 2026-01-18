@@ -4,6 +4,7 @@ public enum Layer {
     BACKGROUND(     RenderSpace.WORLD,true),
     WORLD(          RenderSpace.WORLD,true),
     ACTORS(         RenderSpace.WORLD,true),
+    PARTICLES(      RenderSpace.WORLD,true),
     LIGHTS(         RenderSpace.WORLD,true),
     UI_WORLD(       RenderSpace.SCREEN,true),
     UI_SCREEN(      RenderSpace.SCREEN,false),

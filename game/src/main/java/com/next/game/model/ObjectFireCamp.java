@@ -4,14 +4,18 @@ import com.next.engine.animation.*;
 import com.next.engine.model.Actor;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.physics.CollisionType;
-import com.next.game.animation.AnimationState;
+import com.next.engine.scene.ParticleEmitter;
+import com.next.game.visual.AnimationState;
 import com.next.game.rules.Layers;
 
 public class ObjectFireCamp extends Actor {
 
     private final Dresser<AnimationState> costume;
+    private final ParticleEmitter smokeEmitter;
 
-    public ObjectFireCamp(Animation animation, int x, int y, int width, int height, int offsetX, int offsetY) {
+    public ObjectFireCamp(Animation animation, int x, int y, int width, int height, int offsetX, int offsetY,
+                          ParticleEmitter smokeEmitter
+    ) {
         Wardrobe<AnimationState> animations = new EnumWardrobe<>(AnimationState.class);
         Costume c = new AnimatedCostume(animation);
         animations.add(AnimationState.IDLE, c);
@@ -24,6 +28,8 @@ public class ObjectFireCamp extends Actor {
         this.collisionBox = new CollisionBox(x, y, offsetX, offsetY, width, height);
         this.layer = Layers.WALL;
         this.collisionMask = 0;
+
+        this.smokeEmitter = smokeEmitter;
     }
 
     @Override
@@ -34,6 +40,7 @@ public class ObjectFireCamp extends Actor {
     @Override
     public void update(double delta) {
         costume.update(delta);
+        smokeEmitter.update(delta, context::emitParticle);
     }
 
 }

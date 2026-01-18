@@ -3,7 +3,7 @@ package com.next.game.model.factory;
 import com.next.engine.animation.*;
 import com.next.engine.data.Registry;
 import com.next.engine.physics.CollisionBox;
-import com.next.game.animation.AnimationState;
+import com.next.game.visual.AnimationState;
 import com.next.game.model.Player;
 import com.next.engine.scene.LevelData;
 import com.next.engine.scene.World;

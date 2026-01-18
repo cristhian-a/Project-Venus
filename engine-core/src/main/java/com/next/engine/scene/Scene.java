@@ -16,6 +16,7 @@ import java.util.function.Consumer;
 public class Scene implements SceneContext {
 
     private final Mailbox mailbox;
+    private final ParticleSystem particleSystem;
 
     public final World world;
     public Camera camera;
@@ -47,6 +48,7 @@ public class Scene implements SceneContext {
     public Scene(World world, Mailbox mailbox) {
         this.world = world;
         this.mailbox = mailbox;
+        this.particleSystem = new ParticleSystem(1024);
 
         this.entities = new Entity[16];
         this.actors = new Actor[16];
@@ -133,12 +135,16 @@ public class Scene implements SceneContext {
     }
 
     public void update(double delta) {
+        particleSystem.update(delta);
+
         for (int i = 0; i < updatableCount; i++) {
             updatable[i].update(delta);
         }
     }
 
     public void submitRender(RenderQueue queue) {
+        particleSystem.collectRender(queue);
+
         // sorting by Y before submitting; Probably not the best, but fine for now
         Arrays.sort(actors, 0, actorCount, Comparator.comparingDouble(Actor::getWorldY));
 //        for (int i = 0; i < actorCount; i++) {
@@ -237,5 +243,10 @@ public class Scene implements SceneContext {
     @Override
     public Mailbox mailbox() {
         return this.mailbox;
+    }
+
+    @Override
+    public void emitParticle(Particle particle) {
+        particleSystem.spawn(particle);
     }
 }

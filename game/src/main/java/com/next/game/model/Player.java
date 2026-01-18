@@ -11,7 +11,7 @@ import com.next.engine.physics.*;
 import com.next.engine.scene.Direction;
 import com.next.engine.debug.DebugChannel;
 import com.next.engine.debug.Debugger;
-import com.next.game.animation.AnimationState;
+import com.next.game.visual.AnimationState;
 import com.next.game.event.HitEvent;
 import com.next.game.model.factory.HitboxFactory;
 import com.next.game.rules.Layers;

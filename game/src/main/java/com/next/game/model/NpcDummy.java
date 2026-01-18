@@ -1,6 +1,6 @@
 package com.next.game.model;
 
-import com.next.game.animation.AnimationState;
+import com.next.game.visual.AnimationState;
 import com.next.engine.animation.Costume;
 import com.next.engine.animation.Dresser;
 import com.next.engine.animation.Wardrobe;
