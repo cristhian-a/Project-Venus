@@ -4,6 +4,8 @@ import com.next.engine.animation.*;
 import com.next.engine.data.Registry;
 import com.next.engine.event.EventCollector;
 import com.next.engine.event.TriggerRules;
+import com.next.engine.graphics.Layer;
+import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Actor;
 import com.next.engine.model.HitboxSpec;
 import com.next.engine.model.ProjectileSpec;
@@ -239,5 +241,17 @@ public class Player extends Actor implements Combatant {
 
         var sprite = Registry.textureIds.get("spell-shot.png");
         hitboxFactory.projectile(worldX + offsetX, worldY + offsetY, this, projBuilder.build(), sprite);
+    }
+
+    @Override
+    public void collectRender(RenderQueue queue) {
+        float z = 1f;
+
+        long sortKey = ((long) Layer.ACTORS.ordinal() << 48)
+                | ((long) ((int) z & 0xFFFF) << 32)
+                | ((long) ((int) worldY & 0xFFFF) << 16)
+                | (id & 0xFFFF);
+
+        queue.draw(Layer.ACTORS, sortKey, worldX, worldY, costume);
     }
 }

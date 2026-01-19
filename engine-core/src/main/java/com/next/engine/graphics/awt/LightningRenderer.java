@@ -16,8 +16,6 @@ final class LightningRenderer {
     private static final float EPSILON = 0.0001f;
 
     private final VideoSettings settings;
-    private final BufferedImage lightMap;
-    private final Graphics2D lightGraphics;
     private final AffineTransform identity = new AffineTransform();
     private final AlphaComposite[] compositeCache;
     private final Color[] ambientCache;
@@ -25,7 +23,9 @@ final class LightningRenderer {
     private final int COMPOSITE_BUCKETS = 16;
     private final int AMBIENT_BUCKETS = 16;
 
-    private float ambient = 0.85f;
+    private BufferedImage lightMap;
+    private Graphics2D lightGraphics;
+    private float ambient = 0.65f;
 
     public LightningRenderer(VideoSettings settings) {
         this.settings = settings;
@@ -36,8 +36,8 @@ final class LightningRenderer {
                 .getDefaultConfiguration();
 
         lightMap = gc.createCompatibleImage(
-                settings.WIDTH / settings.SCALE,
-                settings.HEIGHT / settings.SCALE,
+                settings.WIDTH / settings.SCALE + 1,
+                settings.HEIGHT / settings.SCALE + 1,
                 Transparency.TRANSLUCENT
         );
 
@@ -137,6 +137,28 @@ final class LightningRenderer {
             // A fix is needed to avoid the light map being pixels off in the bottom and right corners.
             g.drawImage(lightMap, (int) (camera.getX()), (int) (camera.getY()), null);
         }
+    }
+
+    void onResize() {
+        GraphicsConfiguration gc = GraphicsEnvironment
+                .getLocalGraphicsEnvironment()
+                .getDefaultScreenDevice()
+                .getDefaultConfiguration();
+
+        lightMap.flush();
+        lightGraphics.dispose();
+
+        /* plus 1 is here to fix a problem with the camera letting a thin slice of the rendered world without the
+        *  light map covering it */
+        lightMap = gc.createCompatibleImage(
+                settings.WIDTH / settings.SCALE + 1,
+                settings.HEIGHT / settings.SCALE + 1,
+                Transparency.TRANSLUCENT
+        );
+
+        lightGraphics = lightMap.createGraphics();
+        lightGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
     }
 
     private BufferedImage makeColoredLight(BufferedImage mask, Color color) {

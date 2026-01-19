@@ -32,8 +32,11 @@ public final class AwtCanvas extends Canvas implements GamePanel, ComponentListe
 
         window = new JFrame("Venus");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setUndecorated(true);
         window.add(this);
         window.pack();
+
+        setFullscreen(true);
 
         addComponentListener(this);
         createBufferStrategy(2);
@@ -71,6 +74,10 @@ public final class AwtCanvas extends Canvas implements GamePanel, ComponentListe
         } while (bufferStrategy.contentsLost());
     }
 
+    public void setFullscreen(boolean fullscreen) {
+        window.setExtendedState(fullscreen ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL);
+    }
+
     @Override
     public void componentResized(ComponentEvent e) {
         videoSettings.WIDTH = getWidth();
@@ -81,6 +88,8 @@ public final class AwtCanvas extends Canvas implements GamePanel, ComponentListe
 
         createBufferStrategy(2);
         bufferStrategy = getBufferStrategy();
+
+        renderer.onResize();
     }
 
     @Override

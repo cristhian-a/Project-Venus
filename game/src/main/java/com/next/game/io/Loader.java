@@ -8,7 +8,6 @@ import com.next.engine.scene.Tile;
 import com.next.engine.sound.SoundClip;
 import com.next.engine.sound.SoundData;
 import com.next.game.rules.Layers;
-import com.next.game.util.Colors;
 import com.next.game.util.Fonts;
 import com.next.game.util.Sounds;
 import com.next.engine.scene.LevelData;

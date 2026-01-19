@@ -35,7 +35,7 @@ public final class RenderQueue {
         buckets[layer.ordinal()].sprites.add(x, y, spriteId);
     }
 
-    public void draw(Layer layer, int sortKey, float x, float y, Costume costume) {
+    public void draw(Layer layer, long sortKey, float x, float y, Costume costume) {
         buckets[layer.ordinal()].sprites.add((int) x, (int) y, costume.texture());
     }
 

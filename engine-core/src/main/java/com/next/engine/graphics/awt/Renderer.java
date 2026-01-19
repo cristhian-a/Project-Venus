@@ -125,4 +125,9 @@ public final class Renderer {
             g.fillRect((int) table.x[i], (int) table.y[i], settings.WIDTH, settings.HEIGHT);
         }
     }
+
+    void onResize() {
+        director.getCamera().resize(settings.UNSCALED_WIDTH, settings.UNSCALED_HEIGHT);
+        lightningRenderer.onResize();
+    }
 }
