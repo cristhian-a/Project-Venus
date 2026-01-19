@@ -1,6 +1,7 @@
 package com.next.game.ui;
 
 import com.next.engine.data.Registry;
+import com.next.engine.graphics.Sprite;
 import com.next.engine.system.Input;
 import com.next.game.Game;
 import com.next.engine.graphics.Layer;
@@ -300,8 +301,9 @@ public class StatsViewUIState implements UIState {
                 queue.fillRoundRect(Layer.UI_SCR_SCALED, x - 1, y - 1, cursorWidth, cursorHeight, Colors.GOLDEN, 4);
             }
 
-            x += Math.round(Registry.sprites.get(item.getIcon()).pivotX());
-            y += Math.round(Registry.sprites.get(item.getIcon()).pivotY());
+            Sprite s = Registry.sprites[item.getIcon()];
+            x += Math.round(s.pivotX());
+            y += Math.round(s.pivotY());
             queue.submit(Layer.UI_SCR_SCALED, x, y, item.getIcon());
 
             row++;

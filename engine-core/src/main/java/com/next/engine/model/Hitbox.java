@@ -34,7 +34,7 @@ public class Hitbox extends Sensor {
         collisionBox = new CollisionBox(worldX, worldY, 0, 0, specs.width(), specs.height());
     }
 
-    public void setRule(TriggerRule rule) {
+    public final void setRule(TriggerRule rule) {
         this.onCollision = rule;
     }
 

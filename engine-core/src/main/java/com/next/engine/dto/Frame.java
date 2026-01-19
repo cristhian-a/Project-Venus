@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Frame {
+public final class Frame {
     private String filename;
     private Rectangle frame;
     private boolean rotated;

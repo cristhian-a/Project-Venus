@@ -32,11 +32,11 @@ public final class AwtCanvas extends Canvas implements GamePanel, ComponentListe
 
         window = new JFrame("Venus");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setUndecorated(true);
+        window.setUndecorated(false);
         window.add(this);
         window.pack();
 
-        setFullscreen(true);
+        setFullscreen(false);
 
         addComponentListener(this);
         createBufferStrategy(2);

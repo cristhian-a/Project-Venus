@@ -16,8 +16,10 @@ final class RenderCache {
     final Map<String, Font> fonts = new HashMap<>();
 
     Color getColor(int argb) {
-        return colors.computeIfAbsent(argb, _ -> new Color(argb, true));
+        return colors.computeIfAbsent(argb, this::newColor);
     }
+
+    private Color newColor(int argb) { return new Color(argb, true); }
 
     Stroke getStroke(float width) {
         return strokes.computeIfAbsent(width, BasicStroke::new);

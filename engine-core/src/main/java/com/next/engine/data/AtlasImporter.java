@@ -9,16 +9,19 @@ import com.next.engine.graphics.Sprite;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-public class AtlasImporter {
+public final class AtlasImporter {
 
     public static void register(BufferedImage sheet, TextureMetadata metadata) {
         if (sheet == null || metadata == null) {
             throw new IllegalArgumentException("Sheet or metadata cannot be null");
         }
 
-        Registry.textures.put(99, sheet);   // Never actually queried, just here for safety
+        Registry.textures.put(99, sheet);
+        Registry.textureIds.put("master_sheet", 99);    // Never actually queried, just here for safety
 
         List<Frame> frames = metadata.getFrames();
+        Registry.sprites = new Sprite[frames.size()];
+
         for (int i = 0; i < frames.size(); i++) {
             Frame frame = frames.get(i);
             String filename = frame.getFilename();
@@ -30,17 +33,14 @@ public class AtlasImporter {
                 pivotY = coordinates.height * frame.getPivot().y;
             }
 
-            var subImage = sheet.getSubimage(coordinates.x, coordinates.y, coordinates.width, coordinates.height);
-
             Sprite sprite = new Sprite(
                     i, filename,
                     coordinates.x, coordinates.y, coordinates.width, coordinates.height,
-                    pivotX, pivotY,
-                    subImage
+                    pivotX, pivotY
             );
 
             Registry.textureIds.put(filename, i);
-            Registry.sprites.put(i, sprite);
+            Registry.sprites[i] = sprite;
         }
     }
 }

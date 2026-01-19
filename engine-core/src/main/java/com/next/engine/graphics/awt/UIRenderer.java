@@ -51,17 +51,6 @@ final class UIRenderer {
         g.drawString(text, x, y);
     }
 
-    void renderSpriteTable(Graphics2D g, RenderQueue.SpriteTable table) {
-        for (int i = 0; i < table.count; i++) {
-            g.drawImage(
-                    Registry.sprites.get(table.spriteId[i]).texture(),
-                    (int) table.x[i],
-                    (int) table.y[i],
-                    null
-            );
-        }
-    }
-
     void renderTextTable(Graphics2D g, RenderQueue.TextTable table) {
         for (int i = 0; i < table.count; i++) {
             if (table.frames[i] > 0) {

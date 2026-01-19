@@ -7,6 +7,6 @@ import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TextureMetadata {
+public final class TextureMetadata {
     private List<Frame> frames;
 }

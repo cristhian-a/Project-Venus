@@ -2,7 +2,7 @@ package com.next.engine.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Size {
+public final class Size {
     @JsonProperty("w")
     public int width;
     @JsonProperty("h")

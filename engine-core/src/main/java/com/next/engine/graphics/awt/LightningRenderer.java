@@ -13,8 +13,6 @@ import java.awt.image.BufferedImage;
 
 final class LightningRenderer {
 
-    private static final float EPSILON = 0.0001f;
-
     private final VideoSettings settings;
     private final AffineTransform identity = new AffineTransform();
     private final AlphaComposite[] compositeCache;
@@ -25,7 +23,7 @@ final class LightningRenderer {
 
     private BufferedImage lightMap;
     private Graphics2D lightGraphics;
-    private float ambient = 0.65f;
+    private float ambient = 0.55f;
 
     public LightningRenderer(VideoSettings settings) {
         this.settings = settings;
@@ -205,6 +203,8 @@ final class LightningRenderer {
         float t = alpha / 255f;
 
         // EPSILON provides better falloffs but a very edgy sharp
+        final float EPSILON = 0.0001f;
+
         if (t < EPSILON) return alpha;
         float out = threshold + (t - threshold) / ratio;
 
