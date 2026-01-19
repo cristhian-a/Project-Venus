@@ -3,7 +3,8 @@ package com.next.engine.io;
 import java.io.InputStream;
 import java.net.URL;
 
-public class FileReader {
+public final class FileReader {
+    private FileReader() {}
 
     public static InputStream getFile(String path) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(getPath(path));

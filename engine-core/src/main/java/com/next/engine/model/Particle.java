@@ -2,7 +2,7 @@ package com.next.engine.model;
 
 import com.next.engine.animation.Costume;
 
-public class Particle {
+public final class Particle {
     public float x, y;
     public float vx, vy;
 

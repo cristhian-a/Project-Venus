@@ -1,27 +1,15 @@
 package com.next.engine.physics;
 
 import com.next.engine.scene.Scene;
-import lombok.Getter;
 
 /**
- * Detects collisions between actors and the world. {@link CollisionInspector#inspecting(Scene)} must be called to set
- * which world is being inspected.
+ * Detects collisions between entities and the world.
  */
-class CollisionInspector {
+final class CollisionInspector {
 
-    @Getter private Scene scene;
-    private int tileSize;
-
-    public CollisionInspector() {
-    }
-
-    public void inspecting(Scene scene) {
-        this.scene = scene;
-        this.tileSize = scene.world.getTileSize();
-    }
-
-    public boolean isCollidingWithTile(Body agent) {
-        AABB box = agent.getCollisionBox().getBounds();
+    public boolean isCollidingWithTile(final Body agent, final Scene scene) {
+        final AABB box = agent.getCollisionBox().getBounds();
+        final int tileSize = scene.world.getTileSize();
 
         // EPSILON is required to adjust right and bottom sides to not collide prematurely
         // in relation to the left and top sides.
@@ -45,7 +33,7 @@ class CollisionInspector {
         return false;
     }
 
-    public boolean isColliding(Body actor, Body other) {
+    public boolean isColliding(final Body actor, final Body other) {
         if ((actor.getLayer() & other.getCollisionMask()) == 0 && (other.getLayer() & actor.getCollisionMask()) == 0)
             return false;
         return actor.getCollisionBox().intersects(other.getCollisionBox());

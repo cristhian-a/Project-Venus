@@ -12,7 +12,7 @@ import java.io.IOException;
  * Prefer using the new atlas texture mapping instead (see {@link com.next.engine.data.AtlasImporter#register})
  */
 @Deprecated(forRemoval = true)
-public class SpriteSheet {
+public final class SpriteSheet {
     @Getter private final int spriteWidth;
     @Getter private final int spriteHeight;
     private final int columns;

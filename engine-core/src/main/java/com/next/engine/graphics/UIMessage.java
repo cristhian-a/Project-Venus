@@ -1,12 +1,13 @@
 package com.next.engine.graphics;
 
-public class UIMessage {
-    public String text;
+public final class UIMessage {
+    public final String text;
+    public final String font;
+    public final int color;
+    public final RenderPosition position;
+
     public int x, y;
-    public String font;
-    public int color;
     public int remainingFrames;
-    public RenderPosition position;
 
     public UIMessage(String text, String font, int color, int x, int y, RenderPosition position, int remainingFrames) {
         this.text = text;

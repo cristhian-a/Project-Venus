@@ -10,7 +10,7 @@ import java.awt.event.ComponentListener;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 
-public class AwtCanvas extends Canvas implements GamePanel, ComponentListener {
+public final class AwtCanvas extends Canvas implements GamePanel, ComponentListener {
 
     private final Renderer renderer;
     private final KeyListener input;

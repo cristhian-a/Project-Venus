@@ -5,7 +5,7 @@ import com.next.engine.debug.Debugger;
 import lombok.Getter;
 
 @Getter
-public class Camera {
+public final class Camera {
     private float x;
     private float y;
 

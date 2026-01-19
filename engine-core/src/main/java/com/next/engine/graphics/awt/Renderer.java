@@ -9,14 +9,13 @@ import com.next.engine.debug.Debugger;
 import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
-import com.next.engine.graphics.RenderSpace;
 import com.next.engine.model.Camera;
 import com.next.engine.system.Settings.VideoSettings;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
-public class Renderer {
+public final class Renderer {
 
     // debug stuff
     private static final DebugTimer renderTimer = DebugTimers.of(DebugTimers.RENDERER);

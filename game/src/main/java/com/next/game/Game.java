@@ -29,7 +29,7 @@ import lombok.Setter;
 import java.io.IOException;
 
 @Getter
-public class Game implements Director {
+public final class Game implements Director {
 
     // debug related stuff
     private static final DebugTimer updateTimer = DebugTimers.of(DebugTimers.UPDATE);

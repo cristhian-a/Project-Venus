@@ -1,6 +1,6 @@
 package com.next.engine.animation;
 
-public class Animator {
+public final class Animator {
     private Animation current;
     private double accumulator;
     private int index;

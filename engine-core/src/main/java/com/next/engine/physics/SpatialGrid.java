@@ -3,7 +3,7 @@ package com.next.engine.physics;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpatialGrid {
+public final class SpatialGrid {
     private final int cellSize;
     private final List<Body>[][] cells;
     private final int cols, rows;

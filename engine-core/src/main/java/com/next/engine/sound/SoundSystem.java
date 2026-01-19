@@ -1,6 +1,6 @@
 package com.next.engine.sound;
 
-public class SoundSystem {
+public final class SoundSystem {
 
     private final AudioBackend backend;
 

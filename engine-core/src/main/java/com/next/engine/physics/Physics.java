@@ -5,7 +5,7 @@ import com.next.engine.event.EventCollector;
 import com.next.engine.model.Sensor;
 import com.next.engine.scene.Scene;
 
-public class Physics implements SpatialGridHandler {
+public final class Physics implements SpatialGridHandler {
 
     private CollisionTable previous = new CollisionTable();
     private CollisionTable frameCollisions = new CollisionTable();
@@ -21,7 +21,6 @@ public class Physics implements SpatialGridHandler {
         int width = scene.world.getRules().columns() * scene.world.getTileSize();
         int height = scene.world.getRules().rows() * scene.world.getTileSize();
         grid = new SpatialGrid(width, height, scene.world.getTileSize());
-        inspector.inspecting(scene);
     }
 
 //    public void applyNewtonPhysics(double delta, MotionQueue queue, Mailbox mailbox) {
@@ -214,14 +213,14 @@ public class Physics implements SpatialGridHandler {
             agent.moveY(motionDelta, deltaTime);
         }
 
-        if (inspector.isCollidingWithTile(agent)) {
+        if (inspector.isCollidingWithTile(agent, scene)) {
             clamp(axis, agent, motionDelta);
         }
 
         grid.queryBroadPhase(axis, agent, motionDelta, this);
     }
 
-    protected void solveNarrowPhase(Axis axis, Body agent, Body other, float motionDelta) {
+    void solveNarrowPhase(Axis axis, Body agent, Body other, float motionDelta) {
         if (inspector.isColliding(agent, other)) {
             if (other == agent) return;
 
@@ -298,7 +297,6 @@ public class Physics implements SpatialGridHandler {
     private void collectStaticBodies(Scene scene, SpatialGrid grid) {
         for (int i = 0; i < scene.getSensorCount(); i++) {
             Sensor sensor = scene.getSensors()[i];
-            processingSensorBox = sensor.getCollisionBox().getBounds();
             grid.queryNeighbors(sensor, this);
         }
     }
@@ -309,7 +307,6 @@ public class Physics implements SpatialGridHandler {
 
     @Override
     public void handleNeighbor(Body self, Body neighbor) {
-        // neighbor.getCollisionBox().getBounds().intersects(processingSensorBox)
         if (inspector.isColliding(self, neighbor)) {
             frameCollisions.add(self, neighbor);
         }

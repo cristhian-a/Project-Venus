@@ -4,7 +4,7 @@ import com.next.engine.graphics.*;
 import com.next.game.util.Colors;
 import com.next.game.util.Fonts;
 
-public class FinishUIState implements UIState {
+public final class FinishUIState implements UIState {
 
     private final double time;
     private int fade;

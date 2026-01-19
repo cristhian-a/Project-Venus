@@ -2,10 +2,10 @@ package com.next.engine.physics;
 
 import lombok.Getter;
 
-public class CollisionBox {
+public final class CollisionBox {
     @Getter private final AABB bounds;
-    @Getter protected final float offsetX;
-    @Getter protected final float offsetY;
+    @Getter final float offsetX;
+    @Getter final float offsetY;
 
     public CollisionBox(float offsetX, float offsetY, float width, float height) {
         this.offsetX = offsetX;

@@ -12,9 +12,8 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
-class LightningRenderer {
+final class LightningRenderer {
 
-    private static final DebugTimer debugtimer = DebugTimers.of(DebugTimers.RENDER_LIGHTS);
     private static final float EPSILON = 0.0001f;
 
     private final VideoSettings settings;

@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class AABB {     // Axis-Aligned Bounding Box (just to remember the acronym)
+public final class AABB {     // Axis-Aligned Bounding Box (just to remember the acronym)
     public float x;
     public float y;
     public float width;

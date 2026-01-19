@@ -2,14 +2,14 @@ package com.next.engine.io;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JsonReader {
+public final class JsonReader {
+    private JsonReader() {}
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -21,7 +21,7 @@ public class JsonReader {
         return mapper.readValue(stream, mapper.getTypeFactory().constructMapType(HashMap.class, key, value));
     }
 
-    public static <T> List<T> readList(String filePath, Class<T> clazz) throws IOException {
-        return mapper.readValue(new File(filePath), mapper.getTypeFactory().constructCollectionType(List.class, clazz));
+    public static <T> List<T> readList(InputStream stream, Class<T> clazz) throws IOException {
+        return mapper.readValue(stream, mapper.getTypeFactory().constructCollectionType(List.class, clazz));
     }
 }

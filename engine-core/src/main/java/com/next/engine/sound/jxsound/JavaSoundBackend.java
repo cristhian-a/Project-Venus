@@ -8,7 +8,7 @@ import com.next.engine.sound.SoundData;
 import javax.sound.sampled.LineUnavailableException;
 import java.util.*;
 
-public class JavaSoundBackend implements AudioBackend {
+public final class JavaSoundBackend implements AudioBackend {
 
     private final Map<SoundClip, SoundData> tracks;
     private final Map<SoundClip, List<Sound>> playing = new HashMap<>();
