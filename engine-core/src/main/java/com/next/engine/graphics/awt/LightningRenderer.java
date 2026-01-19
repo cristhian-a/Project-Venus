@@ -2,7 +2,6 @@ package com.next.engine.graphics.awt;
 
 import com.next.engine.Global;
 import com.next.engine.data.Registry;
-import com.next.engine.debug.DebugTimer;
 import com.next.engine.debug.DebugTimers;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
@@ -26,9 +25,7 @@ final class LightningRenderer {
     private final int COMPOSITE_BUCKETS = 16;
     private final int AMBIENT_BUCKETS = 16;
 
-    private float ambient = 0.5f;
-
-    private BufferedImage cachedColoredLight;
+    private float ambient = 0.85f;
 
     public LightningRenderer(VideoSettings settings) {
         this.settings = settings;
@@ -86,11 +83,11 @@ final class LightningRenderer {
         if (lights.count == 0) return;
 
         // sine-wave calculation to get the flicker effect's size
-        double t = Global.getTime() * 3d;
-        float pulse = (float) (Math.sin(t) * 0.5f + 0.5f);
+        final double t = Global.getTime() * 3d;
+        final float pulse = (float) (Math.sin(t) * 0.5f + 0.5f);
 
-        float strength = 0.25f;
-        float flicker = 1f + pulse * strength;
+        final float strength = 0.25f;
+        final float flicker = 1f + pulse * strength;
 
         for (int i = 0; i < lights.count; i++) {
             float x = lights.x[i];
@@ -115,13 +112,15 @@ final class LightningRenderer {
                     null
             );
 
-//            if (cachedColoredLight == null) {
-//                cachedColoredLight = makeColoredLight(light, new Color(0, 255, 255));
-//            }
+//            final int argb = 0xFF00FFFF;
+//            final var coloredTexture = RenderCache.INSTANCE.getColoredLight(
+//                    argb,
+//                    () -> makeColoredLight(light, new Color(argb))
+//            );
 //
 //            lightGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
 //            lightGraphics.drawImage(
-//                    cachedColoredLight,
+//                    coloredTexture,
 //                    camera.worldToScreenX(drawX),
 //                    camera.worldToScreenY(drawY),
 //                    (int) finalRadius, (int) finalRadius,

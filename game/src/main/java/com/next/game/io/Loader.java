@@ -68,21 +68,6 @@ public final class Loader {
         }
     }
 
-    public static class Colours {
-        public static void register() {
-            Registry.colors.put(Colors.WHITE, Color.WHITE);
-            Registry.colors.put(Colors.BLACK, Color.BLACK);
-            Registry.colors.put(Colors.RED, Color.RED);
-            Registry.colors.put(Colors.GREEN, Color.GREEN);
-            Registry.colors.put(Colors.BLUE, Color.BLUE);
-            Registry.colors.put(Colors.YELLOW, Color.YELLOW);
-            Registry.colors.put(Colors.ORANGE, Color.ORANGE);
-            Registry.colors.put(Colors.PINK, Color.PINK);
-            Registry.colors.put(Colors.GRAY, Color.GRAY);
-            Registry.colors.put(Colors.MAGENTA, Color.MAGENTA);
-        }
-    }
-
     public static class Worlds {
         public static WorldRules load(String fileName) throws IOException {
             var file = FileReader.getFile("/configuration/" + fileName);

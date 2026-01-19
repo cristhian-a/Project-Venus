@@ -19,12 +19,11 @@ import com.next.engine.system.*;
 import com.next.game.io.Loader;
 import com.next.game.util.Inputs;
 
-public class Main {
+final class Main {
 
     void main() {
         // IO operations
         Loader.Founts.register();
-        Loader.Colours.register();
         Settings settings = Loader.Settings.load();
 
         // Configuration

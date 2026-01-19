@@ -11,11 +11,7 @@ import java.util.List;
 final class UIRenderer {
 
     private final VideoSettings settings;
-
     private final List<UIMessage> messages;
-    private final Stroke collisionStroke = new BasicStroke(1);
-
-    private final Font debugFont = new Font("Arial", Font.PLAIN, 30);
 
     UIRenderer(VideoSettings settings) {
         this.settings = settings;
@@ -36,7 +32,7 @@ final class UIRenderer {
     }
 
     void renderText(Graphics2D g, UIMessage m) {
-        renderText(g, m.text, m.x, m.y, Registry.colors.get(m.color), Registry.fonts.get(m.font), m.position);
+        renderText(g, m.text, m.x, m.y, RenderCache.INSTANCE.getColor(m.color), Registry.fonts.get(m.font), m.position);
     }
 
     void renderText(Graphics2D g, String text, int x, int y, Color color, Font font, RenderPosition position) {
@@ -71,22 +67,22 @@ final class UIRenderer {
             if (table.frames[i] > 0) {
                 messages.add(new UIMessage(table.message[i], table.font[i], table.colors[i], (int) table.x[i], (int) table.y[i], table.positions[i], table.frames[i]));
             } else {
-                renderText(g, table.message[i], (int) table.x[i], (int) table.y[i], Registry.colors.get(table.colors[i]), Registry.fonts.get(table.font[i]), table.positions[i]);
+                renderText(g, table.message[i], (int) table.x[i], (int) table.y[i], RenderCache.INSTANCE.getColor(table.colors[i]), Registry.fonts.get(table.font[i]), table.positions[i]);
             }
         }
     }
 
     void renderRectangleTable(Graphics2D g, RenderQueue.RectangleTable table) {
         for (int i = 0; i < table.count; i++) {
-            g.setColor(new Color(table.colors[i], true));
+            g.setColor(RenderCache.INSTANCE.getColor(table.colors[i]));
             g.drawRect((int) table.x[i], (int) table.y[i], (int) table.width[i], (int) table.height[i]);
         }
     }
 
     void renderRoundedStrokeRectTable(Graphics2D g, RenderQueue.RoundedStrokeRectTable table) {
         for (int i = 0; i < table.count; i++) {
-            g.setColor(new Color(table.colors[i], true));
-            g.setStroke(new BasicStroke(table.thickness[i]));
+            g.setColor(RenderCache.INSTANCE.getColor(table.colors[i]));
+            g.setStroke(RenderCache.INSTANCE.getStroke(table.thickness[i]));
             g.drawRoundRect(
                     (int) table.x[i],
                     (int) table.y[i],
@@ -100,14 +96,14 @@ final class UIRenderer {
 
     void renderFilledRectangleTable(Graphics2D g, RenderQueue.FilledRectangleTable table) {
         for (int i = 0; i < table.count; i++) {
-            g.setColor(new Color(table.colors[i], true));
+            g.setColor(RenderCache.INSTANCE.getColor(table.colors[i]));
             g.fillRect((int) table.x[i], (int) table.y[i], (int) table.width[i], (int) table.height[i]);
         }
     }
 
     void renderFilledRoundRectangleTable(Graphics2D g, RenderQueue.RoundedFilledRectTable table) {
         for (int i = 0; i < table.count; i++) {
-            g.setColor(new Color(table.colors[i], true));
+            g.setColor(RenderCache.INSTANCE.getColor(table.colors[i]));
             g.fillRoundRect(
                     (int) table.x[i],
                     (int) table.y[i],

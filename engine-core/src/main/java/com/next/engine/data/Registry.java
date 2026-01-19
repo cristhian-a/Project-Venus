@@ -4,7 +4,7 @@ import com.next.engine.graphics.Sprite;
 import com.next.engine.sound.SoundClip;
 import com.next.engine.sound.SoundData;
 
-import java.awt.*;
+import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,5 +18,4 @@ public final class Registry {
 
     // Temporary awt stuff
     public static final Map<String, Font> fonts = new HashMap<>();
-    public static final Map<Integer, Color> colors = new HashMap<>();
 }
