@@ -115,7 +115,7 @@ public final class RenderQueue {
 
         protected void onClear() {}
 
-        protected int nextSlot(float x, float y, float z) {
+        protected final int nextSlot(float x, float y, float z) {
             ensureCapacity();
             int index = count;
             count++;
