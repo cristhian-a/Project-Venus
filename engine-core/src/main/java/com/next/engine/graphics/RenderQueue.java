@@ -1,6 +1,7 @@
 package com.next.engine.graphics;
 
 import com.next.engine.animation.Costume;
+import com.next.engine.data.Buffered;
 import com.next.engine.physics.AABB;
 import com.next.engine.physics.CollisionBox;
 
@@ -9,7 +10,7 @@ import java.util.Arrays;
 /**
  * A queue of requests to be submitted to the renderer pipeline.
  */
-public final class RenderQueue {
+public final class RenderQueue implements Buffered {
 
     private final LayerBucket[] buckets;
 
@@ -25,6 +26,7 @@ public final class RenderQueue {
         return buckets[layer.ordinal()];
     }
 
+    @Override
     public void clear() {
         for (LayerBucket bucket : buckets) {
             bucket.clear();

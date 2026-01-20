@@ -58,7 +58,7 @@ public class Mob extends Actor implements Combatant {
         if (deathTimer > 0d) {
             deathTimer -= delta;
             if (deathTimer <= 0d) {
-                context.mailbox().eventSuppliers.add(() -> new MobDeathEvent(this));
+                context.mailbox().post(() -> new MobDeathEvent(this));
                 dispose();
                 return;
             }
