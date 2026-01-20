@@ -60,7 +60,10 @@ public final class Renderer {
         tileRenderer.render(g, camera);
         renderLayer(g, Layer.WORLD, queue, camera, identity);
         renderLayer(g, Layer.ACTORS, queue, camera, identity);
-        renderLayer(g, Layer.PARTICLES, queue, camera, identity);
+
+        try (var _ = DebugTimers.scope(DebugTimers.RENDER_PARTICLES)) {
+            renderLayer(g, Layer.PARTICLES, queue, camera, identity);
+        }
 
         // This should be rendered using world space, with camera coordinates (if translate is applied)
         lightningRenderer.render(g, camera, queue.getBucket(Layer.LIGHTS));
@@ -68,10 +71,13 @@ public final class Renderer {
         renderLayer(g, Layer.UI_WORLD, queue, camera, identity);
         renderLayer(g, Layer.UI_SCREEN, queue, camera, identity);
         renderLayer(g, Layer.UI_SCR_SCALED, queue, camera, identity);
-        renderLayer(g, Layer.DEBUG_WORLD, queue, camera, identity);
-        renderLayer(g, Layer.DEBUG_SCREEN, queue, camera, identity);
-
+        applySpace(g, Layer.UI_SCREEN, camera, identity);
         uiRenderer.renderMessages(g);
+
+        try (var _ = DebugTimers.scope(DebugTimers.RENDER_DEBUG_UI)) {
+            renderLayer(g, Layer.DEBUG_WORLD, queue, camera, identity);
+            renderLayer(g, Layer.DEBUG_SCREEN, queue, camera, identity);
+        }
 
         renderTimer.end();
     }

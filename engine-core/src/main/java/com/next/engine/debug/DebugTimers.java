@@ -6,6 +6,8 @@ import java.util.Map;
 public final class DebugTimers {
     private DebugTimers() {}
 
+    public static final String RENDER_PARTICLES = "render.particles";
+    public static final String RENDER_DEBUG_UI = "render.debug.ui";
     public static final String RENDER_LIGHTS = "render.lights";
     public static final String RENDER_TILES = "render.tiles";
     public static final String UPDATE = "director.update";
@@ -15,6 +17,8 @@ public final class DebugTimers {
     private static final Map<String, DebugTimer> TIMERS = new HashMap<>();
 
     static {
+        TIMERS.put(RENDER_PARTICLES, new DebugTimer(120));
+        TIMERS.put(RENDER_DEBUG_UI, new DebugTimer(120));
         TIMERS.put(RENDER_LIGHTS, new DebugTimer(120));
         TIMERS.put(RENDER_TILES, new DebugTimer(120));
         TIMERS.put(RENDERER, new DebugTimer(120));
