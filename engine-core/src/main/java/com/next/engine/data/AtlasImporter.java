@@ -5,6 +5,7 @@ import com.next.engine.dto.Point;
 import com.next.engine.dto.Rectangle;
 import com.next.engine.dto.TextureMetadata;
 import com.next.engine.graphics.Sprite;
+import com.next.engine.graphics.awt.ManagedTexture2;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -16,8 +17,7 @@ public final class AtlasImporter {
             throw new IllegalArgumentException("Sheet or metadata cannot be null");
         }
 
-        Registry.textures.put(99, sheet);
-        Registry.textureIds.put("master_sheet", 99);    // Never actually queried, just here for safety
+        Registry.masterSheet = new ManagedTexture2(sheet);
 
         List<Frame> frames = metadata.getFrames();
         Registry.sprites = new Sprite[frames.size()];
@@ -35,7 +35,9 @@ public final class AtlasImporter {
 
             Sprite sprite = new Sprite(
                     i, filename,
-                    coordinates.x, coordinates.y, coordinates.width, coordinates.height,
+                    coordinates.x, coordinates.y,
+                    coordinates.x + coordinates.width, coordinates.y + coordinates.height,
+                    coordinates.width, coordinates.height,
                     pivotX, pivotY
             );
 

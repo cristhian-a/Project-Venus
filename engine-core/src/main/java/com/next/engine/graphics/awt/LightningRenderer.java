@@ -10,6 +10,7 @@ import com.next.engine.system.Settings.VideoSettings;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 
 final class LightningRenderer {
 
@@ -21,9 +22,9 @@ final class LightningRenderer {
     private final int COMPOSITE_BUCKETS = 16;
     private final int AMBIENT_BUCKETS = 16;
 
-    private BufferedImage lightMap;
+    private VolatileImage lightMap;
     private Graphics2D lightGraphics;
-    private float ambient = 0.55f;
+    private float ambient = 0.85f;
 
     public LightningRenderer(VideoSettings settings) {
         this.settings = settings;
@@ -33,7 +34,7 @@ final class LightningRenderer {
                 .getDefaultScreenDevice()
                 .getDefaultConfiguration();
 
-        lightMap = gc.createCompatibleImage(
+        lightMap = gc.createCompatibleVolatileImage(
                 settings.WIDTH / settings.SCALE + 1,
                 settings.HEIGHT / settings.SCALE + 1,
                 Transparency.TRANSLUCENT
@@ -148,7 +149,7 @@ final class LightningRenderer {
 
         /* plus 1 is here to fix a problem with the camera letting a thin slice of the rendered world without the
         *  light map covering it */
-        lightMap = gc.createCompatibleImage(
+        lightMap = gc.createCompatibleVolatileImage(
                 settings.WIDTH / settings.SCALE + 1,
                 settings.HEIGHT / settings.SCALE + 1,
                 Transparency.TRANSLUCENT

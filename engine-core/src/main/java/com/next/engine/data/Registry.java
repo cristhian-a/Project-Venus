@@ -1,10 +1,11 @@
 package com.next.engine.data;
 
 import com.next.engine.graphics.Sprite;
+import com.next.engine.graphics.awt.ManagedTexture2;
 import com.next.engine.sound.SoundClip;
 import com.next.engine.sound.SoundData;
 
-import java.awt.Font;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,4 +19,5 @@ public final class Registry {
 
     // Temporary awt stuff
     public static final Map<String, Font> fonts = new HashMap<>();
+    public static ManagedTexture2 masterSheet;
 }

@@ -14,7 +14,6 @@ import com.next.engine.system.Settings.VideoSettings;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 
 public final class Renderer {
 
@@ -108,21 +107,7 @@ public final class Renderer {
     }
 
     private void renderSpriteTable(Graphics2D g, Camera camera, RenderQueue.SpriteTable table) {
-        BufferedImage masterSheet = Registry.textures.get(99);  // temporary master sheet location
-
-        for (int i = 0; i < table.count; i++) {
-            var s = Registry.sprites[table.spriteId[i]];
-
-            int dx = (int) (table.x[i] - s.pivotX());
-            int dy = (int) (table.y[i] - s.pivotY());
-
-            g.drawImage(
-                    masterSheet,
-                    dx, dy, dx + s.srcWidth(), dy + s.srcHeight(),
-                    s.srcX(), s.srcY(), s.srcX() + s.srcWidth(), s.srcY() + s.srcHeight(),
-                    null
-            );
-        }
+        Registry.masterSheet.draw(g, table);
     }
 
     private void renderOverlayTable(Graphics2D g, RenderQueue.OverlayTable table) {

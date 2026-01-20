@@ -9,7 +9,6 @@ import com.next.engine.scene.Tile;
 import com.next.engine.scene.World;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 final class TileRenderer {
 
@@ -41,7 +40,7 @@ final class TileRenderer {
 
         if (!render) return;
 
-        final BufferedImage tileSheet = getMasterSheet();
+        final var tileSheet = Registry.masterSheet;
         final int TILE_SIZE = world.getTileSize();
         
         int startCol = (int) Math.max(0, camera.getX() / TILE_SIZE);
@@ -60,11 +59,10 @@ final class TileRenderer {
                 int dx = col * TILE_SIZE;
                 int dy = row * TILE_SIZE;
 
-                g.drawImage(
-                        tileSheet,
+                tileSheet.draw(
+                        g,
                         dx, dy, dx + s.srcWidth(), dy + s.srcHeight(),
-                        s.srcX(), s.srcY(), s.srcX() + s.srcWidth(), s.srcY() + s.srcHeight(),
-                        null
+                        s.srcX(), s.srcY(), s.srcX2(), s.srcY2()
                 );
             }
         }
@@ -72,7 +70,4 @@ final class TileRenderer {
         debugtimer.end();
     }
 
-    private BufferedImage getMasterSheet() {
-        return Registry.textures.get(99);
-    }
 }
