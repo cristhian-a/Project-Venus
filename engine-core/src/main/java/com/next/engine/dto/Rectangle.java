@@ -2,7 +2,7 @@ package com.next.engine.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Rectangle {
+public final class Rectangle {
     public int x;
     public int y;
     @JsonProperty("w")

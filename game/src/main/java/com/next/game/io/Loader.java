@@ -4,9 +4,10 @@ import com.next.engine.data.Registry;
 import com.next.engine.dto.TextureMetadata;
 import com.next.engine.io.FileReader;
 import com.next.engine.io.JsonReader;
+import com.next.engine.scene.Tile;
 import com.next.engine.sound.SoundClip;
 import com.next.engine.sound.SoundData;
-import com.next.game.util.Colors;
+import com.next.game.rules.Layers;
 import com.next.game.util.Fonts;
 import com.next.game.util.Sounds;
 import com.next.engine.scene.LevelData;
@@ -66,25 +67,24 @@ public final class Loader {
         }
     }
 
-    public static class Colours {
-        public static void register() {
-            Registry.colors.put(Colors.WHITE, Color.WHITE);
-            Registry.colors.put(Colors.BLACK, Color.BLACK);
-            Registry.colors.put(Colors.RED, Color.RED);
-            Registry.colors.put(Colors.GREEN, Color.GREEN);
-            Registry.colors.put(Colors.BLUE, Color.BLUE);
-            Registry.colors.put(Colors.YELLOW, Color.YELLOW);
-            Registry.colors.put(Colors.ORANGE, Color.ORANGE);
-            Registry.colors.put(Colors.PINK, Color.PINK);
-            Registry.colors.put(Colors.GRAY, Color.GRAY);
-            Registry.colors.put(Colors.MAGENTA, Color.MAGENTA);
-        }
-    }
-
     public static class Worlds {
         public static WorldRules load(String fileName) throws IOException {
             var file = FileReader.getFile("/configuration/" + fileName);
             return JsonReader.readObject(file, WorldRules.class);
+        }
+
+        public static Tile[] tiles() {
+            var tiles = new Tile[10];
+            tiles[0] = new Tile(Registry.textureIds.get("grass-1.png"), 0, 0);
+            tiles[1] = new Tile(Registry.textureIds.get("wall-1.png"), Layers.WALL, 0);
+            tiles[2] = new Tile(Registry.textureIds.get("water-1.png"), Layers.WALL, 0);
+            tiles[3] = new Tile(Registry.textureIds.get("dirt-1.png"), 0, 0);
+            tiles[4] = new Tile(Registry.textureIds.get("mid-trees.png"), Layers.WALL, 0);
+            tiles[5] = new Tile(Registry.textureIds.get("sand-1.png"), 0, 0);
+            tiles[6] = new Tile(Registry.textureIds.get("top-trees.png"), Layers.WALL, 0);
+            tiles[7] = new Tile(Registry.textureIds.get("bottom-trees.png"), Layers.WALL, 0);
+
+            return tiles;
         }
 
         public static Integer[][] map1() {

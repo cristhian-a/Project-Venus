@@ -6,6 +6,7 @@ import com.next.engine.data.AtlasImporter;
 import com.next.engine.debug.*;
 import com.next.engine.event.*;
 import com.next.engine.model.*;
+import com.next.engine.scene.*;
 import com.next.game.event.DisplayStatsEvent;
 import com.next.game.event.FallDamageEvent;
 import com.next.game.event.PauseEvent;
@@ -22,17 +23,13 @@ import com.next.engine.system.Settings;
 import com.next.game.ui.GameplayUIState;
 import com.next.game.ui.UISystem;
 import com.next.game.util.Inputs;
-import com.next.engine.scene.LevelData;
-import com.next.engine.scene.Scene;
-import com.next.engine.scene.World;
-import com.next.engine.scene.WorldRules;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.IOException;
 
 @Getter
-public class Game implements Director {
+public final class Game implements Director {
 
     // debug related stuff
     private static final DebugTimer updateTimer = DebugTimers.of(DebugTimers.UPDATE);
@@ -51,6 +48,7 @@ public class Game implements Director {
     private final GameFlowHandler gameFlowHandler;
     private final CombatHandler combatHandler;
     private PlayerHandler playerHandler;
+    private DropHandler dropHandler;
 
     // States (if needed)
     private GameMode mode;
@@ -66,10 +64,13 @@ public class Game implements Director {
         this.settings = settings;
         this.dispatcher = dispatcher;
 
+        // Event handlers initialization
         new PitFallEvent.Handler(dispatcher);
         new FallDamageEvent.Handler(dispatcher);
-        new DoorHandler(dispatcher, mailbox);
+        new ItemHandler(dispatcher, mailbox);
         new SpellHandler(dispatcher, mailbox);
+        new MobHandler(this, mailbox, dispatcher);
+        new TileInteractionHandler(mailbox, dispatcher);
         combatHandler = new CombatHandler(mailbox, dispatcher);
         gameFlowHandler = new GameFlowHandler(dispatcher, this);
 
@@ -114,6 +115,7 @@ public class Game implements Director {
         camera.follow(player);
         physics.ruleOver(scene);
         playerHandler = new PlayerHandler(dispatcher, gameplayUIState);
+        dropHandler = new DropHandler(mailbox, dispatcher, this);
         dispatcher.dispatch(new WorldTransitionEvent(scene.world));
     }
 
@@ -129,7 +131,7 @@ public class Game implements Director {
         ui.submit(mailbox.postRender());
 
         mailbox.publish();
-        Tools.SCENE_TOOL.gatherInfo(scene);     // TODO this whole debugging be rethink
+        Tools.SCENE_TOOL.gatherInfo(scene);     // TODO I should rethink this whole debugging tooling thing
         Tools.PHYSICS_TOOL.gatherInfo(scene);
 
         updateTimer.end();
@@ -140,13 +142,13 @@ public class Game implements Director {
         WorldRules rules = Loader.Worlds.load(worldFile);
         LevelData level = Loader.Levels.load(levelFile);
 
-        var world = new World(rules, Loader.Worlds.map1());
+        var world = new World(rules, Loader.Worlds.map1(), Loader.Worlds.tiles());
         // TODO I might want to change to make player goes inside Actor's array
         Entity[] props = new PropFactory(world, level).createScene1Props().toArray(new Entity[0]);
         NpcDummy npc = new NpcFactory().createDummy();
         ObjectFireCamp fc = ObjectFactory.create();
 
-        Scene s = new Scene(world);
+        Scene s = new Scene(world, mailbox);
         s.addAll(props);
         s.add(npc);
         s.add(fc);
@@ -162,6 +164,10 @@ public class Game implements Director {
         player = new PlayerFactory(world, level, hitboxFactory).create();
         player.setInput(input); // TODO meh
         s.add(player);
+
+        ConsumableFactory consumableFactory = new ConsumableFactory(player);
+        var apple = consumableFactory.createApple();
+        player.getInventory().add(apple);
 
         // TODO take care: the same rule, for now, share state within multiple sensors, that means a once-use is REALLY once,
         // TODO don't matter how many sensors receive that policy instance (TriggerRule)

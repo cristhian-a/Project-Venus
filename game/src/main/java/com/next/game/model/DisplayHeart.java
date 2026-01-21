@@ -5,12 +5,15 @@ import com.next.engine.physics.CollisionType;
 
 public class DisplayHeart extends Prop {
 
-    private int[] sprites;
-
+    private final int[] sprites;
     private int depletion;
 
     public DisplayHeart(int fullHeartSprite, int halfHeartSprite, int emptyHeartSprite) {
-        super(fullHeartSprite, 0f, 0f, CollisionType.NONE, null);
+        spriteId = fullHeartSprite;
+        worldX = 0f;
+        worldY = 0f;
+        collisionType = CollisionType.NONE;
+        collisionBox = null;
 
         sprites = new int[3];
         sprites[0] = fullHeartSprite;

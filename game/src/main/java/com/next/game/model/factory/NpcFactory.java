@@ -1,37 +1,33 @@
 package com.next.game.model.factory;
 
-import com.next.engine.animation.Animation;
-import com.next.engine.animation.AnimationState;
+import com.next.engine.animation.*;
 import com.next.engine.data.Registry;
+import com.next.game.visual.AnimationState;
 import com.next.game.model.NpcDummy;
-
-import java.util.EnumMap;
-import java.util.Map;
 
 public class NpcFactory {
 
     public NpcDummy createDummy() {
-        Map<AnimationState, Animation> animations = new EnumMap<>(AnimationState.class);
+        Wardrobe<AnimationState> wardrobe = new EnumWardrobe<>(AnimationState.class);
 
         int idle1 = Registry.textureIds.get("soldier-1.png");
         int walk1 = Registry.textureIds.get("soldier-2.png");
         int walk2 = Registry.textureIds.get("soldier-3.png");
 
         Animation walk = new Animation();
-        walk.frameRate = 20;
+        walk.frameDuration = 0.3333f;
         walk.frames = new int[] { walk1, walk2 };
         walk.loop = true;
-        animations.put(AnimationState.WALK_UP, walk);
-        animations.put(AnimationState.WALK_DOWN, walk);
-        animations.put(AnimationState.WALK_LEFT, walk);
-        animations.put(AnimationState.WALK_RIGHT, walk);
 
-        Animation idle = new Animation();
-        idle.frameRate = 0;
-        idle.frames = new int[] { idle1 };
-        idle.loop = false;
-        animations.put(AnimationState.IDLE, idle);
+        Costume idleCostume = new StaticCostume(idle1);
+        Costume walkCostume = new AnimatedCostume(walk);
 
-        return new NpcDummy(22*16+8, 21*16+8, animations);
+        wardrobe.add(AnimationState.IDLE, idleCostume);
+        wardrobe.add(AnimationState.WALK_UP, walkCostume);
+        wardrobe.add(AnimationState.WALK_DOWN, walkCostume);
+        wardrobe.add(AnimationState.WALK_LEFT, walkCostume);
+        wardrobe.add(AnimationState.WALK_RIGHT, walkCostume);
+
+        return new NpcDummy(22*16+8, 21*16+8, wardrobe);
     }
 }

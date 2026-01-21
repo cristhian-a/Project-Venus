@@ -1,17 +1,14 @@
 package com.next.engine.model;
 
-import com.next.engine.data.Mailbox;
+import com.next.engine.animation.Costume;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.physics.*;
 import com.next.engine.graphics.Layer;
 import lombok.Getter;
 import lombok.Setter;
-import org.jspecify.annotations.NonNull;
 
 @Getter
-public abstract class Actor extends Entity implements Body {
-    protected int spriteId;
-
+public abstract class Actor extends Entity implements Body, Updatable, Renderable {
     protected int layer;
     protected int collisionMask;
     protected CollisionBox collisionBox;        // TODO: remember to initialize it anytime (or move it to children)
@@ -23,6 +20,8 @@ public abstract class Actor extends Entity implements Body {
     protected float mass = 1f;
     public float vx;
     public float vy;
+
+    public abstract Costume getCostume();
 
     @Deprecated
     public void setVelocity(float vx, float vy) {
@@ -40,11 +39,13 @@ public abstract class Actor extends Entity implements Body {
         return isImmovable() ? 0f : 1f / mass;
     }
 
-    public void update(double delta, Mailbox mailbox) {
+    @Override
+    public void update(double delta) {
     }
 
-    public void submitRender(@NonNull RenderQueue queue) {
-        queue.submit(Layer.ACTORS, (int) worldX, (int) worldY, spriteId);
+    @Override
+    public void collectRender(RenderQueue queue) {
+        queue.submit(Layer.ACTORS, (int) worldX, (int) worldY, getCostume().texture());
     }
 
     @Override
@@ -55,13 +56,6 @@ public abstract class Actor extends Entity implements Body {
             collisionBox.update(worldX, worldY);
         }
     }
-
-    /**
-     * Should be called when effectively discarded. By default, it does nothing. Override it whenever any behavior upon
-     * disposing is needed.
-     */
-    @Override
-    public void onDispose() {}
 
     @Override
     public float getX() {

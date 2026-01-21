@@ -13,7 +13,11 @@ import java.util.function.Consumer;
 /**
  * A {@code Scene} holds all the runtime entities relevant to the current scene.
  */
-public class Scene {
+public class Scene implements SceneContext {
+
+    private final Mailbox mailbox;
+    private final ParticleSystem particleSystem;
+
     public final World world;
     public Camera camera;
 
@@ -32,17 +36,27 @@ public class Scene {
     @Getter private Sensor[] sensors;
     @Getter private int sensorCount;
 
+    private Updatable[] updatable;
+    private int updatableCount;
+
+    private Renderable[] renderables;
+    private int renderableCount;
+
     private Entity[] entitiesById;
     private int nextId = 0;
 
-    public Scene(World world) {
+    public Scene(World world, Mailbox mailbox) {
         this.world = world;
+        this.mailbox = mailbox;
+        this.particleSystem = new ParticleSystem(1024);
 
         this.entities = new Entity[16];
         this.actors = new Actor[16];
         this.bodies = new Body[16];
         this.lights = new Light[16];
         this.sensors = new Sensor[16];
+        this.updatable = new Updatable[16];
+        this.renderables = new Renderable[16];
 
         this.entitiesById = new Entity[16];
     }
@@ -55,6 +69,7 @@ public class Scene {
 
     public void add(Entity entity) {
         entity.setId(nextId++);
+        entity.setContext(this);
 
         if (entityCount >= entities.length) {
             entities = Arrays.copyOf(entities, entities.length * 2);
@@ -97,29 +112,44 @@ public class Scene {
 
             sensors[sensorCount++] = sensor;
         }
+
+        if (entity instanceof Updatable updatable) {
+            if (updatableCount >= this.updatable.length) {
+                this.updatable = Arrays.copyOf(this.updatable, this.updatable.length * 2);
+            }
+
+            this.updatable[updatableCount++] = updatable;
+        }
+
+        if (entity instanceof Renderable renderable) {
+            if (renderableCount >= renderables.length) {
+                renderables = Arrays.copyOf(renderables, renderables.length * 2);
+            }
+
+            renderables[renderableCount++] = renderable;
+        }
     }
 
     public Entity getEntity(int id) {
         return entitiesById[id];
     }
 
-    public void update(double delta, Mailbox mailbox) {
-        for (int i = 0; i < actorCount; i++) {
-            actors[i].update(delta, mailbox);
-        }
+    public void update(double delta) {
+        particleSystem.update(delta);
 
-        for (int i = 0; i < sensorCount; i++) {
-            sensors[i].update(delta);
+        for (int i = 0; i < updatableCount; i++) {
+            updatable[i].update(delta);
         }
     }
 
     public void submitRender(RenderQueue queue) {
+        particleSystem.collectRender(queue);
+
         // sorting by Y before submitting; Probably not the best, but fine for now
         Arrays.sort(actors, 0, actorCount, Comparator.comparingDouble(Actor::getWorldY));
-
-        for (int i = 0; i < actorCount; i++) {
-            actors[i].submitRender(queue);
-        }
+//        for (int i = 0; i < actorCount; i++) {
+//            actors[i].collectRender(queue);
+//        }
 
         for (int i = 0; i < lightCount; i++) {
             queue.punchLight(
@@ -130,6 +160,11 @@ public class Scene {
                     lights[i].getIntensity(),
                     lights[i].getTextureId()
             );
+        }
+
+        // TODO a way of sort the rendering order is now required
+        for (int i = 0; i < renderableCount; i++) {
+            renderables[i].collectRender(queue);
         }
     }
 
@@ -178,6 +213,25 @@ public class Scene {
                 i--;
             }
         }
+
+        for (int i = 0; i < updatableCount; i++) {
+            Entity e = (Entity) updatable[i];
+            if (e.isDisposed()) {
+                updatable[i] = updatable[updatableCount - 1];
+                updatable[updatableCount - 1] = null;
+                updatableCount--;
+                i--;
+            }
+        }
+
+        for (int i = 0; i < renderableCount; i++) {
+            Entity e = (Entity) renderables[i];
+            if (e.isDisposed()) {
+                renderables[i] = renderables[renderableCount - 1];
+                renderables[renderableCount - 1] = null;
+                renderableCount--;
+            }
+        }
     }
 
     public void forEachBody(Consumer<Body> consumer) {
@@ -186,4 +240,13 @@ public class Scene {
         }
     }
 
+    @Override
+    public Mailbox mailbox() {
+        return this.mailbox;
+    }
+
+    @Override
+    public void emitParticle(Particle particle) {
+        particleSystem.spawn(particle);
+    }
 }

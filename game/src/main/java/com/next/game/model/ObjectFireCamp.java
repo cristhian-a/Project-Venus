@@ -1,43 +1,46 @@
 package com.next.game.model;
 
-import com.next.engine.animation.Animation;
-import com.next.engine.animation.AnimationState;
-import com.next.engine.data.Mailbox;
-import com.next.engine.model.AnimatedActor;
-import com.next.engine.physics.Body;
+import com.next.engine.animation.*;
+import com.next.engine.model.Actor;
 import com.next.engine.physics.CollisionBox;
-import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
+import com.next.engine.scene.ParticleEmitter;
+import com.next.game.visual.AnimationState;
+import com.next.game.rules.Layers;
 
-import java.util.HashMap;
+public class ObjectFireCamp extends Actor {
 
-public class ObjectFireCamp extends AnimatedActor {
+    private final Dresser<AnimationState> costume;
+    private final ParticleEmitter smokeEmitter;
 
-    public ObjectFireCamp(Animation animation, int x, int y, int width, int height, int offsetX, int offsetY) {
-        this.animations = new HashMap<>() {{
-            put(AnimationState.IDLE, animation);
-        }};
+    public ObjectFireCamp(Animation animation, int x, int y, int width, int height, int offsetX, int offsetY,
+                          ParticleEmitter smokeEmitter
+    ) {
+        Wardrobe<AnimationState> animations = new EnumWardrobe<>(AnimationState.class);
+        Costume c = new AnimatedCostume(animation);
+        animations.add(AnimationState.IDLE, c);
+        costume = new Dresser<>(animations);
+        costume.wear(AnimationState.IDLE);
+
         this.worldX = x;
         this.worldY = y;
-        this.animationState = AnimationState.IDLE;
         this.collisionType = CollisionType.SOLID;
         this.collisionBox = new CollisionBox(x, y, offsetX, offsetY, width, height);
-        this.layer = 1;
+        this.layer = Layers.WALL;
         this.collisionMask = 0;
+
+        this.smokeEmitter = smokeEmitter;
     }
 
     @Override
-    public void update(double delta, Mailbox mailbox) {
-        animate();
+    public Costume getCostume() {
+        return costume;
     }
 
     @Override
-    public void animate() {
-        animator.set(animations.get(animationState));
-        spriteId = animator.update();
+    public void update(double delta) {
+        costume.update(delta);
+        smokeEmitter.update(delta, context::emitParticle);
     }
 
-    @Override
-    public void onCollision(Body other, EventCollector collector) {
-    }
 }

@@ -23,6 +23,7 @@ public class Hitbox extends Sensor {
     public void init(Entity owner, float worldX, float worldY, HitboxSpec specs) {
         this.disposed = false;
 
+        this.collisionMask = specs.collisionLayer();
         this.specs = specs;
         this.remainingTime = specs.durationSeconds();
         this.owner = owner;
@@ -33,8 +34,8 @@ public class Hitbox extends Sensor {
         collisionBox = new CollisionBox(worldX, worldY, 0, 0, specs.width(), specs.height());
     }
 
-    public void setRule(TriggerRule rule) {
-        this.rule = rule;
+    public final void setRule(TriggerRule rule) {
+        this.onCollision = rule;
     }
 
     @Override
@@ -65,7 +66,7 @@ public class Hitbox extends Sensor {
         this.specs = null;
         this.remainingTime = 0d;
         this.alreadyHit.clear();
-        this.rule = null;
+        this.onCollision = null;
         this.collisionBox = null;
 
         HitboxPool.free(this);

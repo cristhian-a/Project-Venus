@@ -1,5 +1,6 @@
 package com.next.game.gameflow;
 
+import com.next.engine.data.Mailbox;
 import com.next.game.Game;
 import com.next.engine.sound.PlaySound;
 import com.next.engine.sound.SoundChannel;
@@ -21,15 +22,16 @@ public final class RunningMode implements GameMode {
     @Override
     public void update(Game game, double delta) {
         Scene scene = game.getScene();
+        Mailbox mailbox = game.getMailbox();
 
-        scene.update(delta, game.getMailbox());
+        scene.update(delta);
         game.getCombatHandler().update(delta);
-        game.getPhysics().apply(delta, game.getMailbox().motionQueue, game.getMailbox());
+        game.getPhysics().apply(delta, mailbox.motionQueue, mailbox);
 
-        game.getDispatcher().dispatch(game.getMailbox());
+        game.getDispatcher().dispatch(mailbox);
         scene.dismissDisposed();
 
         scene.camera.follow(game.getPlayer());
-        scene.submitRender(game.getMailbox().postRender());
+        scene.submitRender(mailbox.postRender());
     }
 }

@@ -61,10 +61,10 @@ public class IntObjectMapTest {
         end = System.nanoTime();
         long linearTime = end - start;
 
-        System.out.println("N = " + N);
-        System.out.println("hash   ns/op: " + (hashTime / (double) OPS));
-        System.out.println("linear ns/op: " + (linearTime / (double) OPS));
-        System.out.println("sink = " + (dummy + sum1 + sum2)); // keep JVM honest
+        IO.println("N = " + N);
+        IO.println("hash   ns/op: " + (hashTime / (double) OPS));
+        IO.println("linear ns/op: " + (linearTime / (double) OPS));
+        IO.println("sink = " + (dummy + sum1 + sum2)); // keep JVM honest
 
         // My conclusion so far: linear just beats hashing in really tiny sizes (8 or less)
     }

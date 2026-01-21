@@ -10,7 +10,7 @@ import java.awt.event.ComponentListener;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 
-public class AwtCanvas extends Canvas implements GamePanel, ComponentListener {
+public final class AwtCanvas extends Canvas implements GamePanel, ComponentListener {
 
     private final Renderer renderer;
     private final KeyListener input;
@@ -32,8 +32,11 @@ public class AwtCanvas extends Canvas implements GamePanel, ComponentListener {
 
         window = new JFrame("Venus");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setUndecorated(false);
         window.add(this);
         window.pack();
+
+        setFullscreen(false);
 
         addComponentListener(this);
         createBufferStrategy(2);
@@ -71,6 +74,10 @@ public class AwtCanvas extends Canvas implements GamePanel, ComponentListener {
         } while (bufferStrategy.contentsLost());
     }
 
+    public void setFullscreen(boolean fullscreen) {
+        window.setExtendedState(fullscreen ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL);
+    }
+
     @Override
     public void componentResized(ComponentEvent e) {
         videoSettings.WIDTH = getWidth();
@@ -81,6 +88,8 @@ public class AwtCanvas extends Canvas implements GamePanel, ComponentListener {
 
         createBufferStrategy(2);
         bufferStrategy = getBufferStrategy();
+
+        renderer.onResize();
     }
 
     @Override

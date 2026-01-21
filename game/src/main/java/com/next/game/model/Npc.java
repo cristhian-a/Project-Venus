@@ -1,12 +1,7 @@
 package com.next.game.model;
 
-import com.next.engine.model.AnimatedActor;
+import com.next.engine.model.Actor;
 
-public abstract class Npc extends AnimatedActor {
+public abstract class Npc extends Actor {
 
-    @Override
-    public void animate() {
-        animator.set(animations.get(animationState));
-        this.spriteId = animator.update();
-    }
 }

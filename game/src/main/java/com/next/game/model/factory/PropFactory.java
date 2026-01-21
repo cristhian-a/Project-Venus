@@ -2,10 +2,12 @@ package com.next.game.model.factory;
 
 import com.next.engine.data.Registry;
 import com.next.engine.model.Prop;
+import com.next.engine.physics.CollisionBox;
 import com.next.engine.physics.CollisionType;
 import com.next.game.model.*;
 import com.next.engine.scene.LevelData;
 import com.next.engine.scene.World;
+import com.next.game.util.Tags;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +38,23 @@ public class PropFactory {
         return new Key(Registry.textureIds.get("key-1.png"), worldX, worldY, CollisionType.TRIGGER);
     }
 
-    public Prop createStoneBlock(int worldX, int worldY) {
-        return new Prop(Registry.textureIds.get("stone-block-1.png"), worldX, worldY, 1f, CollisionType.SOLID, -6, -6, 12, 12);
+    public WorldItem createVenusShield(int worldX, int worldY) {
+        int texture = Registry.textureIds.get("venus-shield.png");
+        String name = "Red Shield";
+        String description = "A decorative shield to honor the \ngoddess Venus";
+        CollisionBox box = new CollisionBox(worldX, worldY, -8, -8, 16, 16);
+        Armor inventoryVersion = new ArmorBasic(texture, name, description, 2);
+        return new WorldItem(texture, name, description, worldX, worldY, inventoryVersion, CollisionType.TRIGGER, box);
+    }
+
+    public WorldItem createBasicAxe(int worldX, int worldY) {
+        int texture = Registry.textureIds.get("axe.png");
+        String name = "Basic Axe";
+        String description = "Steel axe.";
+        CollisionBox box = new CollisionBox(worldX, worldY, -8, -8, 16, 16);
+//        Weapon inventoryVersion = new WeaponAxe(2, texture, name, description);
+        Weapon inventoryVersion = new WeaponAxe();
+        return new WorldItem(texture, name, description, worldX, worldY, inventoryVersion, CollisionType.TRIGGER, box);
     }
 
     public DisplayHeart createHeart(int worldX, int worldY) {
@@ -45,6 +62,21 @@ public class PropFactory {
         int half = Registry.textureIds.get("heart-2.png");
         int empty = Registry.textureIds.get("heart-3.png");
         return new DisplayHeart(full, half, empty);
+    }
+
+    public DestructibleTile destructibleTree(float worldX, float worldY) {
+        int pivotX = 8;
+        int pivotY = 16;
+        worldX += pivotX;
+        worldY += pivotY;
+
+        String type = Tags.INTERACT_TREE;
+        int intactTexture = Registry.textureIds.get("destructible-tree-1.png");
+        int brokenTexture = Registry.textureIds.get("remaining-tree.png");
+        var box = new CollisionBox(worldX, worldY, -pivotX, -23, 16, 22);
+        int hp = 10;
+
+        return new DestructibleTile(type, intactTexture, brokenTexture, hp, worldX, worldY, box);
     }
 
     public List<Prop> createScene1Props() {
@@ -55,7 +87,12 @@ public class PropFactory {
         props.add(createDoor(10 * world.getTileSize() + pivot, 11 * world.getTileSize() + pivot));
         props.add(createKey(37 * world.getTileSize() + pivot, 9 * world.getTileSize() + pivot));
         props.add(createSpell(37 * world.getTileSize() + pivot, 42 * world.getTileSize() + pivot));
-        props.add(createStoneBlock(23 * world.getTileSize() + pivot, 23 * world.getTileSize() + pivot));
+        props.add(createBasicAxe(23 * world.getTileSize() + pivot, 7 * world.getTileSize() + pivot));
+        props.add(createVenusShield(23 * world.getTileSize() + pivot, 40 * world.getTileSize() + pivot));
+        props.add(destructibleTree(36 * world.getTileSize(), 42 * world.getTileSize()));
+        props.add(destructibleTree(33 * world.getTileSize(), 42 * world.getTileSize()));
+        props.add(destructibleTree(34 * world.getTileSize(), 40 * world.getTileSize()));
+        props.add(destructibleTree(37 * world.getTileSize(), 39 * world.getTileSize()));
         return props;
     }
 }

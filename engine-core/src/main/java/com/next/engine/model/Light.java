@@ -17,10 +17,6 @@ public class Light extends Entity {
         this.textureId = textureId;
     }
 
-    @Override
-    public void onDispose() {
-    }
-
     public void setPosition(float x, float y) {
         worldX = x;
         worldY = y;

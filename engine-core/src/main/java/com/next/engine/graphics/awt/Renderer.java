@@ -9,14 +9,13 @@ import com.next.engine.debug.Debugger;
 import com.next.engine.event.WorldTransitionEvent;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
-import com.next.engine.graphics.RenderSpace;
 import com.next.engine.model.Camera;
 import com.next.engine.system.Settings.VideoSettings;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
-public class Renderer {
+public final class Renderer {
 
     // debug stuff
     private static final DebugTimer renderTimer = DebugTimers.of(DebugTimers.RENDERER);
@@ -56,51 +55,57 @@ public class Renderer {
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         AffineTransform identity = g.getTransform();
 
-        // Filling the background before any actual render
-        applySpace(g, RenderSpace.SCREEN, camera, identity);
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, settings.WIDTH, settings.HEIGHT);
-
-        renderLayer(g, Layer.BACKGROUND, queue.getBucket(Layer.BACKGROUND), camera, identity);
-        applySpace(g, RenderSpace.WORLD, camera, identity);
+        renderLayer(g, Layer.BACKGROUND, queue, camera, identity);
+        applySpace(g, Layer.WORLD, camera, identity);
         tileRenderer.render(g, camera);
-        renderLayer(g, Layer.WORLD, queue.getBucket(Layer.WORLD), camera, identity);
-        renderLayer(g, Layer.ACTORS, queue.getBucket(Layer.ACTORS), camera, identity);
+        renderLayer(g, Layer.WORLD, queue, camera, identity);
+        renderLayer(g, Layer.ACTORS, queue, camera, identity);
+
+        try (var _ = DebugTimers.scope(DebugTimers.RENDER_PARTICLES)) {
+            renderLayer(g, Layer.PARTICLES, queue, camera, identity);
+        }
 
         // This should be rendered using world space, with camera coordinates (if translate is applied)
         lightningRenderer.render(g, camera, queue.getBucket(Layer.LIGHTS));
 
-        renderLayer(g, Layer.UI_WORLD, queue.getBucket(Layer.UI_WORLD), camera, identity);
-        renderLayer(g, Layer.UI_SCREEN, queue.getBucket(Layer.UI_SCREEN), camera, identity);
-        renderLayer(g, Layer.DEBUG_WORLD, queue.getBucket(Layer.DEBUG_WORLD), camera, identity);
-        renderLayer(g, Layer.DEBUG_SCREEN, queue.getBucket(Layer.DEBUG_SCREEN), camera, identity);
-
+        renderLayer(g, Layer.UI_WORLD, queue, camera, identity);
+        renderLayer(g, Layer.UI_SCREEN, queue, camera, identity);
+        renderLayer(g, Layer.UI_SCR_SCALED, queue, camera, identity);
+        applySpace(g, Layer.UI_SCREEN, camera, identity);
         uiRenderer.renderMessages(g);
+
+        try (var _ = DebugTimers.scope(DebugTimers.RENDER_DEBUG_UI)) {
+            renderLayer(g, Layer.DEBUG_WORLD, queue, camera, identity);
+            renderLayer(g, Layer.DEBUG_SCREEN, queue, camera, identity);
+        }
 
         renderTimer.end();
     }
 
-    private void renderLayer(Graphics2D g, Layer layer, RenderQueue.LayerBucket bucket, Camera camera, AffineTransform identity) {
-        applySpace(g, layer.space, camera, identity);
-        renderSpriteTable(g, camera, bucket.sprites);
+    private void renderLayer(Graphics2D g, Layer layer, RenderQueue queue, Camera camera, AffineTransform identity) {
+        applySpace(g, layer, camera, identity);
+
+        var bucket = queue.getBucket(layer);
+
         uiRenderer.renderRectangleTable(g, bucket.rectangles);
         uiRenderer.renderFilledRectangleTable(g, bucket.filledRectangles);
         uiRenderer.renderFilledRoundRectangleTable(g, bucket.filledRoundRects);
         uiRenderer.renderRoundedStrokeRectTable(g, bucket.roundedStrokeRectTable);
+        renderSpriteTable(g, camera, bucket.sprites);
         renderOverlayTable(g, bucket.overlays);
         uiRenderer.renderTextTable(g, bucket.texts);
     }
 
-    private void applySpace(Graphics2D g, RenderSpace space, Camera camera, AffineTransform identity) {
+    private void applySpace(Graphics2D g, Layer layer, Camera camera, AffineTransform identity) {
         g.setTransform(identity);
 
-        switch (space) {
+        if (layer.scaled) {
+            g.scale(settings.SCALE, settings.SCALE);
+        }
+
+        switch (layer.space) {
             case WORLD -> {
-                g.scale(settings.SCALE, settings.SCALE);
                 g.translate(-camera.getX(), -camera.getY());
-            }
-            case UI_WORLD -> {
-                g.scale(settings.SCALE, settings.SCALE);
             }
             case SCREEN -> {
             }
@@ -108,22 +113,24 @@ public class Renderer {
     }
 
     private void renderSpriteTable(Graphics2D g, Camera camera, RenderQueue.SpriteTable table) {
-        for (int i = 0; i < table.count; i++) {
-            var sprite = Registry.sprites.get(table.spriteId[i]);
-            g.drawImage(
-                    sprite.texture(),
-                    (int) (table.x[i] - sprite.pivotX()),
-                    (int) (table.y[i] - sprite.pivotY()),
-                    null
-            );
-        }
+        Registry.masterSheet.draw(g, table);
     }
 
     private void renderOverlayTable(Graphics2D g, RenderQueue.OverlayTable table) {
         if (table.count == 0) return;
         g.setColor(OVERLAY_COLOR);
         for (int i = 0; i < table.count; i++) {
-            g.fillRect(table.x[i], table.y[i], settings.WIDTH, settings.HEIGHT);
+            g.fillRect((int) table.x[i], (int) table.y[i], settings.WIDTH, settings.HEIGHT);
         }
+    }
+
+    private void fillPolygon(Graphics2D g, int[] xPoints, int[] yPoints, Color color) {
+        g.setColor(color);
+        g.fillPolygon(xPoints, yPoints, xPoints.length);
+    }
+
+    void onResize() {
+        director.getCamera().resize(settings.UNSCALED_WIDTH, settings.UNSCALED_HEIGHT);
+        lightningRenderer.onResize();
     }
 }

@@ -5,12 +5,12 @@ import com.next.engine.debug.Debugger;
 import lombok.Getter;
 
 @Getter
-public class Camera {
+public final class Camera {
     private float x;
     private float y;
+    private int viewportWidth;
+    private int viewportHeight;
 
-    private final int viewportWidth;
-    private final int viewportHeight;
     private final int offsetX;
     private final int offsetY;
     private final int scale;
@@ -39,5 +39,10 @@ public class Camera {
 
     public int worldToScreenY(float worldY) {
         return (int) (worldY - y);
+    }
+
+    public void resize(int viewportWidth, int viewportHeight) {
+        this.viewportWidth = viewportWidth;
+        this.viewportHeight = viewportHeight;
     }
 }

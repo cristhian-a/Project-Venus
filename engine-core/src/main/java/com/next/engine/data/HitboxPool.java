@@ -5,7 +5,7 @@ import com.next.engine.model.Hitbox;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public class HitboxPool {
+public final class HitboxPool {
     private static final Deque<Hitbox> pool = new ArrayDeque<>(100);
 
     public static Hitbox obtain() {

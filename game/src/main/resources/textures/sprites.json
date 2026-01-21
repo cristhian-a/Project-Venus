@@ -1,8 +1,35 @@
 {"frames": [
 
 {
+	"filename": "apple.png",
+	"frame": {"x":0,"y":0,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "axe.png",
+	"frame": {"x":16,"y":0,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "blue-dot-root.png",
+	"frame": {"x":32,"y":0,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
 	"filename": "bottom-trees.png",
-	"frame": {"x":64,"y":0,"w":16,"h":16},
+	"frame": {"x":48,"y":0,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -11,7 +38,7 @@
 },
 {
 	"filename": "char-1.png",
-	"frame": {"x":64,"y":16,"w":16,"h":16},
+	"frame": {"x":0,"y":16,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -20,7 +47,7 @@
 },
 {
 	"filename": "char-2.png",
-	"frame": {"x":80,"y":0,"w":16,"h":16},
+	"frame": {"x":16,"y":16,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -29,7 +56,7 @@
 },
 {
 	"filename": "char-3.png",
-	"frame": {"x":80,"y":16,"w":16,"h":16},
+	"frame": {"x":32,"y":16,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -38,7 +65,7 @@
 },
 {
 	"filename": "char-4.png",
-	"frame": {"x":96,"y":0,"w":16,"h":16},
+	"frame": {"x":48,"y":16,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -47,7 +74,7 @@
 },
 {
 	"filename": "char-5.png",
-	"frame": {"x":96,"y":16,"w":16,"h":16},
+	"frame": {"x":0,"y":32,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -56,7 +83,7 @@
 },
 {
 	"filename": "char-6.png",
-	"frame": {"x":112,"y":0,"w":16,"h":16},
+	"frame": {"x":16,"y":32,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -65,7 +92,7 @@
 },
 {
 	"filename": "char-7.png",
-	"frame": {"x":112,"y":16,"w":16,"h":16},
+	"frame": {"x":32,"y":32,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -74,7 +101,7 @@
 },
 {
 	"filename": "char-8.png",
-	"frame": {"x":128,"y":0,"w":16,"h":16},
+	"frame": {"x":48,"y":32,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -83,7 +110,7 @@
 },
 {
 	"filename": "char-9.png",
-	"frame": {"x":128,"y":16,"w":16,"h":16},
+	"frame": {"x":0,"y":48,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -92,7 +119,7 @@
 },
 {
 	"filename": "char-10.png",
-	"frame": {"x":144,"y":0,"w":16,"h":16},
+	"frame": {"x":16,"y":48,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -101,7 +128,7 @@
 },
 {
 	"filename": "char-11.png",
-	"frame": {"x":144,"y":16,"w":16,"h":16},
+	"frame": {"x":32,"y":48,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -110,7 +137,7 @@
 },
 {
 	"filename": "char-12.png",
-	"frame": {"x":160,"y":0,"w":16,"h":16},
+	"frame": {"x":48,"y":48,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -119,7 +146,7 @@
 },
 {
 	"filename": "char-atk-1.png",
-	"frame": {"x":160,"y":16,"w":16,"h":16},
+	"frame": {"x":0,"y":64,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -128,7 +155,7 @@
 },
 {
 	"filename": "char-atk-2.png",
-	"frame": {"x":0,"y":0,"w":16,"h":32},
+	"frame": {"x":16,"y":64,"w":16,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":32},
@@ -137,7 +164,7 @@
 },
 {
 	"filename": "char-atk-3.png",
-	"frame": {"x":176,"y":0,"w":16,"h":16},
+	"frame": {"x":32,"y":64,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -146,7 +173,7 @@
 },
 {
 	"filename": "char-atk-4.png",
-	"frame": {"x":16,"y":0,"w":16,"h":32},
+	"frame": {"x":48,"y":64,"w":16,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":32},
@@ -155,7 +182,7 @@
 },
 {
 	"filename": "char-atk-5.png",
-	"frame": {"x":176,"y":16,"w":16,"h":16},
+	"frame": {"x":0,"y":96,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -164,7 +191,7 @@
 },
 {
 	"filename": "char-atk-6.png",
-	"frame": {"x":32,"y":0,"w":32,"h":16},
+	"frame": {"x":16,"y":96,"w":32,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":16},
@@ -173,7 +200,7 @@
 },
 {
 	"filename": "char-atk-7.png",
-	"frame": {"x":192,"y":0,"w":16,"h":16},
+	"frame": {"x":48,"y":96,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -182,7 +209,7 @@
 },
 {
 	"filename": "char-atk-8.png",
-	"frame": {"x":32,"y":16,"w":32,"h":16},
+	"frame": {"x":0,"y":112,"w":32,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":16},
@@ -191,7 +218,7 @@
 },
 {
 	"filename": "chest-1.png",
-	"frame": {"x":192,"y":16,"w":16,"h":16},
+	"frame": {"x":32,"y":112,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -199,8 +226,17 @@
 	"pivot": {"x":0.5,"y":0.5}
 },
 {
+	"filename": "destructible-tree-1.png",
+	"frame": {"x":48,"y":112,"w":16,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":32},
+	"sourceSize": {"w":16,"h":32},
+	"pivot": {"x":0.5,"y":1.0}
+},
+{
 	"filename": "dirt-1.png",
-	"frame": {"x":208,"y":0,"w":16,"h":16},
+	"frame": {"x":0,"y":144,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -209,7 +245,7 @@
 },
 {
 	"filename": "door-1.png",
-	"frame": {"x":208,"y":16,"w":16,"h":16},
+	"frame": {"x":16,"y":144,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -218,7 +254,7 @@
 },
 {
 	"filename": "firecamp-1.png",
-	"frame": {"x":224,"y":0,"w":16,"h":16},
+	"frame": {"x":32,"y":144,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -227,7 +263,7 @@
 },
 {
 	"filename": "firecamp-2.png",
-	"frame": {"x":224,"y":16,"w":16,"h":16},
+	"frame": {"x":48,"y":144,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -236,7 +272,7 @@
 },
 {
 	"filename": "firecamp-3.png",
-	"frame": {"x":240,"y":0,"w":16,"h":16},
+	"frame": {"x":0,"y":160,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -245,7 +281,7 @@
 },
 {
 	"filename": "ghost-1.png",
-	"frame": {"x":240,"y":16,"w":16,"h":16},
+	"frame": {"x":16,"y":160,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -254,7 +290,7 @@
 },
 {
 	"filename": "ghost-2.png",
-	"frame": {"x":256,"y":0,"w":16,"h":16},
+	"frame": {"x":32,"y":160,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -263,7 +299,7 @@
 },
 {
 	"filename": "ghost-dead.png",
-	"frame": {"x":256,"y":16,"w":16,"h":16},
+	"frame": {"x":48,"y":160,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -272,7 +308,7 @@
 },
 {
 	"filename": "grass-1.png",
-	"frame": {"x":272,"y":0,"w":16,"h":16},
+	"frame": {"x":0,"y":176,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -281,7 +317,7 @@
 },
 {
 	"filename": "heart-1.png",
-	"frame": {"x":272,"y":16,"w":16,"h":16},
+	"frame": {"x":16,"y":176,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -290,7 +326,7 @@
 },
 {
 	"filename": "heart-2.png",
-	"frame": {"x":288,"y":0,"w":16,"h":16},
+	"frame": {"x":32,"y":176,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -299,7 +335,7 @@
 },
 {
 	"filename": "heart-3.png",
-	"frame": {"x":288,"y":16,"w":16,"h":16},
+	"frame": {"x":48,"y":176,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -308,7 +344,7 @@
 },
 {
 	"filename": "key-1.png",
-	"frame": {"x":304,"y":0,"w":16,"h":16},
+	"frame": {"x":0,"y":192,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -317,7 +353,7 @@
 },
 {
 	"filename": "mid-trees.png",
-	"frame": {"x":304,"y":16,"w":16,"h":16},
+	"frame": {"x":16,"y":192,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -325,8 +361,44 @@
 	"pivot": {"x":0.5,"y":0.5}
 },
 {
+	"filename": "purple-essence.png",
+	"frame": {"x":32,"y":192,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "remaining-tree.png",
+	"frame": {"x":48,"y":192,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":1}
+},
+{
 	"filename": "sand-1.png",
-	"frame": {"x":320,"y":0,"w":16,"h":16},
+	"frame": {"x":0,"y":208,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "scroll-page.png",
+	"frame": {"x":16,"y":208,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "silver-coin.png",
+	"frame": {"x":32,"y":208,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -335,7 +407,7 @@
 },
 {
 	"filename": "soldier-1.png",
-	"frame": {"x":320,"y":16,"w":16,"h":16},
+	"frame": {"x":48,"y":208,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -344,7 +416,7 @@
 },
 {
 	"filename": "soldier-2.png",
-	"frame": {"x":336,"y":0,"w":16,"h":16},
+	"frame": {"x":0,"y":224,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -353,7 +425,7 @@
 },
 {
 	"filename": "soldier-3.png",
-	"frame": {"x":336,"y":16,"w":16,"h":16},
+	"frame": {"x":16,"y":224,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -362,7 +434,7 @@
 },
 {
 	"filename": "spell-shot.png",
-	"frame": {"x":352,"y":0,"w":16,"h":16},
+	"frame": {"x":32,"y":224,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -371,7 +443,7 @@
 },
 {
 	"filename": "spell.png",
-	"frame": {"x":352,"y":16,"w":16,"h":16},
+	"frame": {"x":48,"y":224,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -380,7 +452,16 @@
 },
 {
 	"filename": "stone-block-1.png",
-	"frame": {"x":368,"y":0,"w":16,"h":16},
+	"frame": {"x":0,"y":240,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "sword-1.png",
+	"frame": {"x":16,"y":240,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -389,7 +470,16 @@
 },
 {
 	"filename": "top-trees.png",
-	"frame": {"x":368,"y":16,"w":16,"h":16},
+	"frame": {"x":32,"y":240,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "venus-shield.png",
+	"frame": {"x":48,"y":240,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -398,7 +488,7 @@
 },
 {
 	"filename": "wall-1.png",
-	"frame": {"x":384,"y":0,"w":16,"h":16},
+	"frame": {"x":0,"y":256,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -407,7 +497,25 @@
 },
 {
 	"filename": "water-1.png",
-	"frame": {"x":384,"y":16,"w":16,"h":16},
+	"frame": {"x":16,"y":256,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "wood-shield.png",
+	"frame": {"x":32,"y":256,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "wood_log.png",
+	"frame": {"x":48,"y":256,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -419,8 +527,8 @@
 	"version": "1.0",
 	"image": "sprites.png",
 	"format": "RGBA8888",
-	"size": {"w":400,"h":32},
+	"size": {"w":64,"h":272},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:b321fbb60f740bcdb62c6e1ba8e7e887:70e9b9e2ecd8a69530191fb93b5c6ffc:1eabdf11f75e3a4fe3147baf7b5be24b$"
+	"smartupdate": "$TexturePacker:SmartUpdate:af86049c5fbcf001ee7054cee41291bb:6417d15c11e783afddc7a6c7fe82e637:1eabdf11f75e3a4fe3147baf7b5be24b$"
 }
 }

@@ -15,12 +15,10 @@ import java.awt.event.KeyListener;
  * soon as I realized Swing drags performance heavily. No hate on Swing, though, it just isn't fit for this project.
  */
 @Deprecated
-public class AwtPanel extends JPanel implements ComponentListener, GamePanel {
+public final class AwtPanel extends JPanel implements ComponentListener, GamePanel {
     private final KeyListener input;
     private final Renderer renderer;
     private final VideoSettings videoSettings;
-
-    private JFrame window;
 
     public AwtPanel(KeyListener input, VideoSettings videoSettings, Renderer renderer) {
         this.input = input;
@@ -41,7 +39,7 @@ public class AwtPanel extends JPanel implements ComponentListener, GamePanel {
 
     @Override
     public void openWindow() {
-        window = new JFrame("Project Venus");
+        final JFrame window = new JFrame("Project Venus");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         window.add(this);

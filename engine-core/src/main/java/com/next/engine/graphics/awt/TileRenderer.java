@@ -3,6 +3,7 @@ package com.next.engine.graphics.awt;
 import com.next.engine.data.Registry;
 import com.next.engine.debug.DebugTimer;
 import com.next.engine.debug.DebugTimers;
+import com.next.engine.graphics.Sprite;
 import com.next.engine.model.Camera;
 import com.next.engine.scene.Tile;
 import com.next.engine.scene.World;
@@ -39,6 +40,7 @@ final class TileRenderer {
 
         if (!render) return;
 
+        final var tileSheet = Registry.masterSheet;
         final int TILE_SIZE = world.getTileSize();
         
         int startCol = (int) Math.max(0, camera.getX() / TILE_SIZE);
@@ -52,18 +54,20 @@ final class TileRenderer {
             for (int col = startCol; col < endCol; col++) {
                 int tileIndex = tileMap[row][col];
                 Tile tile = tiles[tileIndex];
+                Sprite s = Registry.sprites[tile.spriteId()];
 
-                int x = col * TILE_SIZE;
-                int y = row * TILE_SIZE;
+                int dx = col * TILE_SIZE;
+                int dy = row * TILE_SIZE;
 
-                g.drawImage(Registry.sprites.get(
-                        tile.spriteId()).texture(),
-                        x, y,
-                        null
+                tileSheet.draw(
+                        g,
+                        dx, dy, dx + s.srcWidth(), dy + s.srcHeight(),
+                        s.srcX(), s.srcY(), s.srcX2(), s.srcY2()
                 );
             }
         }
 
         debugtimer.end();
     }
+
 }

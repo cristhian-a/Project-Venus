@@ -6,12 +6,14 @@ import com.next.engine.physics.CollisionBox;
 import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
 import com.next.game.event.SpellPickedUpEvent;
+import com.next.game.rules.Layers;
 
 public class Spell extends Prop {
 
     public Spell(int spriteId, int worldX, int worldY, CollisionType collisionType) {
-        CollisionBox box = new CollisionBox(worldX, worldY, -8, -8, 16, 16);
-        super(spriteId, worldX, worldY, collisionType, box);
+        var layer = Layers.ITEM;
+        var box = new CollisionBox(worldX, worldY, -8, -8, 16, 16);
+        super(spriteId, worldX, worldY, layer, collisionType, box);
     }
 
     @Override

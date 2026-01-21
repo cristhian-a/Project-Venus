@@ -4,7 +4,7 @@ import com.next.engine.io.RawInputListener;
 
 import java.util.*;
 
-public class Input {
+public final class Input {
 
     private final Map<String, List<DeviceMapping>> mappings = new HashMap<>();
     private final Map<String, ActionState> actionStates = new HashMap<>();

@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Animation {
+public final class Animation {
     public int[] frames;
-    public int frameRate;   //  number of frames until transition
     public boolean loop;
+    public double frameDuration;
 }

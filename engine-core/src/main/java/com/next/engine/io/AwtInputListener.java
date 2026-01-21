@@ -3,7 +3,7 @@ package com.next.engine.io;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class AwtInputListener implements RawInputListener, KeyListener {
+public final class AwtInputListener implements RawInputListener, KeyListener {
 
     // Written ONLY by EDT (event thread)
     private final boolean[] realKeys = new boolean[256];

@@ -4,6 +4,7 @@
   "left": 65,
   "right": 68,
   "talk": 97,
+  "fire": 98,
   "pause": 27,
   "displayStats": 9,
   "debugMode1": 112,

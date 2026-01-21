@@ -2,7 +2,6 @@ package com.next.engine.graphics.awt;
 
 import com.next.engine.Global;
 import com.next.engine.data.Registry;
-import com.next.engine.debug.DebugTimer;
 import com.next.engine.debug.DebugTimers;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.model.Camera;
@@ -11,15 +10,11 @@ import com.next.engine.system.Settings.VideoSettings;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 
-class LightningRenderer {
-
-    private static final DebugTimer debugtimer = DebugTimers.of(DebugTimers.RENDER_LIGHTS);
-    private static final float EPSILON = 0.0001f;
+final class LightningRenderer {
 
     private final VideoSettings settings;
-    private final BufferedImage lightMap;
-    private final Graphics2D lightGraphics;
     private final AffineTransform identity = new AffineTransform();
     private final AlphaComposite[] compositeCache;
     private final Color[] ambientCache;
@@ -27,9 +22,9 @@ class LightningRenderer {
     private final int COMPOSITE_BUCKETS = 16;
     private final int AMBIENT_BUCKETS = 16;
 
-    private float ambient = 0.5f;
-
-    private BufferedImage cachedColoredLight;
+    private VolatileImage lightMap;
+    private Graphics2D lightGraphics;
+    private float ambient = 0.85f;
 
     public LightningRenderer(VideoSettings settings) {
         this.settings = settings;
@@ -39,9 +34,9 @@ class LightningRenderer {
                 .getDefaultScreenDevice()
                 .getDefaultConfiguration();
 
-        lightMap = gc.createCompatibleImage(
-                settings.WIDTH / settings.SCALE,
-                settings.HEIGHT / settings.SCALE,
+        lightMap = gc.createCompatibleVolatileImage(
+                settings.WIDTH / settings.SCALE + 1,
+                settings.HEIGHT / settings.SCALE + 1,
                 Transparency.TRANSLUCENT
         );
 
@@ -87,11 +82,11 @@ class LightningRenderer {
         if (lights.count == 0) return;
 
         // sine-wave calculation to get the flicker effect's size
-        double t = Global.getTime() * 3d;
-        float pulse = (float) (Math.sin(t) * 0.5f + 0.5f);
+        final double t = Global.getTime() * 3d;
+        final float pulse = (float) (Math.sin(t) * 0.5f + 0.5f);
 
-        float strength = 0.25f;
-        float flicker = 1f + pulse * strength;
+        final float strength = 0.25f;
+        final float flicker = 1f + pulse * strength;
 
         for (int i = 0; i < lights.count; i++) {
             float x = lights.x[i];
@@ -116,13 +111,15 @@ class LightningRenderer {
                     null
             );
 
-//            if (cachedColoredLight == null) {
-//                cachedColoredLight = makeColoredLight(light, new Color(0, 255, 255));
-//            }
+//            final int argb = 0xFF00FFFF;
+//            final var coloredTexture = RenderCache.INSTANCE.getColoredLight(
+//                    argb,
+//                    () -> makeColoredLight(light, new Color(argb))
+//            );
 //
 //            lightGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
 //            lightGraphics.drawImage(
-//                    cachedColoredLight,
+//                    coloredTexture,
 //                    camera.worldToScreenX(drawX),
 //                    camera.worldToScreenY(drawY),
 //                    (int) finalRadius, (int) finalRadius,
@@ -139,6 +136,28 @@ class LightningRenderer {
             // A fix is needed to avoid the light map being pixels off in the bottom and right corners.
             g.drawImage(lightMap, (int) (camera.getX()), (int) (camera.getY()), null);
         }
+    }
+
+    void onResize() {
+        GraphicsConfiguration gc = GraphicsEnvironment
+                .getLocalGraphicsEnvironment()
+                .getDefaultScreenDevice()
+                .getDefaultConfiguration();
+
+        lightMap.flush();
+        lightGraphics.dispose();
+
+        /* plus 1 is here to fix a problem with the camera letting a thin slice of the rendered world without the
+        *  light map covering it */
+        lightMap = gc.createCompatibleVolatileImage(
+                settings.WIDTH / settings.SCALE + 1,
+                settings.HEIGHT / settings.SCALE + 1,
+                Transparency.TRANSLUCENT
+        );
+
+        lightGraphics = lightMap.createGraphics();
+        lightGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
     }
 
     private BufferedImage makeColoredLight(BufferedImage mask, Color color) {
@@ -185,6 +204,8 @@ class LightningRenderer {
         float t = alpha / 255f;
 
         // EPSILON provides better falloffs but a very edgy sharp
+        final float EPSILON = 0.0001f;
+
         if (t < EPSILON) return alpha;
         float out = threshold + (t - threshold) / ratio;
 

@@ -1,8 +1,9 @@
 package com.next.game.rules.data;
 
-import com.next.game.model.Equip;
+import com.next.game.model.Armor;
+import com.next.game.model.Weapon;
 
 public class ActiveGear {
-    public Equip weapon;
-    public Equip shield;
+    public Weapon weapon;
+    public Armor shield;
 }

@@ -8,7 +8,7 @@ import com.next.engine.system.InputBindings;
 /**
  * Manages the main game loop and synchronizes everything.
  */
-public class Conductor implements Runnable {
+public final class Conductor implements Runnable {
 
     private final Director director;
     private final Input input;
@@ -64,8 +64,8 @@ public class Conductor implements Runnable {
         boolean shouldRender = false;
 
         while (running) {
-            double now = System.nanoTime();
-            double delta = (now - lastTime) / 1e9;
+            final double now = System.nanoTime();
+            final double delta = (now - lastTime) / 1e9;
             lastTime = now;
             accumulator += delta;
 

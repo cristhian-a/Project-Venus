@@ -1,22 +1,25 @@
 package com.next.game.model;
 
 import com.next.engine.Global;
-import com.next.engine.animation.Animation;
-import com.next.engine.animation.AnimationState;
-import com.next.engine.data.Mailbox;
-import com.next.engine.model.AnimatedActor;
+import com.next.game.visual.AnimationState;
+import com.next.engine.animation.Costume;
+import com.next.engine.animation.Dresser;
+import com.next.engine.animation.Wardrobe;
+import com.next.engine.model.Actor;
 import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
 import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
 import com.next.game.event.FallDamageEvent;
+import com.next.game.event.MobDeathEvent;
+import com.next.game.rules.Layers;
 import com.next.game.rules.data.Attributes;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
+public class Mob extends Actor implements Combatant {
 
-public class Mob extends AnimatedActor implements Combatant {
+    private final Dresser<AnimationState> costume;
 
     @Getter private final int maxHealth = 3;
     @Getter @Setter private int health = maxHealth;
@@ -28,14 +31,16 @@ public class Mob extends AnimatedActor implements Combatant {
     private int movementFrames = 50;
     private int direction = 0;
 
-    public Mob(Map<AnimationState, Animation> animations, float x, float y, float width, float height, float offsetX, float offsetY) {
-        this.animations = animations;
+    public Mob(Wardrobe<AnimationState> animations, float x, float y, float width, float height, float offsetX, float offsetY) {
+        costume = new Dresser<>(animations);
+        costume.wear(AnimationState.IDLE);
+
         this.worldX = x;
         this.worldY = y;
-        this.animationState = AnimationState.IDLE;
         this.collisionType = CollisionType.SOLID;
         this.collisionBox = new CollisionBox(x, y, offsetX, offsetY, width, height);
-        this.layer = 1;
+        this.layer = Layers.ENEMY;
+        this.collisionMask = Layers.PLAYER | Layers.WALL;
 
         this.attributes = new Attributes();
         attributes.strength = 1;
@@ -44,10 +49,16 @@ public class Mob extends AnimatedActor implements Combatant {
     }
 
     @Override
-    public void update(double delta, Mailbox mailbox) {
+    public Costume getCostume() {
+        return costume;
+    }
+
+    @Override
+    public void update(double delta) {
         if (deathTimer > 0d) {
             deathTimer -= delta;
             if (deathTimer <= 0d) {
+                context.mailbox().post(() -> new MobDeathEvent(this));
                 dispose();
                 return;
             }
@@ -59,13 +70,13 @@ public class Mob extends AnimatedActor implements Combatant {
             return;
         }
 
-        behave(mailbox);
-        animate();
+        behave();
+        costume.update(delta);
     }
 
     @Override
     public void onCollision(Body other, EventCollector collector) {
-        if (other instanceof Player p) {
+        if (other instanceof Player p && !isDead()) {
             collector.post(() -> new FallDamageEvent(p, 1));
         }
     }
@@ -100,11 +111,11 @@ public class Mob extends AnimatedActor implements Combatant {
     }
 
     private void die() {
-        animationState = AnimationState.DEAD;
+        costume.wear(AnimationState.DEAD);
         deathTimer = Global.fixedDelta * 45;
     }
 
-    private void behave(Mailbox mailbox) {
+    private void behave() {
         if (health <= 0) return;
 
         long n = System.nanoTime();
@@ -139,6 +150,6 @@ public class Mob extends AnimatedActor implements Combatant {
             dy += speed;
         }
 
-        mailbox.motionQueue.submit(this.id, dx, dy, 0f);
+        context.mailbox().motionQueue.submit(this.id, dx, dy, 0f);
     }
 }

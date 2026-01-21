@@ -1,38 +1,81 @@
 package com.next.engine.model;
 
+import com.next.engine.graphics.Layer;
+import com.next.engine.graphics.RenderQueue;
 import com.next.engine.physics.Body;
 import com.next.engine.physics.CollisionBox;
-import com.next.engine.event.EventCollector;
 import com.next.engine.physics.CollisionType;
+import lombok.NoArgsConstructor;
 
-public class Prop extends Actor {
+@NoArgsConstructor
+public abstract class Prop extends Entity implements Body, Renderable {
+    protected int spriteId;
+    protected int layer;
+    protected int collisionMask;
+    protected int lastQueryId;
+    protected CollisionBox collisionBox;
+    protected CollisionType collisionType;
 
-    public Prop(int spriteId, float worldX, float worldY, CollisionType collisionType, CollisionBox collisionBox) {
+    public Prop(int spriteId, float worldX, float worldY, int layer, CollisionType collisionType, CollisionBox collisionBox) {
         this.spriteId = spriteId;
+        this.layer = layer;
+        this.worldX = worldX;
+        this.worldY = worldY;
         this.collisionType = collisionType;
-
-        this.layer = 1;
-        this.collisionMask = 0;
-
         this.collisionBox = collisionBox;
-        setPosition(worldX, worldY);
-    }
-
-    public Prop(int spriteId, float worldX, float worldY, float mass, CollisionType collisionType,
-                float offsetX, float offSetY, float width, float height
-    ) {
-        this.spriteId = spriteId;
-        this.collisionType = collisionType;
-
-        this.layer = 1;
-        this.collisionMask = 0;
-
-        collisionBox = new CollisionBox(offsetX, offSetY, width, height);
-        setPosition(worldX, worldY);
-        this.mass = mass;
+        this.lastQueryId = -1;
     }
 
     @Override
-    public void onCollision(Body other, EventCollector collector) {
+    public float getX() {
+        return worldX;
+    }
+
+    @Override
+    public float getY() {
+        return worldY;
+    }
+
+    @Override
+    public int getLayer() {
+        return layer;
+    }
+
+    @Override
+    public int getCollisionMask() {
+        return collisionMask;
+    }
+
+    @Override
+    public CollisionBox getCollisionBox() {
+        return collisionBox;
+    }
+
+    @Override
+    public CollisionType getCollisionType() {
+        return collisionType;
+    }
+
+    @Override
+    public void setPosition(float x, float y) {
+        worldX = x;
+        worldY = y;
+        if (collisionBox != null)
+            collisionBox.update(worldX, worldY);
+    }
+
+    @Override
+    public int getLastQueryId() {
+        return lastQueryId;
+    }
+
+    @Override
+    public void setLastQueryId(int id) {
+        this.lastQueryId = id;
+    }
+
+    @Override
+    public void collectRender(RenderQueue queue) {
+        queue.submit(Layer.ACTORS, (int) worldX, (int) worldY, spriteId);
     }
 }

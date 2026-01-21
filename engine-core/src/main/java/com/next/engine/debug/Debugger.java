@@ -13,7 +13,7 @@ import java.util.*;
  * It maintains a set of enabled debug channels and provides methods to publish debug instructions
  * to be rendered on screen. Debugger uses a singleton pattern through the public static {@code INSTANCE}.
  */
-public class Debugger implements DebugSink {
+public final class Debugger implements DebugSink {
 
     private static final String FONT = "debug";
 

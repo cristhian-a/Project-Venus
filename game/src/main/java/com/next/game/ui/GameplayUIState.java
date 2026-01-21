@@ -161,8 +161,8 @@ public class GameplayUIState implements UIState {
             float oneScale = width / c.getMaxHealth();
             float sw = oneScale * c.getHealth();
 
-            renderQueue.fillRectangle(Layer.UI_WORLD, x - 1, y - 1, width + 2, height + 2, Colors.BLACK);
-            renderQueue.fillRectangle(Layer.UI_WORLD, x, y, sw, height, Colors.RED);
+            renderQueue.fillRect(Layer.UI_WORLD, x - 1, y - 1, width + 2, height + 2, Colors.BLACK);
+            renderQueue.fillRect(Layer.UI_WORLD, x, y, sw, height, Colors.RED);
         }
     }
 

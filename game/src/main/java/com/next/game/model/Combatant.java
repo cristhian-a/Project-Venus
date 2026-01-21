@@ -1,8 +1,12 @@
 package com.next.game.model;
 
+import com.next.engine.model.Entity;
+import com.next.engine.model.HitboxSpec;
+import com.next.game.event.AttackEvent;
+import com.next.game.event.handlers.InteractionContext;
 import com.next.game.rules.data.Attributes;
 
-public interface Combatant {
+public interface Combatant extends Damageable, Hittable {
     int getId();
 
     Attributes getAttributes();
@@ -12,6 +16,12 @@ public interface Combatant {
     int getAttack();
     int getDefense();
 
-    void takeDamage(int damage);
     boolean isDead();
+
+    @Override
+    default void onHit(Entity striker, HitboxSpec spec, InteractionContext ctx) {
+        if (striker instanceof Combatant c) {
+            ctx.dispatch(new AttackEvent(c, this, spec));
+        }
+    }
 }
