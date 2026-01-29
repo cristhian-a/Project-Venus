@@ -49,33 +49,34 @@ public class ViewItemInfo {
 
     public ViewItemInfo() {
         frame = FrameFactory.dialog(x, y, w, h);
-        UI.ROOT.add(frame);
 
-        com.next.engine.ui.Panel root = new com.next.engine.ui.Panel(
-                new Rect(0, 0, w, h),
-                new com.next.engine.ui.VerticalStackLayout(4),
+        Rect rootRect = frame.contentBounds();
+
+        Panel root = new Panel(
+                new Rect(rootRect),
+                new VerticalStackLayout(4),
                 0f
         );
         frame.add(root);
 
-        com.next.engine.ui.Panel header = new com.next.engine.ui.Panel(
-                new Rect(0, 0, w, 30),
-                new com.next.engine.ui.AbsoluteLayout(),
+        Panel header = new Panel(
+                new Rect(0, 0, rootRect.width, 30),
+                new AbsoluteLayout(),
                 0f
         );
         header.add(nameLabel);
         root.add(header);
 
-        com.next.engine.ui.Panel body = new com.next.engine.ui.Panel(
-                new Rect(0, 0, w, 70),
-                new com.next.engine.ui.AbsoluteLayout(),
+        Panel body = new Panel(
+                new Rect(0, 0, rootRect.width, 70),
+                new AbsoluteLayout(),
                 0f
         );
         body.add(textBlock);
         root.add(body);
 
         Panel footer = new Panel(
-                new Rect(0, 0, w, 25),
+                new Rect(0, 0, rootRect.width, 25),
                 new HorizontalStackLayout(12),
                 0f
         );
@@ -113,8 +114,8 @@ public class ViewItemInfo {
     }
 
     public void render(RenderQueue queue) {
-//        frame.layout();
-//        frame.draw(queue);
+        frame.updateLayout();
+        frame.draw(queue);
 
 //        Layer l = Layer.UI_SCREEN;
 //        String f = Fonts.DEFAULT;

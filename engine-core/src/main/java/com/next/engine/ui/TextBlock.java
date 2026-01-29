@@ -45,9 +45,6 @@ public final class TextBlock extends AbstractNode {
 
     @Override
     public void layout() {
-        Rect parentContent = parent.contentBounds();
-        x = parentContent.x;
-        y = parentContent.y + font.getAscent();
     }
 
     private float x, y; // transformed coordinates
@@ -61,7 +58,7 @@ public final class TextBlock extends AbstractNode {
 
     @Override
     public void draw(RenderQueue queue) {
-        float yy = y;
+        float yy = globalBounds.y;
 
         for (String line : lines) {
             queue.submit(
@@ -69,7 +66,7 @@ public final class TextBlock extends AbstractNode {
                     line,
                     fontId,
                     color,
-                    x, yy,
+                    globalBounds.x, yy + font.getAscent(),
                     RenderPosition.AXIS,
                     0
             );

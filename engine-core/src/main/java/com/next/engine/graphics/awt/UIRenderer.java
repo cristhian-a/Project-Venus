@@ -10,6 +10,8 @@ import java.util.List;
 
 final class UIRenderer {
 
+    private final Stroke defaultStroke = new BasicStroke(1);
+
     private final VideoSettings settings;
     private final List<UIMessage> messages;
 
@@ -62,6 +64,7 @@ final class UIRenderer {
     }
 
     void renderRectangleTable(Graphics2D g, RenderQueue.RectangleTable table) {
+        g.setStroke(defaultStroke);
         for (int i = 0; i < table.count; i++) {
             g.setColor(RenderCache.INSTANCE.getColor(table.colors[i]));
             g.drawRect((int) table.x[i], (int) table.y[i], (int) table.width[i], (int) table.height[i]);

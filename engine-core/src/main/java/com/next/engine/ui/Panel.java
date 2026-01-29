@@ -1,5 +1,6 @@
 package com.next.engine.ui;
 
+import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
 
 /// Represents a container for user interface elements with specified bounds and optional padding.
@@ -26,8 +27,19 @@ public class Panel extends AbstractContainer {
 
     private final Rect contentBounds = new Rect(0, 0, 0, 0);
 
+    public final float getContentWidth() {
+        float t = padding * 2;
+        return Math.max(0, localBounds.width - t);
+    }
+
+    public final float getContentHeight() {
+        float t = padding * 2;
+        return Math.max(0, localBounds.height - t);
+    }
+
     @Override
     public final Rect contentBounds() {
+        contentBounds.set(padding, padding, getContentWidth(), getContentHeight());
         return contentBounds;
     }
 
@@ -46,13 +58,11 @@ public class Panel extends AbstractContainer {
     @Override
     public void layout() {
         if (!dirty) return;
-
-        globalBounds.inset(padding, contentBounds); // TODO should use local, but for now our preferred size needs global
         layout.arrange(this, children);
 
         for (int i = 0; i < children.size(); i++) {
             var child = children.get(i);
-            child.layout();
+            child.updateLayout();
         }
         dirty = false;
     }
@@ -70,5 +80,12 @@ public class Panel extends AbstractContainer {
             var child = children.get(i);
             child.draw(queue);
         }
+
+        queue.rectangle(
+                Layer.UI_SCREEN,
+                globalBounds.x, globalBounds.y,
+                localBounds.width, localBounds.height,
+                0xFFFF0000
+        );
     }
 }

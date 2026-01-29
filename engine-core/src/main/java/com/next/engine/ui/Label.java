@@ -41,14 +41,14 @@ public final class Label extends AbstractNode {
 
     @Override
     public void layout() {
-        measure();
-
-        Rect area = this.parent.contentBounds();
-
-        float x = LayoutUtils.alignX(area, localBounds.width, alignX);
-        float y = LayoutUtils.alignY(area, localBounds.height, alignY) + font.getAscent();
-
-        globalBounds.set(x, y, localBounds.width, localBounds.height);
+//        measure();
+//
+//        Rect area = this.parent.contentBounds();
+//
+//        float x = LayoutUtils.alignX(area, localBounds.width, alignX);
+//        float y = LayoutUtils.alignY(area, localBounds.height, alignY) + font.getAscent();
+//
+//        globalBounds.set(x, y, localBounds.width, localBounds.height);
     }
 
     @Override
@@ -67,7 +67,7 @@ public final class Label extends AbstractNode {
                 text,
                 fontId,
                 color,
-                globalBounds.x, globalBounds.y,
+                globalBounds.x, globalBounds.y + font.getAscent(),
                 RenderPosition.AXIS,
                 0
         );

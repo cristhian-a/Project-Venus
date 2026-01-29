@@ -17,7 +17,7 @@ public final class VerticalStackLayout implements Layout {
 
         for (int i = 0; i < children.size(); i++) {
             var child = children.get(i);
-            child.globalBounds.set(content.x, cursorY, content.width, child.localBounds.height);
+            child.localBounds.set(content.x, cursorY, content.width, child.localBounds.height);
             cursorY += child.localBounds.height + spacing;
         }
     }

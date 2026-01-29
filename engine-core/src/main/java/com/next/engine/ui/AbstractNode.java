@@ -26,16 +26,19 @@ public abstract class AbstractNode {
         if (!dirty) return;
 
         if (parent != null) {
-            Rect parentContent = parent.contentBounds();
+            Rect parentBounds = parent.globalBounds;
             globalBounds.set(
-                    parentContent.x + localBounds.x,
-                    parentContent.y + localBounds.y,
+                    parentBounds.x + localBounds.x,
+                    parentBounds.y + localBounds.y,
                     localBounds.width,
                     localBounds.height
             );
         } else {
             globalBounds.set(localBounds);
         }
+
+        layout();
+        dirty = false;
     }
 
     public abstract void layout();

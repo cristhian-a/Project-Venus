@@ -19,7 +19,7 @@ public final class AlignedLayout implements Layout {
             var child = children.get(i);
             float x = LayoutUtils.alignX(parentContent, child.localBounds.width, alignX);
             float y = LayoutUtils.alignY(parentContent, child.localBounds.height, alignY);
-            child.globalBounds.set(x, y, child.localBounds.width, child.localBounds.height);
+            child.localBounds.set(x, y, child.localBounds.width, child.localBounds.height);
         }
     }
 }

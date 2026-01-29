@@ -8,13 +8,13 @@ public class UIContainer extends UINode {
     protected final List<UINode> children = new ArrayList<>();
     protected LayoutStrategy layout;
 
-    public final void addChild(UINode child) {
+    public final void add(UINode child) {
         children.add(child);
         child.parent = this;
         markAsDirty();
     }
 
-    public final void removeChild(UINode child) {
+    public final void remove(UINode child) {
         children.remove(child);
         child.parent = null;
         markAsDirty();
