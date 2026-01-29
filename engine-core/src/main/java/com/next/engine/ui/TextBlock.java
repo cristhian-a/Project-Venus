@@ -9,6 +9,8 @@ import lombok.Setter;
 
 public final class TextBlock extends AbstractNode {
 
+    private static final String LINE_SEPARATOR = "\n";
+
     private final String fontId;
     private final TextFont font;
     private final int color;
@@ -26,7 +28,7 @@ public final class TextBlock extends AbstractNode {
     }
 
     private void recalculateBounds() {
-        lines = text.split("\n");
+        lines = text.split(LINE_SEPARATOR);
 
         float maxWidth = 0f;
         for (String line : lines) maxWidth = Math.max(maxWidth, font.measureWidth(line));
@@ -44,16 +46,24 @@ public final class TextBlock extends AbstractNode {
     }
 
     @Override
-    public void layout() {
-    }
-
-    private float x, y; // transformed coordinates
+    public void onLayout() {}
 
     @Override
     public void measure() {
-        var parentContent = parent.contentBounds();
-        x = parentContent.x;
-        y = parentContent.y + font.getAscent();
+        if (!dirty) return;
+
+        if (lines.length == 0) {
+            preferredSize.set(0, 0);
+            return;
+        }
+
+        preferredSize.set(parent.contentBounds().width, font.getLineHeight() * lines.length);
+        localBounds.set(
+                localBounds.x,
+                localBounds.y,
+                preferredSize.width,
+                preferredSize.height
+        );
     }
 
     @Override

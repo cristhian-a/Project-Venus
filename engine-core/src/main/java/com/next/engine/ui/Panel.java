@@ -55,18 +55,6 @@ public class Panel extends AbstractContainer {
         layout.calculatePreferredSize(this, children);
     }
 
-    @Override
-    public void layout() {
-        if (!dirty) return;
-        layout.arrange(this, children);
-
-        for (int i = 0; i < children.size(); i++) {
-            var child = children.get(i);
-            child.updateLayout();
-        }
-        dirty = false;
-    }
-
     /// Draws this panel's child elements in the order they were added.
     ///
     /// @param queue buffered renderer in which the draw commands will be submitted.

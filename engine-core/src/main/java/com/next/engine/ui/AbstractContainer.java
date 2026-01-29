@@ -20,5 +20,15 @@ public abstract class AbstractContainer extends AbstractNode {
         maskAsDirty();
     }
 
+    @Override
+    public void onLayout() {
+        layout.arrange(this, children);
+
+        for (int i = 0; i < children.size(); i++) {
+            var child = children.get(i);
+            child.updateLayout();
+        }
+    }
+
     public abstract Rect contentBounds();
 }

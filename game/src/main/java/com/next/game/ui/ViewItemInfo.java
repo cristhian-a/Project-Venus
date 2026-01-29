@@ -119,6 +119,7 @@ public class ViewItemInfo {
     }
 
     public void render(RenderQueue queue) {
+        frame.measure();
         frame.updateLayout();
         frame.draw(queue);
 

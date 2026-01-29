@@ -40,7 +40,7 @@ public final class Label extends AbstractNode {
     }
 
     @Override
-    public void layout() {
+    public void onLayout() {
 //        measure();
 //
 //        Rect area = this.parent.contentBounds();
@@ -57,7 +57,7 @@ public final class Label extends AbstractNode {
         float h = font.getLineHeight();
 
         preferredSize.set(w, h);
-        localBounds.set(localBounds.x, localBounds.y + font.getAscent(), w, h);
+        localBounds.set(localBounds.x, localBounds.y, w, h);
     }
 
     @Override

@@ -37,10 +37,10 @@ public abstract class AbstractNode {
             globalBounds.set(localBounds);
         }
 
-        layout();
+        onLayout();
         dirty = false;
     }
 
-    public abstract void layout();
+    public abstract void onLayout();
     public abstract void draw(RenderQueue queue);
 }

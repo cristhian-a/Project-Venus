@@ -55,6 +55,7 @@ public final class ViewInventory {
     }
 
     public void render(RenderQueue queue) {
+        frame.measure();
         frame.updateLayout();
         frame.draw(queue);
     }
