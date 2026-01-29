@@ -54,7 +54,7 @@ public class ViewItemInfo {
 
         Panel root = new Panel(
                 new Rect(rootRect),
-                new VerticalStackLayout(4),
+                new VerticalStackLayout(0),
                 0f
         );
         frame.add(root);
@@ -68,22 +68,22 @@ public class ViewItemInfo {
         root.add(header);
 
         Panel body = new Panel(
-                new Rect(0, 0, rootRect.width, 70),
-                new AbsoluteLayout(),
+                new Rect(0, 0, rootRect.width, rootRect.height - 30),
+                new VerticalStackLayout(0f),
                 0f
         );
         body.add(textBlock);
         root.add(body);
 
-        Panel footer = new Panel(
-                new Rect(0, 0, rootRect.width, 25),
-                new HorizontalStackLayout(12),
-                0f
-        );
-        footer.add(new Label(">", Fonts.DEFAULT, Colors.WHITE, Align.START, Align.START));
-        footer.add(new Label("OPT1", Fonts.DEFAULT, Colors.WHITE, Align.START, Align.START));
-        footer.add(new Label("OPT2", Fonts.DEFAULT, Colors.WHITE, Align.START, Align.START));
-        root.add(footer);
+//        Panel footer = new Panel(
+//                new Rect(0, 0, rootRect.width, 25),
+//                new HorizontalStackLayout(12),
+//                0f
+//        );
+//        footer.add(new Label(">", Fonts.DEFAULT, Colors.WHITE, Align.START, Align.START));
+//        footer.add(new Label("OPT1", Fonts.DEFAULT, Colors.WHITE, Align.START, Align.START));
+//        footer.add(new Label("OPT2", Fonts.DEFAULT, Colors.WHITE, Align.START, Align.START));
+//        root.add(footer);
     }
 
     public void update(Item item, boolean itemSelected, String[] options, int optionIndex) {
@@ -92,7 +92,12 @@ public class ViewItemInfo {
         this.options = options;
 
         String inf = EMPTY_TXT;
-        if (item != null) inf = item.getInfo();
+
+        if (itemSelected) {
+            inf = options[optionIndex];
+        } else {
+            if (item != null) inf = item.getInfo();
+        }
 
         if (inf.equals(infoText)) return;
         infoText = inf;
@@ -117,24 +122,14 @@ public class ViewItemInfo {
         frame.updateLayout();
         frame.draw(queue);
 
-//        Layer l = Layer.UI_SCREEN;
-//        String f = Fonts.DEFAULT;
-//        int c = Colors.WHITE;
-//        RenderPosition rp = RenderPosition.AXIS;
-//        int fr = 0;
-//
-//        queue.submit(l, displayName, f, c, nameX, nameY, rp, fr);
-//
 //        if (itemSelected) {
-//            queue.submit(l, ">", f, c, tX + (optionIndex * 100), infY, rp, fr); // cursor
+//            queue.submit(l, ">", f, c, tX + (optionIndex * 100), infY, rp, 0); // cursor
 //
 //            for (int i = 0; i < options.length; i++) {
-//                queue.submit(l, options[i], f, c, infX + (i * 100), infY, rp, fr);
+//                queue.submit(l, options[i], f, c, infX + (i * 100), infY, rp, 0);
 //            }
 //        } else {
-//            for (int i = 0; i < displayText.length; i++) {
-//                queue.submit(l, displayText[i], f, c, tX, tY + (25 * i), rp, fr);
-//            }
+//            ...
 //        }
     }
 }

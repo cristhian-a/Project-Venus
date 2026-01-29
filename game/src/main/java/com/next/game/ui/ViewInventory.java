@@ -20,12 +20,6 @@ public final class ViewInventory {
     public ViewInventory(Player player) {
         frame = FrameFactory.dialog(x, y, w, h);
 
-//        FramePanel root = new FramePanel(new Rect(0, 0, w, h), new VerticalStackLayout(4f),
-//                0f,
-//                16,
-//                4,
-//                Colors.RED,
-//                Colors.BLUE);
         Panel root = new Panel(new Rect(frame.contentBounds()), new VerticalStackLayout(0f), 0f);
         frame.add(root);
 
