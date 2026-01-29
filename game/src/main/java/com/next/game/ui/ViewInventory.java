@@ -1,61 +1,47 @@
 package com.next.game.ui;
 
-import com.next.engine.graphics.Layer;
-import com.next.engine.graphics.RenderPosition;
 import com.next.engine.graphics.RenderQueue;
+import com.next.engine.ui.*;
 import com.next.game.model.Player;
+import com.next.game.ui.component.*;
 import com.next.game.util.Colors;
 import com.next.game.util.Fonts;
 
 public final class ViewInventory {
 
     // Box rectangles and stroke info
-    private static final int arc = 25;
-    private static final int thickness = 5;
     private static final int x = 570, y = 100;
     private static final int w = 400, h = 400;
-    private static final int bx = x + (thickness >> 1), by = y + (thickness >> 1);
-    private static final int bw = w - thickness + 1, bh = h - thickness + 1;
-    private static final int bArc = Math.max(0, arc - thickness);
-
-    // Static text coordinates
-    private static final int stX = bx + 125, stY = by + 40;
-
-    private static final int tx = bx + 20;
-    private static final int ty = by + 80;
-    private static final int incrY = 35;
-
-    private static final int t1Y = ty;
 
     private static final String HEADER = "- YOUR STUFF -";
 
     public ViewInventory(Player player) {
+        FramePanel frame = FrameFactory.dialog(x, y, w, h);
+        UI.ROOT.add(frame);
 
+//        FramePanel root = new FramePanel(new Rect(0, 0, w, h), new VerticalStackLayout(4f),
+//                0f,
+//                16,
+//                4,
+//                Colors.RED,
+//                Colors.BLUE);
+        Panel root = new Panel(new Rect(0, 0, w, h), new VerticalStackLayout(4f), 0f);
+        frame.add(root);
+
+        Panel headerPanel = new Panel(new Rect(0, 0, w, 30), new AlignedLayout(Align.START, Align.START), 0f);
+        var label = new Label(HEADER, Fonts.DEFAULT, Colors.WHITE, Align.CENTER, Align.START);
+        headerPanel.add(label);
+
+//        Panel bodyPanel = new Panel(new Rect(0, 0, w, h - 30), new VerticalStackLayout(4f), 0f);
+//        var bodyTxt = new Label("Hello World!", Fonts.DEFAULT, Colors.WHITE, Align.CENTER, Align.START);
+//        bodyPanel.add(bodyTxt);
+
+        root.add(headerPanel);
+//        root.add(bodyPanel);
     }
 
     public void render(RenderQueue queue) {
-        queue.roundStrokeRect(
-                Layer.UI_SCREEN,
-                x, y,
-                w, h,
-                thickness,
-                Colors.WHITE,
-                arc
-        );
-        queue.fillRoundRect(
-                Layer.UI_SCREEN,
-                bx, by,
-                bw, bh,
-                Colors.FADED_BLACK,
-                bArc
-        );
-
-        Layer l = Layer.UI_SCREEN;
-        String f = Fonts.DEFAULT;
-        int c = Colors.WHITE;
-        RenderPosition rp = RenderPosition.AXIS;
-        int fr = 0;
-
-        queue.submit(l, HEADER,      f, c, stX, stY, rp, fr);
+        UI.ROOT.layout();
+        UI.ROOT.draw(queue);
     }
 }

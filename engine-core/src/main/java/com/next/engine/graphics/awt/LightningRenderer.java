@@ -24,7 +24,7 @@ final class LightningRenderer {
 
     private VolatileImage lightMap;
     private Graphics2D lightGraphics;
-    private float ambient = 0.85f;
+    private float ambient = 0.65f;
 
     public LightningRenderer(VideoSettings settings) {
         this.settings = settings;

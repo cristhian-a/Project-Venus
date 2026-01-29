@@ -1,17 +1,17 @@
 package com.next.game.ui;
 
-import com.next.engine.graphics.Layer;
-import com.next.engine.graphics.RenderPosition;
 import com.next.engine.graphics.RenderQueue;
+import com.next.engine.ui.*;
 import com.next.game.model.Item;
+import com.next.game.ui.component.*;
 import com.next.game.util.Colors;
 import com.next.game.util.Fonts;
 
 public class ViewItemInfo {
 
     // Box rectangles and stroke info
-    private static final int arc = 25;
-    private static final int thickness = 5;
+    private static final int arc = 15;
+    private static final int thickness = 6;
     private static final int x = 570, y = 508;
     private static final int w = 400, h = 150;
     private static final int bx = x + (thickness >> 1), by = y + (thickness >> 1);
@@ -28,13 +28,62 @@ public class ViewItemInfo {
     private static final String LEFT_SQR_BRACKET = "[";
     private static final String RIGHT_SQR_BRACKET = "]";
 
+    // The default string appender for this class;
+    // Whenever string append is needed in the loop methods (update and render), use it, and never
+    // append using the "+" sign to avoid new string builder allocations.
+    private final StringBuilder stringBuilder = new StringBuilder();
+
     private String infoText;
     private String[] displayText;
     private String displayName = EMPTY_TXT;
 
+    private final Label nameLabel = new Label(EMPTY_TXT, Fonts.DEFAULT, Colors.WHITE, Align.START, Align.START);
+    private final TextBlock textBlock = new TextBlock(EMPTY_TXT, Fonts.DEFAULT, Colors.WHITE);
+
     private boolean itemSelected;
     private String[] options;
     private int optionIndex;
+
+    // UI containers
+    private final FramePanel frame;
+
+    public ViewItemInfo() {
+        frame = FrameFactory.dialog(x, y, w, h);
+        UI.ROOT.add(frame);
+
+        com.next.engine.ui.Panel root = new com.next.engine.ui.Panel(
+                new Rect(0, 0, w, h),
+                new com.next.engine.ui.VerticalStackLayout(4),
+                0f
+        );
+        frame.add(root);
+
+        com.next.engine.ui.Panel header = new com.next.engine.ui.Panel(
+                new Rect(0, 0, w, 30),
+                new com.next.engine.ui.AbsoluteLayout(),
+                0f
+        );
+        header.add(nameLabel);
+        root.add(header);
+
+        com.next.engine.ui.Panel body = new com.next.engine.ui.Panel(
+                new Rect(0, 0, w, 70),
+                new com.next.engine.ui.AbsoluteLayout(),
+                0f
+        );
+        body.add(textBlock);
+        root.add(body);
+
+        Panel footer = new Panel(
+                new Rect(0, 0, w, 25),
+                new HorizontalStackLayout(12),
+                0f
+        );
+        footer.add(new Label(">", Fonts.DEFAULT, Colors.WHITE, Align.START, Align.START));
+        footer.add(new Label("OPT1", Fonts.DEFAULT, Colors.WHITE, Align.START, Align.START));
+        footer.add(new Label("OPT2", Fonts.DEFAULT, Colors.WHITE, Align.START, Align.START));
+        root.add(footer);
+    }
 
     public void update(Item item, boolean itemSelected, String[] options, int optionIndex) {
         this.itemSelected = itemSelected;
@@ -48,49 +97,43 @@ public class ViewItemInfo {
         infoText = inf;
         buildDisplayText();
 
-        if (item != null) displayName = LEFT_SQR_BRACKET + item.getName() + RIGHT_SQR_BRACKET;
-        else displayName = EMPTY_TXT;
+        if (item != null) {
+            stringBuilder.setLength(0);
+            stringBuilder.append(LEFT_SQR_BRACKET).append(item.getName()).append(RIGHT_SQR_BRACKET);
+            nameLabel.setText(stringBuilder.toString());
+        }
+        else {
+            nameLabel.setText(EMPTY_TXT);
+        }
     }
 
     private void buildDisplayText() {
         displayText = infoText.split(LINE_SEP);
+        textBlock.setText(infoText);
     }
 
     public void render(RenderQueue queue) {
-        queue.roundStrokeRect(
-                Layer.UI_SCREEN,
-                x, y,
-                w, h,
-                thickness,
-                Colors.WHITE,
-                arc
-        );
-        queue.fillRoundRect(
-                Layer.UI_SCREEN,
-                bx, by,
-                bw, bh,
-                Colors.FADED_BLACK,
-                bArc
-        );
+//        frame.layout();
+//        frame.draw(queue);
 
-        Layer l = Layer.UI_SCREEN;
-        String f = Fonts.DEFAULT;
-        int c = Colors.WHITE;
-        RenderPosition rp = RenderPosition.AXIS;
-        int fr = 0;
-
-        queue.submit(l, displayName, f, c, nameX, nameY, rp, fr);
-
-        if (itemSelected) {
-            queue.submit(l, ">", f, c, tX + (optionIndex * 100), infY, rp, fr); // cursor
-
-            for (int i = 0; i < options.length; i++) {
-                queue.submit(l, options[i], f, c, infX + (i * 100), infY, rp, fr);
-            }
-        } else {
-            for (int i = 0; i < displayText.length; i++) {
-                queue.submit(l, displayText[i], f, c, tX, tY + (25 * i), rp, fr);
-            }
-        }
+//        Layer l = Layer.UI_SCREEN;
+//        String f = Fonts.DEFAULT;
+//        int c = Colors.WHITE;
+//        RenderPosition rp = RenderPosition.AXIS;
+//        int fr = 0;
+//
+//        queue.submit(l, displayName, f, c, nameX, nameY, rp, fr);
+//
+//        if (itemSelected) {
+//            queue.submit(l, ">", f, c, tX + (optionIndex * 100), infY, rp, fr); // cursor
+//
+//            for (int i = 0; i < options.length; i++) {
+//                queue.submit(l, options[i], f, c, infX + (i * 100), infY, rp, fr);
+//            }
+//        } else {
+//            for (int i = 0; i < displayText.length; i++) {
+//                queue.submit(l, displayText[i], f, c, tX, tY + (25 * i), rp, fr);
+//            }
+//        }
     }
 }

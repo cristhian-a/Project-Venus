@@ -29,4 +29,7 @@ module engine.core {
     exports com.next.engine.animation;
     exports com.next.engine.util;
     exports com.next.engine.debug;
+    exports com.next.engine.ui;
+    exports com.next.engine.ui.node;
+    exports com.next.engine.uij;
 }
