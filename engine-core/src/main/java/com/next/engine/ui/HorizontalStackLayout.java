@@ -16,8 +16,8 @@ public final class HorizontalStackLayout implements Layout {
         float cursorX = content.x;
         for (int i = 0; i < children.size(); i++) {
             var child = children.get(i);
-            child.localBounds.set(cursorX, content.y, child.localBounds.width, content.height);
-            cursorX += child.localBounds.width + spacing;
+            child.localBounds.set(cursorX, content.y, child.preferredSize.width, content.height);
+            cursorX += child.preferredSize.width + spacing;
         }
     }
 }

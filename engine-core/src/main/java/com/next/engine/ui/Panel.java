@@ -43,18 +43,6 @@ public class Panel extends AbstractContainer {
         return contentBounds;
     }
 
-    @Override
-    public void measure() {
-        if (!dirty) return;
-
-        globalBounds.inset(padding, contentBounds);
-        for (int i = 0; i < children.size(); i++) {
-            children.get(i).measure();
-        }
-
-        layout.calculatePreferredSize(this, children);
-    }
-
     /// Draws this panel's child elements in the order they were added.
     ///
     /// @param queue buffered renderer in which the draw commands will be submitted.

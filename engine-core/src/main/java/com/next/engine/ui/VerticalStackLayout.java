@@ -10,6 +10,21 @@ public final class VerticalStackLayout implements Layout {
         this.spacing = spacing;
     }
 
+//    @Override
+//    public void calculatePreferredSize(AbstractContainer container, List<AbstractNode> children) {
+//        float totalH = 0;
+//        float maxW = 0;
+//
+//        for (int i = 0; i < children.size(); i++) {
+//            var child = children.get(i);
+//            maxW = Math.max(maxW, child.preferredSize.width);
+//            totalH += child.preferredSize.height + spacing;
+//        }
+//        if (!children.isEmpty()) totalH -= spacing; // removing the last unnecessary spacing
+//
+//        container.preferredSize.set(maxW, totalH);
+//    }
+
     @Override
     public void arrange(AbstractContainer container, List<AbstractNode> children) {
         Rect content = container.contentBounds();
@@ -17,8 +32,8 @@ public final class VerticalStackLayout implements Layout {
 
         for (int i = 0; i < children.size(); i++) {
             var child = children.get(i);
-            child.localBounds.set(content.x, cursorY, content.width, child.localBounds.height);
-            cursorY += child.localBounds.height + spacing;
+            child.localBounds.set(content.x, cursorY, content.width, child.preferredSize.height);
+            cursorY += child.preferredSize.height + spacing;
         }
     }
 }

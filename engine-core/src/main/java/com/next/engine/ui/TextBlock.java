@@ -17,7 +17,7 @@ public final class TextBlock extends AbstractNode {
 
     private String text;
     private String[] lines = new String[0];
-    @Setter private float lineSpacing = 0f;
+    private float lineSpacing = 0f;
 
     public TextBlock(String text, String fontId, int color) {
         this.fontId = fontId;
@@ -45,6 +45,11 @@ public final class TextBlock extends AbstractNode {
         recalculateBounds();
     }
 
+    public void setLineSpacing(float lineSpacing) {
+        this.lineSpacing = lineSpacing;
+        recalculateBounds();
+    }
+
     @Override
     public void onLayout() {}
 
@@ -58,17 +63,16 @@ public final class TextBlock extends AbstractNode {
         }
 
         preferredSize.set(parent.contentBounds().width, font.getLineHeight() * lines.length);
-        localBounds.set(
-                localBounds.x,
-                localBounds.y,
-                preferredSize.width,
-                preferredSize.height
-        );
+        localBounds.width = preferredSize.width;
+        localBounds.height = preferredSize.height;
+        offsetY = font.getAscent();
     }
+
+    private float offsetY;
 
     @Override
     public void draw(RenderQueue queue) {
-        float yy = globalBounds.y;
+        float yy = globalBounds.y + offsetY;
 
         for (String line : lines) {
             queue.submit(
@@ -76,7 +80,7 @@ public final class TextBlock extends AbstractNode {
                     line,
                     fontId,
                     color,
-                    globalBounds.x, yy + font.getAscent(),
+                    globalBounds.x, yy,
                     RenderPosition.AXIS,
                     0
             );

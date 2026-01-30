@@ -27,6 +27,15 @@ public final class Label extends AbstractNode {
         recalculateBounds();
     }
 
+    public Label(String text, String fontId, int color) {
+        this(text, fontId, color, Align.START, Align.START);
+    }
+
+    public Label(float x, float y, String text, String fontId, int color) {
+        this(text, fontId, color);
+        localBounds.set(x, y, 0, 0);
+    }
+
     private void recalculateBounds() {
         float w = font.measureWidth(text);
         float h = font.getLineHeight();
@@ -40,16 +49,7 @@ public final class Label extends AbstractNode {
     }
 
     @Override
-    public void onLayout() {
-//        measure();
-//
-//        Rect area = this.parent.contentBounds();
-//
-//        float x = LayoutUtils.alignX(area, localBounds.width, alignX);
-//        float y = LayoutUtils.alignY(area, localBounds.height, alignY) + font.getAscent();
-//
-//        globalBounds.set(x, y, localBounds.width, localBounds.height);
-    }
+    public void onLayout() {}
 
     @Override
     public void measure() {
@@ -57,8 +57,13 @@ public final class Label extends AbstractNode {
         float h = font.getLineHeight();
 
         preferredSize.set(w, h);
-        localBounds.set(localBounds.x, localBounds.y, w, h);
+        localBounds.width = w;
+        localBounds.height = h;
+
+        offsetY = font.getAscent();
     }
+
+    private float offsetY;
 
     @Override
     public void draw(RenderQueue queue) {
@@ -67,7 +72,7 @@ public final class Label extends AbstractNode {
                 text,
                 fontId,
                 color,
-                globalBounds.x, globalBounds.y + font.getAscent(),
+                globalBounds.x, globalBounds.y + offsetY,
                 RenderPosition.AXIS,
                 0
         );

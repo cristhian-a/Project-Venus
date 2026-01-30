@@ -21,7 +21,16 @@ public abstract class AbstractContainer extends AbstractNode {
     }
 
     @Override
-    public void onLayout() {
+    public final void measure() {
+        if (!dirty) return;
+        for (int i = 0; i < children.size(); i++) {
+            children.get(i).measure();
+        }
+        layout.calculatePreferredSize(this, children);
+    }
+
+    @Override
+    public final void onLayout() {
         layout.arrange(this, children);
 
         for (int i = 0; i < children.size(); i++) {

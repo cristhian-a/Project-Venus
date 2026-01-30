@@ -30,8 +30,8 @@ public abstract class AbstractNode {
             globalBounds.set(
                     parentBounds.x + localBounds.x,
                     parentBounds.y + localBounds.y,
-                    localBounds.width,
-                    localBounds.height
+                    preferredSize.width,
+                    preferredSize.height
             );
         } else {
             globalBounds.set(localBounds);

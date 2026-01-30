@@ -43,10 +43,10 @@ public final class ViewInventory {
 
         Panel footerPanel = new Panel(
                 new Rect(0, 0, root.getContentWidth(), 30),
-                new AlignedLayout(Align.CENTER, Align.START),
+                new AbsoluteLayout(),
                 0f
         );
-        var footerTxt = new Label("Hello World!", Fonts.DEFAULT, Colors.WHITE, Align.CENTER, Align.START);
+        var footerTxt = new Label(30, 0, "Hello World!", Fonts.DEFAULT, Colors.WHITE);
         footerPanel.add(footerTxt);
 
         root.add(headerPanel);
