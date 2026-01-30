@@ -1,5 +1,7 @@
 package com.next.engine.ui;
 
+import com.next.engine.graphics.RenderQueue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,8 @@ public abstract class AbstractContainer extends AbstractNode {
         markDirty();
     }
 
+    public abstract Rect contentBounds();
+
     @Override
     public final void measure() {
         if (!dirty) return;
@@ -39,5 +43,11 @@ public abstract class AbstractContainer extends AbstractNode {
         }
     }
 
-    public abstract Rect contentBounds();
+    @Override
+    public void draw(RenderQueue queue) {
+        for (int i = 0; i < children.size(); i++) {
+            var child = children.get(i);
+            child.draw(queue);
+        }
+    }
 }

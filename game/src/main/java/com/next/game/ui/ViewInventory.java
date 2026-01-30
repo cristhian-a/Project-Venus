@@ -16,9 +16,12 @@ public final class ViewInventory {
     private static final String HEADER = "- YOUR STUFF -";
 
     private final FramePanel frame;
+    private final UIRoot root;
 
     public ViewInventory(Player player) {
-        frame = FrameFactory.dialog(x, y, w, h);
+        this.root = new UIRoot(new Rect(x, y, w, h));
+        frame = FrameFactory.dialog(0, 0, w, h);
+        this.root.add(frame);
 
         Panel root = new Panel(new Rect(frame.contentBounds()), new VerticalStackLayout(0f), 0f);
         frame.add(root);
@@ -55,8 +58,9 @@ public final class ViewInventory {
     }
 
     public void render(RenderQueue queue) {
-        frame.measure();
-        frame.updateLayout();
-        frame.draw(queue);
+//        frame.measure();
+//        frame.updateLayout();
+//        frame.draw(queue);
+        root.render(queue);
     }
 }

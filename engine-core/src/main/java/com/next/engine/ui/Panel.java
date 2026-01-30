@@ -52,10 +52,7 @@ public class Panel extends AbstractContainer {
     /// method after any custom drawing logic; this way you ensure the children are drawn over it.
     @Override
     public void draw(RenderQueue queue) {
-        for (int i = 0; i < children.size(); i++) {
-            var child = children.get(i);
-            child.draw(queue);
-        }
+        super.draw(queue);
 
         queue.rectangle(
                 Layer.UI_SCREEN,
