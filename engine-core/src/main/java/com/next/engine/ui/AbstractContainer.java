@@ -11,13 +11,13 @@ public abstract class AbstractContainer extends AbstractNode {
     public final void add(AbstractNode child) {
         children.add(child);
         child.setParent(this);
-        maskAsDirty();
+        markDirty();
     }
 
     public final void remove(AbstractNode child) {
         children.remove(child);
         child.parent = null;
-        maskAsDirty();
+        markDirty();
     }
 
     @Override

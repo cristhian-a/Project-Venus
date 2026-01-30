@@ -10,10 +10,10 @@ public abstract class AbstractNode {
     protected boolean dirty = true;
     protected AbstractContainer parent;
 
-    public final void maskAsDirty() {
+    public final void markDirty() {
         if (dirty) return;
         dirty = true;
-        if (parent instanceof AbstractNode e) e.maskAsDirty();
+        if (parent != null) parent.markDirty();
     }
 
     public final boolean isDirty() { return dirty; }
@@ -30,8 +30,8 @@ public abstract class AbstractNode {
             globalBounds.set(
                     parentBounds.x + localBounds.x,
                     parentBounds.y + localBounds.y,
-                    preferredSize.width,
-                    preferredSize.height
+                    localBounds.width,
+                    localBounds.height
             );
         } else {
             globalBounds.set(localBounds);

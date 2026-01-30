@@ -40,7 +40,7 @@ public final class Label extends AbstractNode {
         float w = font.measureWidth(text);
         float h = font.getLineHeight();
         localBounds.set(0, 0, w, h);
-        maskAsDirty();
+        markDirty();
     }
 
     public void setText(String text) {

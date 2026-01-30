@@ -5,7 +5,6 @@ import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderPosition;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.graphics.TextFont;
-import lombok.Setter;
 
 public final class TextBlock extends AbstractNode {
 
@@ -37,7 +36,7 @@ public final class TextBlock extends AbstractNode {
                 + (lines.length - 1) * lineSpacing;
 
         localBounds.set(0, 0, maxWidth, height);
-        maskAsDirty();
+        markDirty();
     }
 
     public void setText(String text) {
