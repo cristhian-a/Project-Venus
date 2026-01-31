@@ -6,6 +6,9 @@ import com.next.engine.ui.UIRoot;
 import com.next.game.util.Inputs;
 
 public final class InputSolver {
+
+    private static final String ACTION = "click";
+
     private final Input input;
     private final FocusManager focusManager;
 
@@ -19,7 +22,7 @@ public final class InputSolver {
         if (input.isTyped(Inputs.DOWN)) focusManager.focusDirection(0, 1);
         if (input.isTyped(Inputs.LEFT)) focusManager.focusDirection(-1, 0);
         if (input.isTyped(Inputs.RIGHT)) focusManager.focusDirection(1, 0);
-        if (input.isTyped(Inputs.TALK)) focusManager.activateFocused("click");
+        if (input.isTyped(Inputs.TALK)) focusManager.activateFocused(ACTION);
     }
 
 }

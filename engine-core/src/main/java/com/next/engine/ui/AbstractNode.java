@@ -1,6 +1,10 @@
 package com.next.engine.ui;
 
 import com.next.engine.graphics.RenderQueue;
+import com.next.engine.ui.component.UIComponent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /// Base class for UI elements.
 public abstract class AbstractNode {
@@ -62,5 +66,28 @@ public abstract class AbstractNode {
         anchorX = alignX;
         anchorY = alignY;
         markDirty();
+    }
+
+    // Componentization
+    private final List<UIComponent> components = new ArrayList<>();
+
+    public final void addComponent(UIComponent component) {
+        components.add(component);
+        component.onAttach(this);
+    }
+
+    public final void removeComponent(UIComponent component) {
+        components.remove(component);
+        component.onDetach();
+    }
+
+    public final <T extends UIComponent> T getComponent(Class<T> clazz) {
+        for (int i = 0; i < components.size(); i++) {
+            UIComponent component = components.get(i);
+            if (clazz.isInstance(component)) {
+                return clazz.cast(component);
+            }
+        }
+        return null;
     }
 }
