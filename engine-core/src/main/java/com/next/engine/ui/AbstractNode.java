@@ -43,4 +43,24 @@ public abstract class AbstractNode {
 
     public abstract void onLayout();
     public abstract void draw(RenderQueue queue);
+
+    // Anchoring
+    protected Align anchorX = Align.START;
+    protected Align anchorY = Align.START;
+
+    public final void anchorX(Align align) {
+        anchorX = align;
+        markDirty();
+    }
+
+    public final void anchorY(Align align) {
+        anchorY = align;
+        markDirty();
+    }
+
+    public final void setAnchor(Align alignX, Align alignY) {
+        anchorX = alignX;
+        anchorY = alignY;
+        markDirty();
+    }
 }

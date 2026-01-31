@@ -23,6 +23,8 @@ public class Panel extends AbstractContainer {
         this.localBounds = bounds;
         this.padding = padding;
         this.layout = layout;
+
+        this.preferredSize.set(bounds.width, bounds.height);
     }
 
     private final Rect contentBounds = new Rect(0, 0, 0, 0);

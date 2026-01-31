@@ -9,8 +9,6 @@ import com.next.engine.graphics.TextFont;
 public final class Label extends AbstractNode {
 
     private final int color;
-    private final Align alignX;
-    private final Align alignY;
     private final String fontId;
     private final TextFont font;
 
@@ -19,8 +17,8 @@ public final class Label extends AbstractNode {
     public Label(String text, String fontId, int color, Align alignX, Align alignY) {
         this.text = text;
         this.fontId = fontId;
-        this.alignX = alignX;
-        this.alignY = alignY;
+        this.anchorX = alignX;
+        this.anchorY = alignY;
         this.color = color;
 
         this.font = Registry.fonts.get(fontId);

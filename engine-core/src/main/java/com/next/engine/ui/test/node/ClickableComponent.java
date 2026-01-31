@@ -1,4 +1,4 @@
-package com.next.engine.ui.node;
+package com.next.engine.ui.test.node;
 
 public class ClickableComponent implements UIComponent {
     private final Runnable action;

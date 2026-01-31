@@ -6,6 +6,10 @@ import java.util.Objects;
 
 public final class UIRoot extends AbstractContainer {
 
+    // content bounds for root should always have x and y equal to 0,
+    // preventing layouts to break.
+    private final Rect contentBounds = new Rect();
+
     public UIRoot(Rect bounds) {
         this(bounds, new AbsoluteLayout());
     }
@@ -15,13 +19,17 @@ public final class UIRoot extends AbstractContainer {
         Objects.requireNonNull(layout, "Layout for UIRoot cannot be null");
 
         super();
-        this.localBounds = bounds;
+        this.localBounds.set(bounds);
         this.layout = layout;
+
+        this.preferredSize.set(bounds.width, bounds.height);
+        contentBounds.width = bounds.width;
+        contentBounds.height = bounds.height;
     }
 
     @Override
     public Rect contentBounds() {
-        return globalBounds;
+        return contentBounds;
     }
 
     /// Updates layout if needed and collect draw request from the children nodes of this container.

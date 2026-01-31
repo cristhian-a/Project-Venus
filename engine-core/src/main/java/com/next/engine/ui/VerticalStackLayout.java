@@ -12,8 +12,7 @@ public final class VerticalStackLayout implements Layout {
 
 //    @Override
 //    public void calculatePreferredSize(AbstractContainer container, List<AbstractNode> children) {
-//        float totalH = 0;
-//        float maxW = 0;
+//        float totalH = 0, maxW = 0;
 //
 //        for (int i = 0; i < children.size(); i++) {
 //            var child = children.get(i);
@@ -25,6 +24,8 @@ public final class VerticalStackLayout implements Layout {
 //        container.preferredSize.set(maxW, totalH);
 //    }
 
+    private final Rect slotRect = new Rect();
+
     @Override
     public void arrange(AbstractContainer container, List<AbstractNode> children) {
         Rect content = container.contentBounds();
@@ -32,8 +33,16 @@ public final class VerticalStackLayout implements Layout {
 
         for (int i = 0; i < children.size(); i++) {
             var child = children.get(i);
-            child.localBounds.set(content.x, cursorY, content.width, child.preferredSize.height);
-            cursorY += child.preferredSize.height + spacing;
+
+            float slotW = content.width;
+            float slotH = child.preferredSize.height;
+            slotRect.set(content.x, cursorY, slotW, slotH);
+
+            float childX = LayoutUtils.alignX(slotRect, child.preferredSize.width, child.anchorX);
+            float childY = LayoutUtils.alignY(slotRect, child.preferredSize.height, child.anchorY);
+
+            child.localBounds.set(childX, childY, content.width, child.preferredSize.height);
+            cursorY += slotH + spacing;
         }
     }
 }
