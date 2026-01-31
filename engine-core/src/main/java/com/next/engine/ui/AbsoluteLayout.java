@@ -21,10 +21,12 @@ public final class AbsoluteLayout implements Layout {
 
         for (int i = 0; i < children.size(); i++) {
             var child = children.get(i);
-            if (child.localBounds.x > 0 || child.localBounds.y > 0) continue;
+            float x = child.localBounds.x, y = child.localBounds.y;
 
-            float x = LayoutUtils.alignX(content, child.preferredSize.width, child.anchorX);
-            float y = LayoutUtils.alignY(content, child.preferredSize.height, child.anchorY);
+            if (x == 0 && y == 0) {
+                x = LayoutUtils.alignX(content, child.preferredSize.width, child.anchorX);
+                y = LayoutUtils.alignY(content, child.preferredSize.height, child.anchorY);
+            }
 
             child.localBounds.set(
                     x, y,

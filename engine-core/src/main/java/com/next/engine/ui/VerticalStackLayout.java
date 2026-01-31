@@ -41,7 +41,7 @@ public final class VerticalStackLayout implements Layout {
             float childX = LayoutUtils.alignX(slotRect, child.preferredSize.width, child.anchorX);
             float childY = LayoutUtils.alignY(slotRect, child.preferredSize.height, child.anchorY);
 
-            child.localBounds.set(childX, childY, content.width, child.preferredSize.height);
+            child.localBounds.set(childX, childY, child.preferredSize.width, child.preferredSize.height);
             cursorY += slotH + spacing;
         }
     }

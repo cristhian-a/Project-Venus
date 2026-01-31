@@ -1,4 +1,4 @@
-package com.next.engine.uix;
+package com.next.engine.zexperimental.uix;
 
 public class FramePanel extends UIContainer {
 }

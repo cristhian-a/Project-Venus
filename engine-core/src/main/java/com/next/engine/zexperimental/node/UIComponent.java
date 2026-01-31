@@ -1,4 +1,4 @@
-package com.next.engine.ui.test.node;
+package com.next.engine.zexperimental.node;
 
 public interface UIComponent {
     // Whenever added to a node
