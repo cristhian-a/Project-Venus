@@ -1,13 +1,26 @@
 package com.next.engine.ui.component;
 
-public final class ActionComponent implements UIComponent {
-    private final Runnable action;
+import com.next.engine.ui.AbstractNode;
 
-    public ActionComponent(Runnable action) {
+public final class ActionComponent implements UIComponent {
+    private final Action action;
+    private AbstractNode node;
+
+    @Override
+    public void onAttach(AbstractNode node) {
+        this.node = node;
+    }
+
+    @Override
+    public void onDetach() {
+        this.node = null;
+    }
+
+    public ActionComponent(Action action) {
         this.action = action;
     }
 
-    public void fire() {
-        action.run();
+    public void fire(String input) {
+        action.run(node, input);
     }
 }

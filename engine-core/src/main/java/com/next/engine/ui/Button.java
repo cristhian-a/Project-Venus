@@ -5,6 +5,7 @@ import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderPosition;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.graphics.TextFont;
+import com.next.engine.ui.component.Action;
 import com.next.engine.ui.component.ActionComponent;
 import com.next.engine.ui.component.FocusStyleComponent;
 
@@ -17,7 +18,7 @@ public final class Button extends AbstractNode implements Focusable {
     private boolean focused;
     private int backgroundColor;
 
-    public Button(String text, String font, Runnable action) {
+    public Button(String text, String font, Action action) {
         this.font = Registry.fonts.get(font);
         this.fontId = font;
         this.text = text;
@@ -88,6 +89,6 @@ public final class Button extends AbstractNode implements Focusable {
     @Override
     public void onActivate(String input) {
         var action = getComponent(ActionComponent.class);
-        if (action != null) action.fire();
+        if (action != null) action.fire(input);
     }
 }

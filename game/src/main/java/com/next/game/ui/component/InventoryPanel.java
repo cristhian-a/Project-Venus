@@ -44,15 +44,15 @@ public final class InventoryPanel {
                 new VerticalStackLayout(4f),
                 2f
         );
-        var button1 = new Button("Hit 1", Fonts.DEFAULT, () -> IO.println("Hit 1"));
+        var button1 = new Button("Hit 1", Fonts.DEFAULT, (_, _) -> IO.println("Hit 1"));
             button1.anchorX(Align.CENTER);
-        var button2 = new Button("Hit 2", Fonts.DEFAULT, () -> IO.println("Hit 2"));
+        var button2 = new Button("Hit 2", Fonts.DEFAULT, (_, _) -> IO.println("Hit 2"));
             button2.anchorX(Align.CENTER);
-        var button3 = new Button("Hit 3", Fonts.DEFAULT, () -> IO.println("Hit 3"));
+        var button3 = new Button("Hit 3", Fonts.DEFAULT, (_, _) -> IO.println("Hit 3"));
             button3.anchorX(Align.CENTER);
-        var button4 = new Button("Hit 4", Fonts.DEFAULT, () -> IO.println("Hit 4"));
+        var button4 = new Button("Hit 4", Fonts.DEFAULT, (_, _) -> IO.println("Hit 4"));
             button4.anchorX(Align.CENTER);
-        var button5 = new Button("Hit 5", Fonts.DEFAULT, () -> IO.println("Hit 5"));
+        var button5 = new Button("Hit 5", Fonts.DEFAULT, (_, _) -> IO.println("Hit 5"));
             button5.anchorX(Align.CENTER);
         bodyPanel.add(button1);
         bodyPanel.add(button2);
