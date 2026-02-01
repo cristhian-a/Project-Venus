@@ -41,7 +41,7 @@ public final class InventoryPanel {
 
         Panel bodyPanel = new Panel(
                 new Rect(0, 0, root.getContentWidth(), root.getContentHeight() - 60),
-                new VerticalStackLayout(4f),
+                new GridLayout(4, 8f, 8f),
                 2f
         );
         var button1 = new Button("Hit 1", Fonts.DEFAULT, (_, _) -> IO.println("Hit 1"));
@@ -54,11 +54,14 @@ public final class InventoryPanel {
             button4.anchorX(Align.CENTER);
         var button5 = new Button("Hit 5", Fonts.DEFAULT, (_, _) -> IO.println("Hit 5"));
             button5.anchorX(Align.CENTER);
+        var button6 = new Button("Hit 6", Fonts.DEFAULT, (_, _) -> IO.println("Hit 6"));
+            button6.anchorX(Align.CENTER);
         bodyPanel.add(button1);
         bodyPanel.add(button2);
         bodyPanel.add(button3);
         bodyPanel.add(button4);
         bodyPanel.add(button5);
+        bodyPanel.add(button6);
 
         root.add(headerPanel);  // remember to add the panels to the root panel
         root.add(bodyPanel);
