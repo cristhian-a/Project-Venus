@@ -44,13 +44,13 @@ public final class InventoryPanel {
 
         Panel bodyPanel = new Panel(
                 new Rect(0, 0, root.getContentWidth(), root.getContentHeight() - 60),
-                new GridLayout(4, 8f, 8f),
+                new GridLayout(4, 42f, 32f),
                 0f
         );
 //        var button1 = new Button("Hit 1", Fonts.DEFAULT, (_, _) -> IO.println("Hit 1"));
 //        bodyPanel.add(button1);
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 16; i++) {
             var img = new ImageNode("apple.png", true);
             final int index = i;
             img.addComponent(new ActionComponent((_, _) -> IO.println("Hit: " + index)));

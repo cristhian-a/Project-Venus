@@ -2,6 +2,7 @@ package com.next.engine.graphics;
 
 import com.next.engine.animation.Costume;
 import com.next.engine.data.Buffered;
+import com.next.engine.data.Registry;
 import com.next.engine.physics.AABB;
 import com.next.engine.physics.CollisionBox;
 
@@ -34,11 +35,21 @@ public final class RenderQueue implements Buffered {
     }
 
     public void submit(Layer layer, float x, float y, int spriteId) {
-        buckets[layer.ordinal()].sprites.add(x, y, spriteId);
+        final var metadata = Registry.sprites[spriteId];
+        final float w = metadata.srcWidth();
+        final float h = metadata.srcHeight();
+        buckets[layer.ordinal()].sprites.add(x, y, 0, w, h, spriteId);
     }
 
     public void draw(Layer layer, long sortKey, float x, float y, Costume costume) {
-        buckets[layer.ordinal()].sprites.add((int) x, (int) y, costume.texture());
+        final var metadata = Registry.sprites[costume.texture()];
+        final float w = metadata.srcWidth();
+        final float h = metadata.srcHeight();
+        buckets[layer.ordinal()].sprites.add(x, y, 0, w, h, costume.texture());
+    }
+
+    public void draw(Layer layer, float x, float y, float width, float height, int textureId) {
+        buckets[layer.ordinal()].sprites.add(x, y, 0, width, height, textureId);
     }
 
     public void submit(Layer layer, CollisionBox box, boolean hit) {
@@ -141,15 +152,25 @@ public final class RenderQueue implements Buffered {
     }
 
     public static final class SpriteTable extends AbstractRenderTable {
+        public float[] width, height;
         public int[] spriteId;
 
         public SpriteTable(int capacity) {
             super(capacity);
             spriteId = new int[capacity];
+            width = new float[capacity];
+            height = new float[capacity];
         }
 
-        public void add(float x, float y, int spriteId) {
-            int index = nextSlot(x, y, 0);
+//        public void add(float x, float y, int spriteId) {
+//            int index = nextSlot(x, y, 0);
+//            this.spriteId[index] = spriteId;
+//        }
+
+        public void add(float x, float y, float z, float width, float height, int spriteId) {
+            int index = nextSlot(x, y, z);
+            this.width[index] = width;
+            this.height[index] = height;
             this.spriteId[index] = spriteId;
         }
 

@@ -32,10 +32,12 @@ public final class ImageNode extends AbstractNode implements Focusable {
         super();
     }
 
+    int scale = 4;
+
     @Override
     public void measure() {
-        // preferred size = natural image size (duh)
-        preferredSize.set(texture.srcWidth(), texture.srcHeight());
+        // preferred size = natural image size * scale (duh)
+        preferredSize.set(texture.srcWidth() * scale, texture.srcHeight() * scale);
         localBounds.width = preferredSize.width;
         localBounds.height = preferredSize.height;
     }
@@ -50,8 +52,8 @@ public final class ImageNode extends AbstractNode implements Focusable {
             return;
         }
 
-        float tw = texture.srcWidth();
-        float th = texture.srcHeight();
+        float tw = preferredSize.width; // texture.srcWidth();
+        float th = preferredSize.height; // texture.srcHeight();
 
         // scaling to fit while preserving the aspect ratio
         float scale = Math.min(cellW / tw, cellH / th);
@@ -70,13 +72,17 @@ public final class ImageNode extends AbstractNode implements Focusable {
 
     @Override
     public void draw(RenderQueue queue) {
-        queue.submit(Layer.UI_SCREEN, drawRect.x, drawRect.y, texture.id());
+        queue.draw(
+                Layer.UI_SCREEN, drawRect.x, drawRect.y,
+                drawRect.width, drawRect.height, texture.id()
+        );
 
         if (focused) {
-            queue.rectangle(
-                    Layer.UI_SCREEN, globalBounds.x - 1, globalBounds.y - 1,
+            queue.fillRoundRect(
+                    Layer.UI_SCREEN,
+                    globalBounds.x - 1, globalBounds.y - 1,
                     drawRect.width + 2, drawRect.height + 2,
-                    0xFFFFFFFF
+                    0xFFFFFFFF, 16
             );
         }
     }
