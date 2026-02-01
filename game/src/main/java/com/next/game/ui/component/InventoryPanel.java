@@ -1,7 +1,10 @@
 package com.next.game.ui.component;
 
+import com.next.engine.data.Registry;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.ui.*;
+import com.next.engine.ui.component.ActionComponent;
+import com.next.engine.ui.widget.ImageNode;
 import com.next.game.Game;
 import com.next.game.ui.InputSolver;
 import com.next.game.util.Colors;
@@ -42,26 +45,17 @@ public final class InventoryPanel {
         Panel bodyPanel = new Panel(
                 new Rect(0, 0, root.getContentWidth(), root.getContentHeight() - 60),
                 new GridLayout(4, 8f, 8f),
-                2f
+                0f
         );
-        var button1 = new Button("Hit 1", Fonts.DEFAULT, (_, _) -> IO.println("Hit 1"));
-            button1.anchorX(Align.CENTER);
-        var button2 = new Button("Hit 2", Fonts.DEFAULT, (_, _) -> IO.println("Hit 2"));
-            button2.anchorX(Align.CENTER);
-        var button3 = new Button("Hit 3", Fonts.DEFAULT, (_, _) -> IO.println("Hit 3"));
-            button3.anchorX(Align.CENTER);
-        var button4 = new Button("Hit 4", Fonts.DEFAULT, (_, _) -> IO.println("Hit 4"));
-            button4.anchorX(Align.CENTER);
-        var button5 = new Button("Hit 5", Fonts.DEFAULT, (_, _) -> IO.println("Hit 5"));
-            button5.anchorX(Align.CENTER);
-        var button6 = new Button("Hit 6", Fonts.DEFAULT, (_, _) -> IO.println("Hit 6"));
-            button6.anchorX(Align.CENTER);
-        bodyPanel.add(button1);
-        bodyPanel.add(button2);
-        bodyPanel.add(button3);
-        bodyPanel.add(button4);
-        bodyPanel.add(button5);
-        bodyPanel.add(button6);
+//        var button1 = new Button("Hit 1", Fonts.DEFAULT, (_, _) -> IO.println("Hit 1"));
+//        bodyPanel.add(button1);
+
+        for (int i = 0; i < 8; i++) {
+            var img = new ImageNode("apple.png", true);
+            final int index = i;
+            img.addComponent(new ActionComponent((_, _) -> IO.println("Hit: " + index)));
+            bodyPanel.add(img);
+        }
 
         root.add(headerPanel);  // remember to add the panels to the root panel
         root.add(bodyPanel);

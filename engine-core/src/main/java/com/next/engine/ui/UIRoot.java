@@ -1,6 +1,5 @@
 package com.next.engine.ui;
 
-import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
 import lombok.Getter;
 
@@ -35,16 +34,6 @@ public final class UIRoot extends AbstractContainer {
     @Override
     public Rect contentBounds() {
         return contentBounds;
-    }
-
-    @Override
-    public void draw(RenderQueue queue) {
-        super.draw(queue);
-
-        if (focusManager.getFocused() instanceof AbstractNode an) {
-            Rect r = an.globalBounds;
-            queue.rectangle(Layer.UI_SCREEN, r.x-2, r.y-2, r.width+4, r.height+4, 0xffffffff);
-        }
     }
 
     /// Updates layout if needed and collect draw request from the children nodes of this container.

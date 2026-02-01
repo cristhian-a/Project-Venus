@@ -51,4 +51,5 @@ module engine.core {
     exports com.next.engine.debug;
     exports com.next.engine.ui;
     exports com.next.engine.ui.component;
+    exports com.next.engine.ui.widget;
 }
