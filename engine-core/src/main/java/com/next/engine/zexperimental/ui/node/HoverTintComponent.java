@@ -1,4 +1,4 @@
-package com.next.engine.zexperimental.node;
+package com.next.engine.zexperimental.ui.node;
 
 public final class HoverTintComponent implements UIComponent {
     private UINode owner;

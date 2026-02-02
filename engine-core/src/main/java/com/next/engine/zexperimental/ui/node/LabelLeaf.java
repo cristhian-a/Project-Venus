@@ -1,4 +1,4 @@
-package com.next.engine.zexperimental.node;
+package com.next.engine.zexperimental.ui.node;
 
 import com.next.engine.graphics.RenderQueue;
 import lombok.Setter;

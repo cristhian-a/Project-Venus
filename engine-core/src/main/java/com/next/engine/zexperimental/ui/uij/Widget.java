@@ -1,4 +1,4 @@
-package com.next.engine.zexperimental.uij;
+package com.next.engine.zexperimental.ui.uij;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.next.engine.zexperimental.uix;
+package com.next.engine.zexperimental.ui.uix;
 
 public abstract class UINode {
     protected UINode parent;

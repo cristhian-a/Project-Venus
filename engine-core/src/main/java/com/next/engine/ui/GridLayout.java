@@ -59,23 +59,14 @@ public final class GridLayout implements Layout {
         if (elements == 0) return;
         final int rows = (elements + columns - 1) / columns;
 
-        // compute minimum totals
-        float minTotalW = 0f;
-        for (int i = 0; i < columns; i++) minTotalW += colWidths[i];
-        if (columns > 1) minTotalW += hgap * (columns - 1);
-
-        float minTotalH = 0f;
-        for (int i = 0; i < rows; i++) minTotalH += rowHeights[i];
-        if (rows > 1) minTotalH += vgap * (rows - 1);
-
         // distributing extra space evenly among columns/rows if content is larger
-        float extraW = content.width - minTotalW;
+        float extraW = content.width - container.preferredSize.width;
         if (extraW > 0) {
             float addPerCol = extraW / columns;
             for (int i = 0; i < columns; i++) colWidths[i] += addPerCol;
         }
 
-        float extraH = content.height - minTotalH;
+        float extraH = content.height - container.preferredSize.height;
         if (extraH > 0 && rows > 0) {
             float addPerRow = extraH / rows;
             for (int i = 0; i < rows; i++) rowHeights[i] += addPerRow;
