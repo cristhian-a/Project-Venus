@@ -52,5 +52,4 @@ module engine.core {
     exports com.next.engine.ui;
     exports com.next.engine.ui.component;
     exports com.next.engine.ui.widget;
-    exports com.next.engine.zexperimental.memory;
 }
