@@ -1,8 +1,8 @@
 package com.next.game.ui.component;
 
-import com.next.engine.data.Registry;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.ui.*;
+import com.next.engine.ui.component.Action;
 import com.next.engine.ui.component.ActionComponent;
 import com.next.engine.ui.widget.ImageNode;
 import com.next.game.Game;
@@ -24,18 +24,21 @@ public final class InventoryPanel {
     private static final String HEADER = "- YOUR STUFF -";
 
     // Root panel
-    private final UIRoot root;
+    private final UIRoot uiroot;
     private final InputSolver inputSolver;
+
+    // Info panel
+    private final ItemInfoPanel infoPanel;
 
     public InventoryPanel(Game game) {
         FramePanel frame = FrameFactory.dialog(x, y, w, h);
 
         // Inventory panel
-        Panel root = new Panel(new Rect(frame.contentBounds()), new VerticalStackLayout(0f), 0f);
-        frame.add(root);
+        Panel rootPanel = new Panel(new Rect(frame.contentBounds()), new VerticalStackLayout(0f), 0f);
+        frame.add(rootPanel);
 
         Panel headerPanel = new Panel(
-                new Rect(0, 0, root.getContentWidth(), 30),
+                new Rect(0, 0, rootPanel.getContentWidth(), 30),
                 new AbsoluteLayout(),
                 0f
         );
@@ -43,66 +46,51 @@ public final class InventoryPanel {
         headerPanel.add(label);
 
         Panel bodyPanel = new Panel(
-                new Rect(0, 0, root.getContentWidth(), root.getContentHeight() - 60),
+                new Rect(0, 0, rootPanel.getContentWidth(), rootPanel.getContentHeight() - 60),
                 new GridLayout(4, 42f, 32f),
                 0f
         );
-//        var button1 = new Button("Hit 1", Fonts.DEFAULT, (_, _) -> IO.println("Hit 1"));
-//        bodyPanel.add(button1);
 
-        for (int i = 0; i < 16; i++) {
-            var img = new ImageNode("apple.png", true);
-            final int index = i;
-            img.addComponent(new ActionComponent((_, _) -> IO.println("Hit: " + index)));
-            bodyPanel.add(img);
-        }
+//        for (int i = 0; i < 16; i++) {
+//            var img = new ImageNode("apple.png", true);
+//            final int index = i;
+//            img.addComponent(new ActionComponent((_, _) -> IO.println("Hit: " + index)));
+//            bodyPanel.add(img);
+//        }
+        var inventory = game.getPlayer().getInventory();
+        inventory.forEach((item) -> {
+            var itemWidget = new ItemWidget(item);
+            itemWidget.addComponent(new ActionComponent(this.inventoryAction()));
+            bodyPanel.add(itemWidget);
+        });
 
-        root.add(headerPanel);  // remember to add the panels to the root panel
-        root.add(bodyPanel);
-
-        // Information panel
-        var infoPanel = infoPanel();
+        rootPanel.add(headerPanel);  // remember to add the panels to the root panel
+        rootPanel.add(bodyPanel);
 
         final float WIDTH = 1024, HEIGHT = 768;
-        this.root = new UIRoot(new Rect(0, 0, WIDTH, HEIGHT));
-        this.root.add(frame);
-//        frame.setAnchor(Align.CENTER, Align.CENTER);
-        this.root.add(infoPanel);
+        uiroot = new UIRoot(new Rect(0, 0, WIDTH, HEIGHT));
+        uiroot.add(frame);
+        //frame.setAnchor(Align.CENTER, Align.CENTER);
 
-        inputSolver = new InputSolver(game.getInput(), this.root);
-    }
+        // Information panel
+        infoPanel = new ItemInfoPanel(game, infoX, infoY, infoW, infoH);
+        uiroot.add(infoPanel);
 
-    private AbstractNode infoPanel() {
-        FramePanel frame = FrameFactory.dialog(infoX, infoY, infoW, infoH);
-        Rect rootRect = frame.contentBounds();
-
-        Panel root = new Panel(new Rect(rootRect), new VerticalStackLayout(0), 0f);
-        frame.add(root);
-
-        Panel header = new Panel(
-                new Rect(0, 0, rootRect.width, 30),
-                new AbsoluteLayout(),
-                0f
-        );
-//        header.add(nameLabel);
-
-        Panel body = new Panel(
-                new Rect(0, 0, rootRect.width, rootRect.height - 30),
-                new VerticalStackLayout(0f),
-                0f
-        );
-//        body.add(textBlock);
-
-        root.add(header);
-        root.add(body);
-        return frame;
+        inputSolver = new InputSolver(game.getInput(), uiroot);
     }
 
     public void update() {
         inputSolver.update();
+        infoPanel.update(inputSolver.getFocused());
     }
 
     public void render(RenderQueue queue) {
-        root.render(queue);
+        uiroot.render(queue);
+    }
+
+    private Action inventoryAction() {
+        return (AbstractNode node, String input) -> {
+            IO.println(node);
+        };
     }
 }

@@ -15,6 +15,8 @@ public final class ImageNode extends AbstractNode implements Focusable {
     private final Rect drawRect = new Rect();
     private boolean focused;
 
+    private int imageScale = 1;
+
     public ImageNode(String textureName, boolean focusable) {
         int idx = Registry.textureIds.get(textureName);
         var texture = Registry.sprites[idx];
@@ -32,12 +34,26 @@ public final class ImageNode extends AbstractNode implements Focusable {
         super();
     }
 
-    int scale = 4;
+    public ImageNode(int textureId, boolean focusable) {
+        if (textureId < 0 || textureId > Registry.sprites.length) throw new IllegalArgumentException("invalid texture id");
+
+        var texture = Registry.sprites[textureId];
+        if (texture == null) throw new IllegalArgumentException("Texture cannot be null");
+        this.focusable = focusable;
+        this.texture = texture;
+        super();
+    }
+
+    public void setScale(int scale) {
+        if (scale < 1) return;
+        this.imageScale = scale;
+        markDirty();
+    }
 
     @Override
     public void measure() {
         // preferred size = natural image size * scale (duh)
-        preferredSize.set(texture.srcWidth() * scale, texture.srcHeight() * scale);
+        preferredSize.set(texture.srcWidth() * imageScale, texture.srcHeight() * imageScale);
         localBounds.width = preferredSize.width;
         localBounds.height = preferredSize.height;
     }
@@ -81,7 +97,7 @@ public final class ImageNode extends AbstractNode implements Focusable {
             queue.fillRoundRect(
                     Layer.UI_SCREEN,
                     globalBounds.x - 1, globalBounds.y - 1,
-                    drawRect.width + 2, drawRect.height + 2,
+                    drawRect.width + 3, drawRect.height + 3,
                     0xFFFFFFFF, 16
             );
         }

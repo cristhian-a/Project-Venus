@@ -2,6 +2,7 @@ package com.next.game.ui;
 
 import com.next.engine.system.Input;
 import com.next.engine.ui.FocusManager;
+import com.next.engine.ui.Focusable;
 import com.next.engine.ui.UIRoot;
 import com.next.game.util.Inputs;
 
@@ -23,6 +24,10 @@ public final class InputSolver {
         if (input.isTyped(Inputs.LEFT)) focusManager.focusDirection(-1, 0);
         if (input.isTyped(Inputs.RIGHT)) focusManager.focusDirection(1, 0);
         if (input.isTyped(Inputs.TALK)) focusManager.activateFocused(ACTION);
+    }
+
+    public Focusable getFocused() {
+        return focusManager.getFocused();
     }
 
 }

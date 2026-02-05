@@ -10,6 +10,11 @@ public abstract class AbstractContainer extends AbstractNode {
     protected final List<AbstractNode> children = new ArrayList<>();
     protected Layout layout;
 
+    protected AbstractContainer() {
+        this.layout = new AbsoluteLayout();
+        super();
+    }
+
     public void add(AbstractNode child) {
         children.add(child);
         child.setParent(this);
