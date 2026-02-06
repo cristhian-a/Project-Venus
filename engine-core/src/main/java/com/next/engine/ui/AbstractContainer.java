@@ -56,7 +56,7 @@ public abstract class AbstractContainer extends AbstractNode {
 
     @Override
     public final void measure() {
-        if (!dirty || !visible) return;
+        if (!dirty) return;
         visibleChildren.clear();
 
         for (int i = 0; i < children.size(); i++) {
