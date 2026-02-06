@@ -12,7 +12,7 @@ import com.next.game.model.Item;
 import lombok.Getter;
 import lombok.Setter;
 
-final class ItemWidget extends AbstractContainer implements Focusable {
+final class ItemSlot extends AbstractContainer implements Focusable {
 
     private final Rect contentBounds;
     @Getter private final Item item;
@@ -20,11 +20,11 @@ final class ItemWidget extends AbstractContainer implements Focusable {
     private boolean focused;
     @Setter private boolean focusable = true;
 
-    ItemWidget(Item item) {
+    ItemSlot(Item item) {
         this(item, 4);
     }
 
-    ItemWidget(Item item, int scale) {
+    ItemSlot(Item item, int scale) {
         if (item == null) throw new IllegalArgumentException("Item cannot be null");
         this.item = item;
 
@@ -85,7 +85,7 @@ final class ItemWidget extends AbstractContainer implements Focusable {
             queue.fillRoundRect(
                     Layer.UI_SCREEN,
                     globalBounds.x - 1, globalBounds.y - 1,
-                    preferredSize.width + 3, preferredSize.height + 3,
+                    globalBounds.width + 3, globalBounds.height + 3,
                     0xFFFFFFFF, 16
             );
         }
@@ -94,7 +94,7 @@ final class ItemWidget extends AbstractContainer implements Focusable {
         queue.rectangle(
                 Layer.UI_SCREEN,
                 globalBounds.x, globalBounds.y,
-                localBounds.width, localBounds.height,
+                globalBounds.width, globalBounds.height,
                 0xFFFF0000
         );
     }

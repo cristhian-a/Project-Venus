@@ -15,16 +15,39 @@ public abstract class AbstractContainer extends AbstractNode {
         super();
     }
 
-    public void add(AbstractNode child) {
+    public final void add(AbstractNode child) {
         children.add(child);
         child.setParent(this);
+        child.markDirty();
         markDirty();
     }
 
-    public void remove(AbstractNode child) {
+    public final void add(List<? extends AbstractNode> children) {
+        for (int i = 0; i < children.size(); i++) {
+            var child = children.get(i);
+            child.parent = this;
+            child.markDirty();
+        }
+        this.children.addAll(children);
+        markDirty();
+    }
+
+    public final void remove(AbstractNode child) {
         children.remove(child);
         child.parent = null;
         markDirty();
+    }
+
+    public final void removeAll() {
+        for (int i = 0; i < children.size(); i++) {
+            children.get(i).parent = null;
+        }
+        children.clear();
+        markDirty();
+    }
+
+    public final boolean contains(AbstractNode node) {
+        return children.contains(node);
     }
 
     public abstract Rect contentBounds();

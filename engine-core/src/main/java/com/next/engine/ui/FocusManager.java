@@ -17,6 +17,12 @@ public final class FocusManager {
     @Getter private Focusable focused;
     private int focusedIndex = -1;
 
+    private Focusable pendingFocus;
+
+    public void requestFocus(Focusable focus) {
+        pendingFocus = focus;
+    }
+
     public void rebuild() {
         Focusable preserved = focused;
         elements.clear();
@@ -24,6 +30,12 @@ public final class FocusManager {
         if (elements.isEmpty()) {
             focused = null;
             focusedIndex = -1;
+            return;
+        }
+
+        if (pendingFocus != null) {
+            setFocus(pendingFocus);
+            pendingFocus = null;
             return;
         }
 
@@ -71,6 +83,12 @@ public final class FocusManager {
         focused = f;
         focusedIndex = index;
         focused.onFocus();
+    }
+
+    public void setFocus(Focusable focus) {
+        if (focus == null) return;
+        int index = elements.indexOf(focus);
+        setFocus(index);
     }
 
     public void activateFocused(String action) {

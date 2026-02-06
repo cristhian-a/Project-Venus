@@ -42,19 +42,9 @@ public final class UIRoot extends AbstractContainer {
         if (dirty) {
             measure();
             updateLayout();
+            focusManager.rebuild();
         }
         draw(queue);
     }
 
-    @Override
-    public void add(AbstractNode child) {
-        super.add(child);
-        focusManager.rebuild();
-    }
-
-    @Override
-    public void remove(AbstractNode child) {
-        super.remove(child);
-        focusManager.rebuild();
-    }
 }

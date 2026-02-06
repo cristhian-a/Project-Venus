@@ -1,10 +1,17 @@
 package com.next.game.ui.component;
 
 import com.next.engine.ui.*;
+import com.next.engine.ui.component.Action;
 import com.next.game.Game;
+import com.next.game.model.Consumable;
+import com.next.game.model.Equip;
 import com.next.game.model.Item;
+import com.next.game.model.Player;
 import com.next.game.util.Colors;
 import com.next.game.util.Fonts;
+
+import java.util.ArrayList;
+import java.util.List;
 
 final class ItemInfoPanel extends FramePanel {
 
@@ -15,12 +22,20 @@ final class ItemInfoPanel extends FramePanel {
 
     private final StringBuilder stringBuilder = new StringBuilder();
 
+    private final Player player;
+
     // Elements
     private final Panel root;
+    private final Panel header;
+    private final Panel body;
+    private final Panel actionsPanel;
     private final Label headerLabel;
     private final TextBlock textBlock;
+    private final List<Button> actions = new ArrayList<>();
 
     ItemInfoPanel(Game game, float x, float y, float width, float height) {
+        this.player = game.getPlayer();
+
         super(
                 new Rect(x, y, width, height),
                 new com.next.engine.ui.AbsoluteLayout(),
@@ -32,21 +47,29 @@ final class ItemInfoPanel extends FramePanel {
         );
         Rect frameBounds = contentBounds();
 
-        Panel header = new Panel(
+        header = new Panel(
                 new Rect(0, 0, frameBounds.width, 30),
                 new AbsoluteLayout(),
                 0f
         );
-        Panel body = new Panel(
+        body = new Panel(
                 new Rect(0, 0, frameBounds.width, frameBounds.height - 30),
-                new VerticalStackLayout(0f),
+                new AbsoluteLayout(),
                 0f
         );
+        actionsPanel = new Panel(
+                new Rect(0, 0, frameBounds.width, frameBounds.height - (frameBounds.height - 30)),
+                new HorizontalStackLayout(8f),
+                0f
+        );
+        actionsPanel.setAnchor(Align.CENTER, Align.CENTER);
 
         root = new Panel(new Rect(frameBounds), new VerticalStackLayout(0), 0f);
         root.add(header);
         root.add(body);
         add(root);
+
+//        body.add(actionsPanel);
 
         headerLabel = new Label(EMPTY, Fonts.DEFAULT, Colors.WHITE);
         header.add(headerLabel);
@@ -55,13 +78,13 @@ final class ItemInfoPanel extends FramePanel {
         body.add(textBlock);
     }
 
-    private ItemWidget prev;
+    private Focusable prev;
 
-    public void update(Focusable focused) {
-        if (focused instanceof ItemWidget widget) {
-            if (widget.equals(prev)) return;
+    void update(Focusable focused) {
+        if (focused == prev) return;
+        prev = focused;
 
-            prev = widget;
+        if (focused instanceof ItemSlot widget) {
             Item item = widget.getItem();
             stringBuilder.setLength(0);
             var s = stringBuilder.append(LEFT_SQR_BRACKET).append(item.getName()).append(RIGHT_SQR_BRACKET).toString();
@@ -69,6 +92,109 @@ final class ItemInfoPanel extends FramePanel {
 
             var txt = item.getInfo();
             textBlock.setText(txt);
+        } else {
+            prev = null;
+            headerLabel.setText(EMPTY);
+            textBlock.setText(EMPTY);
         }
     }
+
+    private final Button BTN_EQUIP = new Button("Equip", Fonts.DEFAULT, equip());
+    private final Button BTN_USE = new Button("Use", Fonts.DEFAULT, consume());
+    private final Button BTN_DROP = new Button("Drop", Fonts.DEFAULT, drop());
+    private final Button BTN_BACK = new Button("Back", Fonts.DEFAULT, back());
+
+    private Item selectedItem;
+
+    void setActionsFor(Item item) {
+        actions.clear();
+        selectedItem = item;
+
+        if (item instanceof Equip) {
+            actions.add(BTN_EQUIP);
+            actions.add(BTN_DROP);
+            actions.add(BTN_BACK);
+        } else if (item instanceof Consumable) {
+            actions.add(BTN_USE);
+            actions.add(BTN_DROP);
+            actions.add(BTN_BACK);
+        } else {
+            actions.add(BTN_DROP);
+            actions.add(BTN_BACK);
+        }
+
+        // swap panels safely
+        if (body.contains(textBlock)) {
+            body.remove(textBlock);
+        }
+
+        actionsPanel.removeAll();
+        actionsPanel.add(actions);
+
+        if (!body.contains(actionsPanel)) {
+            body.add(actionsPanel);
+        }
+
+        markDirty();
+    }
+
+
+    Focusable getFirstAction() {
+        if (actions.isEmpty()) return null;
+        return actions.getFirst();
+    }
+
+    private Runnable onDrop;
+    private Runnable onBack;
+
+    void onDrop(Runnable action) {
+        onDrop = action;
+    }
+
+    void onBack(Runnable action) {
+        onBack = action;
+    }
+
+    private Action equip() {
+        return (_, _) -> {
+            hideActions();
+        };
+    }
+
+    private Action consume() {
+        return (_, _) -> {
+            ((Consumable) selectedItem).use();
+            player.getInventory().pop(selectedItem);
+            onDrop.run();
+            hideActions();
+        };
+    }
+
+    private Action drop() {
+        return (_, _) -> {
+            player.getInventory().pop(selectedItem);
+            onDrop.run();
+            hideActions();
+        };
+    }
+
+    private Action back() {
+        return (_, _) -> hideActions();
+    }
+
+    private void hideActions() {
+        actions.clear();
+        actionsPanel.removeAll();
+
+        if (body.contains(actionsPanel)) {
+            body.remove(actionsPanel);
+        }
+        if (!body.contains(textBlock)) {
+            body.add(textBlock);
+        }
+
+        markDirty();
+        onBack.run();
+    }
+
 }

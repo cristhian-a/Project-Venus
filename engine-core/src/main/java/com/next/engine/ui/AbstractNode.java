@@ -12,6 +12,7 @@ public abstract class AbstractNode {
     protected Rect globalBounds = new Rect();
     protected Size preferredSize = new Size();
     protected boolean dirty = true;
+    protected boolean visible = true;
     protected AbstractContainer parent;
 
     public final void markDirty() {
@@ -22,7 +23,17 @@ public abstract class AbstractNode {
 
     public final boolean isDirty() { return dirty; }
 
-    public final void setParent(AbstractContainer parent) { this.parent = parent; }
+    public final boolean isVisible() { return visible; }
+
+    public final void setVisible(boolean visible) {
+        this.visible = visible;
+        markDirty();
+    }
+
+    public final void setParent(AbstractContainer parent) {
+        this.parent = parent;
+        markDirty();
+    }
 
     public abstract void measure();
 

@@ -4,7 +4,6 @@ import com.next.engine.graphics.RenderQueue;
 import com.next.engine.ui.*;
 import com.next.engine.ui.component.Action;
 import com.next.engine.ui.component.ActionComponent;
-import com.next.engine.ui.widget.ImageNode;
 import com.next.game.Game;
 import com.next.game.ui.InputSolver;
 import com.next.game.util.Colors;
@@ -23,9 +22,14 @@ public final class InventoryPanel {
     // Static data
     private static final String HEADER = "- YOUR STUFF -";
 
-    // Root panel
+    // Inventory mode
+    private enum Mode { GRID, ACTIONS }
+    private Mode mode = Mode.GRID;
+
+    // Element's panels
     private final UIRoot uiroot;
     private final InputSolver inputSolver;
+    private final Panel bodyPanel;
 
     // Info panel
     private final ItemInfoPanel infoPanel;
@@ -45,23 +49,17 @@ public final class InventoryPanel {
         var label = new Label(HEADER, Fonts.DEFAULT, Colors.WHITE, Align.CENTER, Align.CENTER);
         headerPanel.add(label);
 
-        Panel bodyPanel = new Panel(
+        bodyPanel = new Panel(
                 new Rect(0, 0, rootPanel.getContentWidth(), rootPanel.getContentHeight() - 60),
                 new GridLayout(4, 42f, 32f),
                 0f
         );
 
-//        for (int i = 0; i < 16; i++) {
-//            var img = new ImageNode("apple.png", true);
-//            final int index = i;
-//            img.addComponent(new ActionComponent((_, _) -> IO.println("Hit: " + index)));
-//            bodyPanel.add(img);
-//        }
         var inventory = game.getPlayer().getInventory();
         inventory.forEach((item) -> {
-            var itemWidget = new ItemWidget(item);
-            itemWidget.addComponent(new ActionComponent(this.inventoryAction()));
-            bodyPanel.add(itemWidget);
+            var slot = new ItemSlot(item);
+            slot.addComponent(new ActionComponent(this.inventoryAction()));
+            bodyPanel.add(slot);
         });
 
         rootPanel.add(headerPanel);  // remember to add the panels to the root panel
@@ -74,14 +72,21 @@ public final class InventoryPanel {
 
         // Information panel
         infoPanel = new ItemInfoPanel(game, infoX, infoY, infoW, infoH);
+        infoPanel.onBack(this::hideActions);
+        infoPanel.onDrop(this::removeFocusedSlot);
         uiroot.add(infoPanel);
 
         inputSolver = new InputSolver(game.getInput(), uiroot);
     }
 
+    private Focusable focusedSlot;
+
     public void update() {
         inputSolver.update();
-        infoPanel.update(inputSolver.getFocused());
+        if (mode == Mode.GRID) {
+            focusedSlot = inputSolver.getFocused();
+        }
+        infoPanel.update(focusedSlot);
     }
 
     public void render(RenderQueue queue) {
@@ -89,8 +94,31 @@ public final class InventoryPanel {
     }
 
     private Action inventoryAction() {
-        return (AbstractNode node, String input) -> {
-            IO.println(node);
+        return (AbstractNode node, String _) -> {
+            if (!(node instanceof ItemSlot slot)) return;
+
+            mode = Mode.ACTIONS;
+            infoPanel.setActionsFor(slot.getItem());
+
+            uiroot.getFocusManager().requestFocus(infoPanel.getFirstAction());
+            uiroot.markDirty();
         };
     }
+
+    private void hideActions() {
+        mode = Mode.GRID;
+        uiroot.markDirty();
+        uiroot.getFocusManager().requestFocus(focusedSlot);
+    }
+
+    private void removeFocusedSlot() {
+        if (focusedSlot instanceof ItemSlot i) {
+            bodyPanel.remove(i);
+
+            var fm = uiroot.getFocusManager();
+            fm.rebuild();
+            fm.focusNext(); // or whatever default behavior you prefer
+        }
+    }
+
 }
