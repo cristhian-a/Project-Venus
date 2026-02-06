@@ -1,13 +1,10 @@
-package com.next.game.ui.component;
+package com.next.game.ui.element;
 
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.ui.*;
 import com.next.engine.ui.component.Action;
-import com.next.engine.ui.component.ActionComponent;
 import com.next.game.Game;
 import com.next.game.ui.InputSolver;
-import com.next.game.util.Colors;
-import com.next.game.util.Fonts;
 
 public final class InventoryPanel {
 
@@ -29,51 +26,20 @@ public final class InventoryPanel {
     // Element's panels
     private final UIRoot uiroot;
     private final InputSolver inputSolver;
-    private final Panel bodyPanel;
-
-    // Info panel
+    private final InventoryGridPanel grid;
     private final ItemInfoPanel infoPanel;
 
     public InventoryPanel(Game game) {
-        FramePanel frame = FrameFactory.dialog(x, y, w, h);
-
-        // Inventory panel
-        Panel rootPanel = new Panel(new Rect(frame.contentBounds()), new VerticalStackLayout(0f), 0f);
-        frame.add(rootPanel);
-
-        Panel headerPanel = new Panel(
-                new Rect(0, 0, rootPanel.getContentWidth(), 30),
-                new AbsoluteLayout(),
-                0f
-        );
-        var label = new Label(HEADER, Fonts.DEFAULT, Colors.WHITE, Align.CENTER, Align.CENTER);
-        headerPanel.add(label);
-
-        bodyPanel = new Panel(
-                new Rect(0, 0, rootPanel.getContentWidth(), rootPanel.getContentHeight() - 60),
-                new GridLayout(4, 42f, 32f),
-                0f
-        );
-
-        var inventory = game.getPlayer().getInventory();
-        inventory.forEach((item) -> {
-            var slot = new ItemSlot(item);
-            slot.addComponent(new ActionComponent(this.inventoryAction()));
-            bodyPanel.add(slot);
-        });
-
-        rootPanel.add(headerPanel);  // remember to add the panels to the root panel
-        rootPanel.add(bodyPanel);
-
-        final float WIDTH = 1024, HEIGHT = 768;
-        uiroot = new UIRoot(new Rect(0, 0, WIDTH, HEIGHT));
-        uiroot.add(frame);
-        //frame.setAnchor(Align.CENTER, Align.CENTER);
-
+        // Main grid
+        grid = new InventoryGridPanel(game, new Rect(x, y, w, h), inventoryAction());
         // Information panel
         infoPanel = new ItemInfoPanel(game, infoX, infoY, infoW, infoH);
         infoPanel.onBack(this::hideActions);
         infoPanel.onDrop(this::removeFocusedSlot);
+
+        final float WIDTH = 1024, HEIGHT = 768;
+        uiroot = new UIRoot(new Rect(0, 0, WIDTH, HEIGHT));
+        uiroot.add(grid);
         uiroot.add(infoPanel);
 
         inputSolver = new InputSolver(game.getInput(), uiroot);
@@ -115,7 +81,7 @@ public final class InventoryPanel {
 
     private void removeFocusedSlot() {
         if (focusedSlot instanceof ItemSlot i) {
-            bodyPanel.remove(i);
+            grid.popSlot(i);
 
             var fm = uiroot.getFocusManager();
             fm.rebuild();

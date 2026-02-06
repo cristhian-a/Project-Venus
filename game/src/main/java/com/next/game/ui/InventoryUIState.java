@@ -2,7 +2,7 @@ package com.next.game.ui;
 
 import com.next.engine.graphics.RenderQueue;
 import com.next.game.Game;
-import com.next.game.ui.component.InventoryPanel;
+import com.next.game.ui.element.InventoryPanel;
 
 public final class InventoryUIState implements UIState {
 

@@ -50,8 +50,8 @@ public abstract class AbstractNode {
             globalBounds.set(localBounds);
         }
 
-        onLayout();
         dirty = false;
+        onLayout();
     }
 
     public abstract void onLayout();

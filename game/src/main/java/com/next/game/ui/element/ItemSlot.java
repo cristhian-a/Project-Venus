@@ -1,4 +1,4 @@
-package com.next.game.ui.component;
+package com.next.game.ui.element;
 
 import com.next.engine.data.Registry;
 import com.next.engine.graphics.Layer;
