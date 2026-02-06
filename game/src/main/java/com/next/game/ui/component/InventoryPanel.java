@@ -100,6 +100,7 @@ public final class InventoryPanel {
             mode = Mode.ACTIONS;
             infoPanel.setActionsFor(slot.getItem());
 
+            uiroot.getFocusManager().pushScope(infoPanel);
             uiroot.getFocusManager().requestFocus(infoPanel.getFirstAction());
             uiroot.markDirty();
         };
@@ -109,6 +110,7 @@ public final class InventoryPanel {
         mode = Mode.GRID;
         uiroot.markDirty();
         uiroot.getFocusManager().requestFocus(focusedSlot);
+        uiroot.getFocusManager().popScope();
     }
 
     private void removeFocusedSlot() {

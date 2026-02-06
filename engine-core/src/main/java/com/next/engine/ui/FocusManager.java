@@ -2,15 +2,17 @@ package com.next.engine.ui;
 
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public final class FocusManager {
     private final AbstractContainer root;
     private final List<Focusable> elements = new ArrayList<>();
 
+    private final Deque<AbstractContainer> scopeStack = new ArrayDeque<>();
+
     public FocusManager(AbstractContainer root) {
-        this.root = root;
+        this.root = Objects.requireNonNull(root);
+        this.scopeStack.push(root);
         rebuild();
     }
 
@@ -26,7 +28,8 @@ public final class FocusManager {
     public void rebuild() {
         Focusable preserved = focused;
         elements.clear();
-        collect(root);
+        collect(currentScope());
+
         if (elements.isEmpty()) {
             focused = null;
             focusedIndex = -1;
@@ -50,7 +53,7 @@ public final class FocusManager {
         setFocus(0);
     }
 
-    public void collect(AbstractNode node) {
+    private void collect(AbstractNode node) {
         if (node instanceof Focusable f && f.isFocusable()) elements.add(f);
         if (node instanceof AbstractContainer container) {
             for (int i = 0; i < container.children.size(); i++) {
@@ -61,6 +64,54 @@ public final class FocusManager {
                 collect(container.children.get(i));
             }
         }
+    }
+
+    /**
+     * Returns the current effective scope.
+     * @return scope in the top of the scope stack.
+     */
+    public AbstractContainer currentScope() {
+        return scopeStack.peek();
+    }
+
+    /**
+     * Set scope to {@code container}, replacing the stack's top. If null, sets root as the top.
+     * @param container to be set as the current scope.
+     */
+    public void setScope(AbstractContainer container) {
+        scopeStack.pop();
+        scopeStack.push(container == null ? root : container);
+        rebuild();
+    }
+
+    /**
+     * Pushes a new scope. Focus will be limited to this container subtree.
+     * @param container to be set as the current scope.
+     */
+    public void pushScope(AbstractContainer container) {
+        if (container == null) return;
+        scopeStack.push(container);
+        rebuild();
+    }
+
+    /**
+     * Pops the current scope and restore the previous. If the root is the current scope, it will not be popped.
+     * @return true if any scope was popped.
+     */
+    public boolean popScope() {
+        if (scopeStack.size() <= 1) return false;   // leave root in place
+        scopeStack.pop();
+        rebuild();
+        return true;
+    }
+
+    /**
+     * Clears stack and sets the root as the current scope.
+     */
+    public void clearScopes() {
+        scopeStack.clear();
+        scopeStack.push(root);
+        rebuild();
     }
 
     public void focusNext() {
