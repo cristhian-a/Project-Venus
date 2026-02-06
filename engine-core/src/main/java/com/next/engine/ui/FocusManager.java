@@ -54,6 +54,7 @@ public final class FocusManager {
     }
 
     private void collect(AbstractNode node) {
+        if (!node.visible) return;
         if (node instanceof Focusable f && f.isFocusable()) elements.add(f);
         if (node instanceof AbstractContainer container) {
             for (int i = 0; i < container.children.size(); i++) {

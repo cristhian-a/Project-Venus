@@ -63,13 +63,14 @@ final class ItemInfoPanel extends FramePanel {
                 0f
         );
         actionsPanel.setAnchor(Align.CENTER, Align.CENTER);
+        actionsPanel.setVisible(false);
 
         root = new Panel(new Rect(frameBounds), new VerticalStackLayout(0), 0f);
         root.add(header);
         root.add(body);
         add(root);
 
-//        body.add(actionsPanel);
+        body.add(actionsPanel);
 
         headerLabel = new Label(EMPTY, Fonts.DEFAULT, Colors.WHITE);
         header.add(headerLabel);
@@ -123,17 +124,12 @@ final class ItemInfoPanel extends FramePanel {
             actions.add(BTN_BACK);
         }
 
-        // swap panels safely
-        if (body.contains(textBlock)) {
-            body.remove(textBlock);
-        }
-
+        // swap panels
         actionsPanel.removeAll();
         actionsPanel.add(actions);
 
-        if (!body.contains(actionsPanel)) {
-            body.add(actionsPanel);
-        }
+        textBlock.setVisible(false);
+        actionsPanel.setVisible(true);
 
         markDirty();
     }
@@ -186,12 +182,8 @@ final class ItemInfoPanel extends FramePanel {
         actions.clear();
         actionsPanel.removeAll();
 
-        if (body.contains(actionsPanel)) {
-            body.remove(actionsPanel);
-        }
-        if (!body.contains(textBlock)) {
-            body.add(textBlock);
-        }
+        actionsPanel.setVisible(false);
+        textBlock.setVisible(true);
 
         markDirty();
         onBack.run();

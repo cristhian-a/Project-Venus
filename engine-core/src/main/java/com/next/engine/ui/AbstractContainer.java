@@ -52,29 +52,42 @@ public abstract class AbstractContainer extends AbstractNode {
 
     public abstract Rect contentBounds();
 
+    protected final List<AbstractNode> visibleChildren = new ArrayList<>();
+
     @Override
     public final void measure() {
-        if (!dirty) return;
+        if (!dirty || !visible) return;
+        visibleChildren.clear();
+
         for (int i = 0; i < children.size(); i++) {
-            children.get(i).measure();
+            var child = children.get(i);
+            if (child.visible) {
+                // after measurement, the visible children list is stable, so we can use it in all methods
+                // that happen after measurement. As measure is invoked before updateLayout in the root, it
+                // is safe to use almost everytime after this loop's end.
+                visibleChildren.add(child);
+                child.measure();
+            }
         }
-        layout.calculatePreferredSize(this, children);
+        layout.calculatePreferredSize(this, visibleChildren);
     }
 
     @Override
     public final void onLayout() {
-        layout.arrange(this, children);
+        layout.arrange(this, visibleChildren);
 
-        for (int i = 0; i < children.size(); i++) {
-            var child = children.get(i);
+        for (int i = 0; i < visibleChildren.size(); i++) {
+            var child = visibleChildren.get(i);
             child.updateLayout();
         }
     }
 
     @Override
     public void draw(RenderQueue queue) {
-        for (int i = 0; i < children.size(); i++) {
-            var child = children.get(i);
+        if (!visible) return;
+
+        for (int i = 0; i < visibleChildren.size(); i++) {
+            var child = visibleChildren.get(i);
             child.draw(queue);
         }
     }
