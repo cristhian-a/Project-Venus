@@ -38,8 +38,6 @@ public abstract class AbstractNode {
     public abstract void measure();
 
     public final void updateLayout() {
-        if (!dirty || !visible) return;
-
         if (parent != null) {
             Rect parentBounds = parent.globalBounds;
             globalBounds.set(

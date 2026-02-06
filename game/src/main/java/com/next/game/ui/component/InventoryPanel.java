@@ -119,7 +119,8 @@ public final class InventoryPanel {
 
             var fm = uiroot.getFocusManager();
             fm.rebuild();
-            fm.focusNext(); // or whatever default behavior you prefer
+            fm.focusNext();
+            focusedSlot = fm.getFocused();
         }
     }
 
