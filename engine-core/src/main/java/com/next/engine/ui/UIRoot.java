@@ -1,14 +1,17 @@
 package com.next.engine.ui;
 
 import com.next.engine.graphics.RenderQueue;
+import com.next.engine.ui.style.ComputedStyle;
+import com.next.engine.ui.style.StyleEngine;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
 
 public final class UIRoot extends AbstractContainer {
 
-    @Getter
-    private final FocusManager focusManager = new FocusManager(this);
+    @Getter private final FocusManager focusManager = new FocusManager(this);
+    @Getter @Setter private StyleEngine styleEngine;
 
     // content bounds for root should always have x and y equal to 0,
     // preventing layouts to break.
@@ -39,6 +42,7 @@ public final class UIRoot extends AbstractContainer {
     /// Updates layout if needed and collect draw request from the children nodes of this container.
     /// Safe to call every frame.
     public void render(RenderQueue queue) {
+        resolveStyles(this);
         if (dirty) {
             measure();
             updateLayout();
@@ -47,4 +51,19 @@ public final class UIRoot extends AbstractContainer {
         draw(queue);
     }
 
+    private void resolveStyles(AbstractNode node) {
+        if (node.style.isDirty()) {
+            if (node.computedStyle == null) node.computedStyle = new ComputedStyle();
+
+            node.computedStyle.clear();
+            styleEngine.computeStyle(node, node.computedStyle);
+            node.style.markClean();
+        }
+
+        if (node instanceof AbstractContainer container) {
+            for (int i = 0; i < container.children.size(); i++) {
+                resolveStyles(container.children.get(i));
+            }
+        }
+    }
 }

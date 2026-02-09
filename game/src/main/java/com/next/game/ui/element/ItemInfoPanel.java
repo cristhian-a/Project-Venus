@@ -2,6 +2,11 @@ package com.next.game.ui.element;
 
 import com.next.engine.ui.*;
 import com.next.engine.ui.component.Action;
+import com.next.engine.ui.style.StyleEngine;
+import com.next.engine.ui.style.StyleSheet;
+import com.next.engine.ui.widget.Button;
+import com.next.engine.ui.widget.Label;
+import com.next.engine.ui.widget.TextBlock;
 import com.next.game.Game;
 import com.next.game.model.Consumable;
 import com.next.game.model.Equip;
@@ -12,6 +17,7 @@ import com.next.game.util.Fonts;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 final class ItemInfoPanel extends FramePanel {
 
@@ -21,6 +27,11 @@ final class ItemInfoPanel extends FramePanel {
     private static final String RIGHT_SQR_BRACKET = "]";
 
     private final StringBuilder stringBuilder = new StringBuilder();
+
+    private final Button BTN_EQUIP = new Button("Equip", Fonts.DEFAULT, equip());
+    private final Button BTN_USE = new Button("Use", Fonts.DEFAULT, consume());
+    private final Button BTN_DROP = new Button("Drop", Fonts.DEFAULT, drop());
+    private final Button BTN_BACK = new Button("Back", Fonts.DEFAULT, back());
 
     private final Player player;
 
@@ -99,11 +110,6 @@ final class ItemInfoPanel extends FramePanel {
             textBlock.setText(EMPTY);
         }
     }
-
-    private final Button BTN_EQUIP = new Button("Equip", Fonts.DEFAULT, equip());
-    private final Button BTN_USE = new Button("Use", Fonts.DEFAULT, consume());
-    private final Button BTN_DROP = new Button("Drop", Fonts.DEFAULT, drop());
-    private final Button BTN_BACK = new Button("Back", Fonts.DEFAULT, back());
 
     private Item selectedItem;
 

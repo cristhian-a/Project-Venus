@@ -3,8 +3,12 @@ package com.next.game.ui.element;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.ui.*;
 import com.next.engine.ui.component.Action;
+import com.next.engine.ui.style.StyleEngine;
+import com.next.engine.ui.style.StyleSheet;
 import com.next.game.Game;
 import com.next.game.ui.InputSolver;
+
+import java.util.Map;
 
 public final class InventoryPanel {
 
@@ -28,6 +32,7 @@ public final class InventoryPanel {
     private final InputSolver inputSolver;
     private final InventoryGridPanel grid;
     private final ItemInfoPanel infoPanel;
+    private final StyleSheet styleSheet = new StyleSheet();
 
     public InventoryPanel(Game game) {
         // Main grid
@@ -43,6 +48,16 @@ public final class InventoryPanel {
         uiroot.add(infoPanel);
 
         inputSolver = new InputSolver(game.getInput(), uiroot);
+
+        styleSheet.addRule(".Button", Map.of(
+                "backgroundColor", 0x88FF0000,
+                "textColor", 0xFFFFFF00
+        ));
+        styleSheet.addRule(".Button:focused", Map.of(
+                "backgroundColor", 0xFF0000FF
+        ));
+        StyleEngine styleEngine = new StyleEngine(styleSheet);
+        uiroot.setStyleEngine(styleEngine);
     }
 
     private Focusable focusedSlot;

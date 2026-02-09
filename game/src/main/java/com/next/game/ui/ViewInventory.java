@@ -2,6 +2,7 @@ package com.next.game.ui;
 
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.ui.*;
+import com.next.engine.ui.widget.Label;
 import com.next.game.model.Player;
 import com.next.game.ui.element.*;
 import com.next.game.util.Colors;

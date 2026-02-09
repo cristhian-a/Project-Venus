@@ -3,6 +3,7 @@ package com.next.game.ui.element;
 import com.next.engine.ui.*;
 import com.next.engine.ui.component.Action;
 import com.next.engine.ui.component.ActionComponent;
+import com.next.engine.ui.widget.Label;
 import com.next.game.Game;
 import com.next.game.util.Colors;
 import com.next.game.util.Fonts;

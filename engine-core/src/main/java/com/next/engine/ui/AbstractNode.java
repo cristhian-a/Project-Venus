@@ -2,12 +2,50 @@ package com.next.engine.ui;
 
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.ui.component.UIComponent;
+import com.next.engine.ui.style.ComputedStyle;
+import com.next.engine.ui.style.Style;
+import com.next.engine.ui.style.StyleEngine;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /// Base class for UI elements.
 public abstract class AbstractNode {
+    final Style style = new Style(this);
+
+    public final Style style() {
+        return style;
+    }
+
+    protected ComputedStyle computedStyle;
+
+    protected StyleEngine getStyleEngine() {
+        if (parent != null) return parent.getStyleEngine();
+        return null;
+    }
+
+    public boolean hasState(String state) {
+        return false;
+    }
+
+    public String getTypeName() {
+        return this.getClass().getSimpleName();
+    }
+
+    public ComputedStyle getComputedStyle() {
+        if (computedStyle == null) computedStyle = new ComputedStyle();
+
+        if (style.isDirty()) {
+            computedStyle.clear();
+            var engine = getStyleEngine();
+            if (engine != null)
+                engine.computeStyle(this, computedStyle);
+
+            style.markClean();
+            markDirty();
+        }
+        return computedStyle;
+    }
+
     protected Rect localBounds = new Rect();
     protected Rect globalBounds = new Rect();
     protected Size preferredSize = new Size();
@@ -18,6 +56,7 @@ public abstract class AbstractNode {
     public final void markDirty() {
         if (dirty) return;
         dirty = true;
+        style.markDirty();
         if (parent != null) parent.markDirty();
     }
 

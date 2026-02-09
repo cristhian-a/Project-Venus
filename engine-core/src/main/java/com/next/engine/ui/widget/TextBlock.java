@@ -1,10 +1,11 @@
-package com.next.engine.ui;
+package com.next.engine.ui.widget;
 
 import com.next.engine.data.Registry;
 import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderPosition;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.graphics.TextFont;
+import com.next.engine.ui.AbstractNode;
 
 public final class TextBlock extends AbstractNode {
 
