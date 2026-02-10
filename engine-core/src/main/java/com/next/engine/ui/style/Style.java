@@ -17,7 +17,7 @@ public final class Style {
     }
 
     @Getter
-    private String styleId;
+    private String id;
     private final Set<String> styleClasses = new LinkedHashSet<>();
     // inline style to be done
 
@@ -43,8 +43,8 @@ public final class Style {
         dirty = false;
     }
 
-    public void setStyleId(String id) {
-        this.styleId = id;
+    public void setId(String id) {
+        this.id = id;
         markDirty();
     }
 
@@ -67,7 +67,4 @@ public final class Style {
         return !Collections.disjoint(styleClasses, classes);
     }
 
-    public String getStyleIdInternal() {
-        return styleId;
-    }
 }

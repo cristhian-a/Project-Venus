@@ -58,6 +58,17 @@ public final class InventoryPanel {
         ));
         StyleEngine styleEngine = new StyleEngine(styleSheet);
         uiroot.setStyleEngine(styleEngine);
+
+        AbstractContainer testContainer = new AbstractContainer(new Rect(100, 100, 400, 550));
+        uiroot.add(testContainer);
+
+        AbstractContainer insideContainer = new AbstractContainer(new Rect(0, 0, 100, 100));
+        insideContainer.setAnchor(Align.START, Align.START);
+        testContainer.add(insideContainer);
+
+        styleSheet.addRule(".AbstractContainer", Map.of(
+                "padding", 8f
+        ));
     }
 
     private Focusable focusedSlot;

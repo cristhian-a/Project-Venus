@@ -1,5 +1,7 @@
 package com.next.engine.ui;
 
+import com.next.engine.ui.style.ComputedStyle;
+
 import java.util.List;
 
 public final class VerticalStackLayout implements Layout {
@@ -33,6 +35,7 @@ public final class VerticalStackLayout implements Layout {
 
         for (int i = 0; i < children.size(); i++) {
             var child = children.get(i);
+//            ComputedStyle childStyle = child.computedStyle;
 
             float slotW = content.width;
             float slotH = child.preferredSize.height;

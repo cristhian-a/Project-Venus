@@ -55,12 +55,5 @@ public class Panel extends AbstractContainer {
     @Override
     public void draw(RenderQueue queue) {
         super.draw(queue);
-
-        queue.rectangle(
-                Layer.UI_SCREEN,
-                globalBounds.x, globalBounds.y,
-                localBounds.width, localBounds.height,
-                0xFFFF0000
-        );
     }
 }

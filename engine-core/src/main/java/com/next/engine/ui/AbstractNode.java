@@ -31,21 +31,6 @@ public abstract class AbstractNode {
         return this.getClass().getSimpleName();
     }
 
-    public ComputedStyle getComputedStyle() {
-        if (computedStyle == null) computedStyle = new ComputedStyle();
-
-        if (style.isDirty()) {
-            computedStyle.clear();
-            var engine = getStyleEngine();
-            if (engine != null)
-                engine.computeStyle(this, computedStyle);
-
-            style.markClean();
-            markDirty();
-        }
-        return computedStyle;
-    }
-
     protected Rect localBounds = new Rect();
     protected Rect globalBounds = new Rect();
     protected Size preferredSize = new Size();

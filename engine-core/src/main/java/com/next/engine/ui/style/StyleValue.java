@@ -15,7 +15,8 @@ sealed interface StyleValue {
             case BACKGROUND_COLOR, BORDER_COLOR, TEXT_COLOR ->
                     new StyleValue.Color((int) value);
 
-            case FONT_SIZE, CORNER_RADIUS ->
+            case FONT_SIZE, CORNER_RADIUS, PADDING, PADDING_TOP, PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT,
+                 MARGIN, MARGIN_TOP, MARGIN_BOTTOM, MARGIN_LEFT, MARGIN_RIGHT ->
                     new StyleValue.Length(Float.parseFloat(value.toString()), StyleValue.Unit.PIXEL);
 
             case CURSOR_SYMBOL ->
