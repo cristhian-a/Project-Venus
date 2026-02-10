@@ -1,7 +1,5 @@
 package com.next.engine.ui;
 
-import com.next.engine.ui.style.ComputedStyle;
-
 import java.util.List;
 
 public final class VerticalStackLayout implements Layout {
@@ -27,6 +25,7 @@ public final class VerticalStackLayout implements Layout {
 //    }
 
     private final Rect slotRect = new Rect();
+    private final Rect innerSlot = new Rect();
 
     @Override
     public void arrange(AbstractContainer container, List<AbstractNode> children) {
@@ -35,17 +34,13 @@ public final class VerticalStackLayout implements Layout {
 
         for (int i = 0; i < children.size(); i++) {
             var child = children.get(i);
-//            ComputedStyle childStyle = child.computedStyle;
 
             float slotW = content.width;
             float slotH = child.preferredSize.height;
             slotRect.set(content.x, cursorY, slotW, slotH);
 
-            float childX = LayoutUtils.alignX(slotRect, child.preferredSize.width, child.anchorX);
-            float childY = LayoutUtils.alignY(slotRect, child.preferredSize.height, child.anchorY);
-
-            child.localBounds.set(childX, childY, child.preferredSize.width, child.preferredSize.height);
-            cursorY += slotH + spacing;
+            LayoutUtils.applySpacing(slotRect, innerSlot, child);
+            cursorY += slotRect.height + spacing;
         }
     }
 }

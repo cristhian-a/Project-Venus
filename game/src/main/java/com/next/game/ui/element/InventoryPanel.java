@@ -5,8 +5,11 @@ import com.next.engine.ui.*;
 import com.next.engine.ui.component.Action;
 import com.next.engine.ui.style.StyleEngine;
 import com.next.engine.ui.style.StyleSheet;
+import com.next.engine.ui.widget.Button;
 import com.next.game.Game;
 import com.next.game.ui.InputSolver;
+import com.next.game.util.Colors;
+import com.next.game.util.Fonts;
 
 import java.util.Map;
 
@@ -59,15 +62,35 @@ public final class InventoryPanel {
         StyleEngine styleEngine = new StyleEngine(styleSheet);
         uiroot.setStyleEngine(styleEngine);
 
-        AbstractContainer testContainer = new AbstractContainer(new Rect(100, 100, 400, 550));
+        AbstractContainer testContainer =
+                new AbstractContainer(new Rect(100, 100, 400, 550), new VerticalStackLayout(0f));
         uiroot.add(testContainer);
 
-        AbstractContainer insideContainer = new AbstractContainer(new Rect(0, 0, 100, 100));
-        insideContainer.setAnchor(Align.START, Align.START);
-        testContainer.add(insideContainer);
+        var cont1 = new AbstractContainer(new Rect(0, 0, 386, 200), new VerticalStackLayout(0f));
+        testContainer.add(cont1);
+        var b1 = new Button("Test1", Fonts.DEFAULT, (_, _) -> { IO.println("Clicked!"); });
+        var b2 = new Button("Test2", Fonts.DEFAULT, (_, _) -> { IO.println("Clicked!"); });
+        var b3 = new Button("Test3", Fonts.DEFAULT, (_, _) -> { IO.println("Clicked!"); });
+        cont1.add(b1);
+        cont1.add(b2);
+        cont1.add(b3);
+        var cont2 = new AbstractContainer(new Rect(0, 0, 386, 100));
+        testContainer.add(cont2);
+        var cont3 = new AbstractContainer(new Rect(0, 0, 386, 100), new HorizontalStackLayout(0f));
+        testContainer.add(cont3);
+        var btn = new Button("Test1", Fonts.DEFAULT, (_, _) -> { IO.println("Clicked!"); });
+        var btn2 = new Button("Test2", Fonts.DEFAULT, (_, _) -> { IO.println("Clicked!"); });
+        var btn3 = new Button("Test3", Fonts.DEFAULT, (_, _) -> { IO.println("Clicked!"); });
+        cont3.add(btn);
+        cont3.add(btn2);
+        cont3.add(btn3);
 
         styleSheet.addRule(".AbstractContainer", Map.of(
                 "padding", 8f
+        ));
+        styleSheet.addRule(".Button", Map.of(
+                "marginLeft", 25f,
+                "marginBottom", 10f
         ));
     }
 

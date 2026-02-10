@@ -22,7 +22,11 @@ public class AbstractContainer extends AbstractNode {
     }
 
     public AbstractContainer(Rect rect) {
-        this.layout = new AbsoluteLayout();
+        this(rect, new AbsoluteLayout());
+    }
+
+    public AbstractContainer(Rect rect, Layout layout) {
+        this.layout = layout;
         this.contentArea = rect;
 
         super();

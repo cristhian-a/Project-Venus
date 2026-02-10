@@ -11,6 +11,7 @@ public final class HorizontalStackLayout implements Layout {
     }
 
     private final Rect slot = new Rect();
+    private final Rect innerSlot = new Rect();
 
     @Override
     public void arrange(AbstractContainer container, List<AbstractNode> children) {
@@ -24,11 +25,8 @@ public final class HorizontalStackLayout implements Layout {
             float slotH = content.height;
             slot.set(cursorX, content.y, slotW, slotH);
 
-            float childX = LayoutUtils.alignX(slot, child.preferredSize.width, child.anchorX);
-            float childY = LayoutUtils.alignY(slot, child.preferredSize.height, child.anchorY);
-
-            child.localBounds.set(childX, childY, child.preferredSize.width, content.height);
-            cursorX += slotW + spacing;
+            LayoutUtils.applySpacing(slot, innerSlot, child);
+            cursorX += slot.width + spacing;
         }
     }
 }

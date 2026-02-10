@@ -15,6 +15,8 @@ public final class AbsoluteLayout implements Layout {
 //        container.preferredSize.set(w, h);
 //    }
 
+    private final Rect innerSlot = new Rect();
+
     @Override
     public void arrange(AbstractContainer container, List<AbstractNode> children) {
         var content = container.contentBounds();
@@ -24,14 +26,12 @@ public final class AbsoluteLayout implements Layout {
             float x = child.localBounds.x, y = child.localBounds.y;
 
             if (x == 0 && y == 0) {
-                x = LayoutUtils.alignX(content, child.preferredSize.width, child.anchorX);
-                y = LayoutUtils.alignY(content, child.preferredSize.height, child.anchorY);
-            }
+//                x = LayoutUtils.alignX(content, child.preferredSize.width, child.anchorX);
+//                y = LayoutUtils.alignY(content, child.preferredSize.height, child.anchorY);
+                LayoutUtils.applySpacing(content, innerSlot, child);
+            } else
+                child.localBounds.set(x, y, child.preferredSize.width, child.preferredSize.height);
 
-            child.localBounds.set(
-                    x, y,
-                    child.preferredSize.width, child.preferredSize.height
-            );
         }
     }
 }
