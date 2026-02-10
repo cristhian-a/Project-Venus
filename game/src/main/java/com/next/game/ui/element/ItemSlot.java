@@ -89,13 +89,5 @@ final class ItemSlot extends AbstractContainer implements Focusable {
                     0xFFFFFFFF, 16
             );
         }
-
-        // debug stuff
-        queue.rectangle(
-                Layer.UI_SCREEN,
-                globalBounds.x, globalBounds.y,
-                globalBounds.width, globalBounds.height,
-                0xFFFF0000
-        );
     }
 }

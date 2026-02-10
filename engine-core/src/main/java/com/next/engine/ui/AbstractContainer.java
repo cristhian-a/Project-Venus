@@ -117,17 +117,19 @@ public class AbstractContainer extends AbstractNode {
     public void draw(RenderQueue queue) {
         if (!visible) return;
 
+        super.draw(queue);
+
         for (int i = 0; i < visibleChildren.size(); i++) {
             var child = visibleChildren.get(i);
             child.draw(queue);
         }
 
         // debug stuff
-        queue.rectangle(
-                Layer.DEBUG_SCREEN,
-                globalBounds.x, globalBounds.y,
-                localBounds.width, localBounds.height,
-                0xFFFF0000
-        );
+//        queue.rectangle(
+//                Layer.DEBUG_SCREEN,
+//                globalBounds.x, globalBounds.y,
+//                localBounds.width, localBounds.height,
+//                0xFFFF0000
+//        );
     }
 }

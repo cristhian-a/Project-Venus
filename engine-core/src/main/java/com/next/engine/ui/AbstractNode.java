@@ -1,5 +1,6 @@
 package com.next.engine.ui;
 
+import com.next.engine.graphics.Layer;
 import com.next.engine.graphics.RenderQueue;
 import com.next.engine.ui.component.UIComponent;
 import com.next.engine.ui.style.ComputedStyle;
@@ -79,7 +80,24 @@ public abstract class AbstractNode {
     }
 
     public abstract void onLayout();
-    public abstract void draw(RenderQueue queue);
+
+    public void draw(RenderQueue queue) {
+        drawBackground(queue);
+    }
+
+//    public abstract void draw(RenderQueue queue);
+
+    protected void drawBackground(RenderQueue queue) {
+        if (computedStyle == null) return;
+
+        int bg = computedStyle.backgroundColor;
+        int bw = computedStyle.borderWidth;
+        int bc = computedStyle.borderColor;
+        int arc = computedStyle.cornerRadius;
+
+        queue.fillRoundRect(Layer.UI_SCREEN, globalBounds, bg, arc);
+        queue.roundStrokeRect(Layer.UI_SCREEN, globalBounds, bw, bc, arc);
+    }
 
     // Anchoring
     protected Align anchorX = Align.START;

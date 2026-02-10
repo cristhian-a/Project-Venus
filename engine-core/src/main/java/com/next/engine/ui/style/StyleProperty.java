@@ -13,6 +13,12 @@ public enum StyleProperty {
             s.borderColor = ((Color) v).argb();
         }
     },
+    BORDER_WIDTH {
+        @Override
+        void apply(ComputedStyle s, StyleValue v) {
+            s.borderWidth = (int) ((Length) v).value();
+        }
+    },
     TEXT_COLOR {
         final void apply(ComputedStyle s, StyleValue v) {
             s.textColor = ((Color) v).argb();
@@ -109,6 +115,7 @@ public enum StyleProperty {
         return switch (name) {
             case "backgroundColor" -> BACKGROUND_COLOR;
             case "borderColor" -> BORDER_COLOR;
+            case "borderWidth" -> BORDER_WIDTH;
             case "textColor" -> TEXT_COLOR;
             case "fontSize" -> FONT_SIZE;
             case "cornerRadius" -> CORNER_RADIUS;

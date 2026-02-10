@@ -87,18 +87,12 @@ public final class Button extends AbstractNode implements Focusable {
     public void onFocus() {
         focused = true;
         markDirty();
-
-//        var focusStyle = getComponent(FocusStyleComponent.class);
-//        if (focusStyle != null) backgroundColor = focusStyle.focusedBackgroundColor;
     }
 
     @Override
     public void onBlur() {
         focused = false;
         markDirty();
-
-//        var focusStyle = getComponent(FocusStyleComponent.class);
-//        if (focusStyle != null) backgroundColor = focusStyle.normalBackgroundColor;
     }
 
     @Override

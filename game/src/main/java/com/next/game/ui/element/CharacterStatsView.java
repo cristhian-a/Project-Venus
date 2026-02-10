@@ -7,6 +7,7 @@ import com.next.engine.ui.style.StyleSheet;
 import com.next.engine.ui.widget.Button;
 import com.next.game.Game;
 import com.next.game.ui.InputSolver;
+import com.next.game.util.Colors;
 import com.next.game.util.Fonts;
 
 import java.util.Map;
@@ -59,7 +60,11 @@ public final class CharacterStatsView {
                 "backgroundColor", 0xFF0000FF
         ));
         styleSheet.addRule(".AbstractContainer", Map.of(
-                "padding", 8f
+                "padding", 8f,
+                "backgroundColor", Colors.BLACK,
+                "borderColor", Colors.WHITE,
+                "borderWidth", 4f,
+                "cornerRadius", 0f
         ));
         styleSheet.addRule(".Button", Map.of(
                 "marginLeft", 25f,
