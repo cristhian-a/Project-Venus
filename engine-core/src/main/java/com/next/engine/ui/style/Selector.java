@@ -6,18 +6,11 @@ import java.util.Set;
 
 record Selector(String type, String id, Set<String> classes, String state) {
 
-//    Selector(String type, String id, Set<String> classes, String state) {
-//        this.type = type;
-//        this.id = id;
-//        this.state = state;
-//        this.classes = classes == null ? Collections.emptySet() : Set.copyOf(classes);
-//    }
-
-//    Selector {
-//        classes = classes == null
-//                ? Collections.emptySet()
-//                : Set.copyOf(classes);
-//    }
+    Selector {
+        classes = classes == null
+                ? Collections.emptySet()
+                : Set.copyOf(classes);
+    }
 
     static Selector parse(String raw) {
         String type = null, id = null, state = null;

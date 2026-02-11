@@ -15,7 +15,7 @@ public final class StyleSheet {
             entries.add(new StyleEntry(prop, StyleValue.of(prop, v)));
         }
 
-        rules.add(new StyleRule(sel, entries, sel.specificity(), 0));
+        rules.add(new StyleRule(sel, entries, 0));
     }
 
     List<StyleRule> getRules() {
